@@ -1,4 +1,4 @@
-Tema final project : Reservasi Hotel Berbasis Web
+Tema final project : Sistem Reservasi Hotel Berbasis Web
 Nama kelompok :
 Zikry Ahmad Fahrezi : 23416255201030
 Yuda Pratama : 23416255201279
