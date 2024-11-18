@@ -1,0 +1,22 @@
+Pertanyaan Wawancara
+
+Watasi : Untuk tampilan profil mau seperti apa?
+ Narasumber :  Saya serahkan kepada omae tachhi
+Watashi :  Selanjutnya untuk warna web nya mau dominan warna apa?
+Narasumber : Karena kita tema nya abu, jadi dominan abu aja
+Watashi : Di  hotel ini ada berapa tipe kamar?
+Narasumber : Enam tipe, bisa dilihat disini
+
+==================================================================================================================
+Menjelaskan proses berjalannya web
+
+
+Watasi: ini ada diagram bagaimana web ini berproses, pertama si user bisa melihat foto-foto tentang hotel ini,lalu   	si user akan membuat akun terlebih dahulu apabila si user belum memiliki akun, setelah memiliki akun si 	user dapat memesan tipe kamar hotel yang dia pilih, setelah memesan kamar si user akan langsung di arahkan 	kehalaman payment dan apabila si user sudah membayar kamar hotel yang dia pesan maka data tersebut akan 	langsung dimasukan ke dalam database dan admin bisa memvalidasinya, dan misalnya si user membatalkan 	pesanannya maka uang nya akan di refund dan data tersebut akan langsung masuk ke database
+Narasumber: Ini misalnya saya nih sebagai user, saya misalnya memesan kamar tipe A tapi ternyata si kamar tipe A 	    sudah penuh, itu bisa gak ada pemberitahuannya
+Watasi: Bagaimana bisa gak?
+Ninggen: Bisa kayaknya cuma harus di input manual sama admin
+Watasi: Iya berarti harus divalidasi lagi supaya si database nya tahu
+Narasumber: berarti dari sini nya
+Watasi: iya, ada masukan lagi gak?
+Narasumber: Ini misalnya saya sebagai user ini, bisa gak masukin nomor telepon begitu?
+watasi: bisa nanti dibagian register, jadi nomor hp, email, nama, semua nya nanti dimasukin dibagian register
