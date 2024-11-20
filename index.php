@@ -1,3 +1,9 @@
+<?php 
+require 'db/connection.php';
+$result = $conn->query("SELECT * FROM types");
+$types = $result->fetch_all();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,11 +24,16 @@
 <link rel="stylesheet" href="css/index.css">
 <link rel="stylesheet" href="css/trans.css">
 <link rel="icon" type="png" href="./img/logoo.png">
+<style>
+    body {
+        background-color: #DCDCDC;
+    }
+</style>
 </head>
 <body>
 <header>
     <!-- place navbar here -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-light" style="background-color: #a1a0a5 !important; position: fixed; width: 100%; z-index: 1000;">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-light fixed-top" style="background-color: #a1a0a5 !important; width: 100%; z-index: 1000;">
     <a class="navbar-brand" id="name" style="color: white; margin-left: 20px; cursor: pointer;">Grand Mutiara</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -82,8 +93,6 @@
 </div>
 
 
-
-
     <div class="container py-4">
         <div class="row">
             <div class="col-md-12">
@@ -96,66 +105,18 @@
     <!-- Tiga Card -->
     <div class="container">
         <div class="row">
+            <?php foreach ($types as $type) : ?>
             <div class="col-md-4">
                 <div class="card mb-4">
-                    <img src="img/kt3.jpg" class="card-img-top" alt="Card 1">
+                    <img src="img/<?= $type[3] ?>" class="card-img-top" alt="Card 1">
                     <div class="card-body">
-                        <h5 class="card-title">Tipe 1</h5>
-                        <p class="card-text">Deskripsi Card 1.</p>
-                        <a href="./tipe/tipe1.php" class="btn btn-primary">Pesan</a>
+                        <h5 class="card-title"><?= $type[1] ?></h5>
+                        <p class="card-text"><?= $type[2]; ?></p>
+                        <a href="tipe.php?id=<?= $type[0] ?>" class="btn btn-primary">Pesan</a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="img/kt2.jpg" class="card-img-top" alt="Card 2">
-                    <div class="card-body">
-                        <h5 class="card-title">Tipe 2</h5>
-                        <p class="card-text">Deskripsi Card 2.</p>
-                        <a href="./tipe/tipe2.php" class="btn btn-primary">Pesan</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="img/kt3.jpg" class="card-img-top" alt="Card 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Tipe 3</h5>
-                        <p class="card-text">Deskripsi Card 3.</p>
-                        <a href="./tipe/tipe3.php" class="btn btn-primary">Pesan</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="img/kt3.jpg" class="card-img-top" alt="Card 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Tipe 4</h5>
-                        <p class="card-text">Deskripsi Card 3.</p>
-                        <a href="./tipe/tipe4.php" class="btn btn-primary">Pesan</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="img/kt3.jpg" class="card-img-top" alt="Card 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Tipe 5</h5>
-                        <p class="card-text">Deskripsi Card 3.</p>
-                        <a href="./tipe/tipe5.php" class="btn btn-primary">Pesan</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="img/kt3.jpg" class="card-img-top" alt="Card 3">
-                    <div class="card-body">
-                        <h5 class="card-title">Tipe 6</h5>
-                        <p class="card-text">Deskripsi Card 3.</p>
-                        <a href="./tipe/tipe6.php" class="btn btn-primary">Pesan</a>
-                    </div>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 
@@ -169,7 +130,7 @@
 </div>
 </footer>
 <script src="js/trans.js" defer></script>
-<script src="js/writeEF.js"></script>
+<script src="js/writeEF.js"></script>  
 <!-- Bootstrap JavaScript Libraries -->
 <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
