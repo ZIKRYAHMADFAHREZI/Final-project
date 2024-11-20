@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2024 at 07:58 AM
+-- Generation Time: Nov 20, 2024 at 09:10 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,23 @@ SET time_zone = "+00:00";
 --
 -- Database: `hotel_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payments`
+--
+
+CREATE TABLE `payments` (
+  `id_payments` int(11) NOT NULL,
+  `id_users` int(11) DEFAULT NULL,
+  `id_methods` int(11) DEFAULT NULL,
+  `id_reservations` int(11) DEFAULT NULL,
+  `img` text DEFAULT NULL,
+  `nama_send` varchar(255) DEFAULT NULL,
+  `creat_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `status` enum('pending','confirmed') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -75,11 +92,22 @@ CREATE TABLE `reservations` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `rooms`
+--
+
+CREATE TABLE `rooms` (
+  `id_room` int(11) NOT NULL,
+  `id_type` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `types`
 --
 
 CREATE TABLE `types` (
-  `id` int(11) NOT NULL,
+  `id_type` int(11) NOT NULL,
   `nama` varchar(255) DEFAULT NULL,
   `dekripsi` text DEFAULT NULL,
   `img` varchar(255) NOT NULL
@@ -89,7 +117,7 @@ CREATE TABLE `types` (
 -- Dumping data for table `types`
 --
 
-INSERT INTO `types` (`id`, `nama`, `dekripsi`, `img`) VALUES
+INSERT INTO `types` (`id_type`, `nama`, `dekripsi`, `img`) VALUES
 (1, 'Deluxe Ac', 'Kamar dengan vasilitas lengkap', 'kt1.png'),
 (2, 'Familly Room', 'Kamar keluarga broken home', 'kt2.jpg'),
 (3, 'Superior Ac', 'Ac memiliki kekuatan super', 'kt3.jpg'),
@@ -108,22 +136,32 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `role` enum('user','admin') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`) VALUES
-(1, 'asiap', 'aadsfds@gmail.com', '$2y$10$CWRPnqbF6CT/UHDH1n7h9e1sLv.Bn2Bti0Hm923Dvw01cIFQueNb6', '2024-11-17 11:32:17'),
-(2, 'Azaa31', 'azaanul10@gmail.com', '$2y$10$yzeblE49MpGMv.f3//y2p.uFqrT3r0Tbvrx8WE/SoMk3zVp1/D.lq', '2024-11-17 12:11:49'),
-(3, 'jskkahs', 'aasa@yahoo.com', '$2y$10$JEgFwKmvMIlUMGgHJYtcFeXJNPhzGg6maDg4e19TgFWOcki4k1uhq', '2024-11-17 12:24:14'),
-(4, 'admin', 'admin@admin.com', '$2y$10$dDf80owD5QSM02trXbe3H.gdzIoeXcg0gFN9op/T/sNiXJ9z34nau', '2024-11-18 07:15:22');
+INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`) VALUES
+(1, 'asiap', 'aadsfds@gmail.com', '$2y$10$CWRPnqbF6CT/UHDH1n7h9e1sLv.Bn2Bti0Hm923Dvw01cIFQueNb6', '2024-11-17 11:32:17', 'user'),
+(2, 'Azaa31', 'azaanul10@gmail.com', '$2y$10$yzeblE49MpGMv.f3//y2p.uFqrT3r0Tbvrx8WE/SoMk3zVp1/D.lq', '2024-11-17 12:11:49', 'user'),
+(3, 'jskkahs', 'aasa@yahoo.com', '$2y$10$JEgFwKmvMIlUMGgHJYtcFeXJNPhzGg6maDg4e19TgFWOcki4k1uhq', '2024-11-17 12:24:14', 'user'),
+(4, 'admin', 'admin@admin.com', '$2y$10$dDf80owD5QSM02trXbe3H.gdzIoeXcg0gFN9op/T/sNiXJ9z34nau', '2024-11-18 07:15:22', 'admin');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `payments`
+--
+ALTER TABLE `payments`
+  ADD PRIMARY KEY (`id_payments`),
+  ADD KEY `id_users` (`id_users`),
+  ADD KEY `id_methods` (`id_methods`),
+  ADD KEY `id_reservations` (`id_reservations`);
 
 --
 -- Indexes for table `pay_methods`
@@ -145,10 +183,17 @@ ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id_reservation`);
 
 --
+-- Indexes for table `rooms`
+--
+ALTER TABLE `rooms`
+  ADD PRIMARY KEY (`id_room`),
+  ADD KEY `id_type` (`id_type`);
+
+--
 -- Indexes for table `types`
 --
 ALTER TABLE `types`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id_type`);
 
 --
 -- Indexes for table `users`
@@ -161,6 +206,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `id_payments` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `pay_methods`
@@ -181,10 +232,16 @@ ALTER TABLE `reservations`
   MODIFY `id_reservation` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `rooms`
+--
+ALTER TABLE `rooms`
+  MODIFY `id_room` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `types`
 --
 ALTER TABLE `types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_type` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -197,10 +254,24 @@ ALTER TABLE `users`
 --
 
 --
+-- Constraints for table `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`id_users`) REFERENCES `users` (`id_user`) ON DELETE CASCADE,
+  ADD CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`id_methods`) REFERENCES `pay_methods` (`id_pay`) ON DELETE CASCADE,
+  ADD CONSTRAINT `payments_ibfk_3` FOREIGN KEY (`id_reservations`) REFERENCES `reservations` (`id_reservation`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `profile_user`
 --
 ALTER TABLE `profile_user`
   ADD CONSTRAINT `profile_user_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id_user`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `rooms`
+--
+ALTER TABLE `rooms`
+  ADD CONSTRAINT `rooms_ibfk_1` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
