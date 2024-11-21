@@ -108,11 +108,11 @@ $types = $result->fetch_all();
             <?php foreach ($types as $type) : ?>
             <div class="col-md-4">
                 <div class="card mb-4">
-                    <img src="img/<?= $type[3] ?>" class="card-img-top" alt="Card 1">
+                    <img src="img/<?= $type[3]; ?>" class="card-img-top" alt="Card 1">
                     <div class="card-body">
-                        <h5 class="card-title"><?= $type[1] ?></h5>
+                        <h5 class="card-title"><?= $type[1]; ?></h5> 
                         <p class="card-text"><?= $type[2]; ?></p>
-                        <a href="type.php?id=<?= $type[0] ?>" class="btn btn-primary">Pesan</a>
+                        <a href="type.php?id=<?= $type[0]; ?>" class="btn btn-primary">Pesan</a>
                     </div>
                 </div>
             </div>
