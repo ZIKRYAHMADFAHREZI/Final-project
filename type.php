@@ -1,7 +1,11 @@
 <?php
+require 'db/connection.php';
 $id = $_GET['id'];
 $today = new DateTime();
 $formattedDate = $today->format('Y-m-d'); // Format tanggal menjadi YYYY-MM-DD
+
+$sql = "SELECT id_room FROM rooms";
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -61,30 +65,24 @@ $formattedDate = $today->format('Y-m-d'); // Format tanggal menjadi YYYY-MM-DD
             </div>
 
             <div class="form-group">
-                <label for="roomCount">No Kamar:</label>
-                <select class="form-control" id="roomCount" name="roomCount" required>
-                    <?php for ($i = 1; $i <= 10; $i++) : ?>
-                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                    <?php endfor; ?>
-                </select>
-            </div>
+            <label for="id_room">No Kamar:</label>
+            <select class="form-control" id="id_room" name="id_room" required>
+                <?php if ($result->num_rows > 0) : ?>
+                    <?php while ($row = $result->fetch_assoc()) : ?>
+                        <option value="<?php echo $row['id_room']; ?>">
+                            <?php echo $row['id_room']; ?>
+                        </option>
+                    <?php endwhile; ?>
+                <?php else : ?>
+                    <option value="">Tidak ada data</option>
+                <?php endif; ?>
+            </select>
+        </div>
 
             <button type="submit" class="btn btn-primary btn-block mt-5" name="submit" id="submit">Pesan Sekarang</button>
         </form>
     </div>
-<!-- <script>
-        // Mendapatkan tanggal hari ini
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Januari adalah 0!
-        const yyyy = today.getFullYear();
 
-        // Format tanggal menjadi YYYY-MM-DD
-        const formattedDate = yyyy + '-' + mm + '-' + dd;
-
-        // Mengatur atribut min pada input date
-        document.getElementById('datePicker').setAttribute('min', formattedDate);
-</script> -->
     <script src="js/trans.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>

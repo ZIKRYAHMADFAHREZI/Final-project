@@ -112,7 +112,7 @@ $types = $result->fetch_all();
                     <div class="card-body">
                         <h5 class="card-title"><?= $type[1] ?></h5>
                         <p class="card-text"><?= $type[2]; ?></p>
-                        <a href="tipe.php?id=<?= $type[0] ?>" class="btn btn-primary">Pesan</a>
+                        <a href="type.php?id=<?= $type[0] ?>" class="btn btn-primary">Pesan</a>
                     </div>
                 </div>
             </div>
