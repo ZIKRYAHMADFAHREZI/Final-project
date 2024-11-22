@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 20, 2024 at 09:10 AM
+-- Generation Time: Nov 22, 2024 at 12:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -97,8 +97,29 @@ CREATE TABLE `reservations` (
 
 CREATE TABLE `rooms` (
   `id_room` int(11) NOT NULL,
-  `id_type` int(11) DEFAULT NULL
+  `id_type` int(11) DEFAULT NULL,
+  `number_room` int(4) NOT NULL,
+  `status` enum('available','unvailable','pending') NOT NULL DEFAULT 'available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `rooms`
+--
+
+INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
+(1, 1, 1, 'available'),
+(2, 1, 2, 'available'),
+(3, 1, 3, 'available'),
+(4, 1, 4, 'available'),
+(5, 1, 5, 'available'),
+(6, 1, 6, 'available'),
+(7, 2, 7, 'available'),
+(8, 2, 8, 'available'),
+(9, 3, 9, 'available'),
+(10, 3, 10, 'available'),
+(11, 4, 11, 'available'),
+(12, 5, 12, 'available'),
+(13, 5, 13, 'available');
 
 -- --------------------------------------------------------
 
@@ -108,7 +129,7 @@ CREATE TABLE `rooms` (
 
 CREATE TABLE `types` (
   `id_type` int(11) NOT NULL,
-  `nama` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
   `dekripsi` text DEFAULT NULL,
   `img` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -117,7 +138,7 @@ CREATE TABLE `types` (
 -- Dumping data for table `types`
 --
 
-INSERT INTO `types` (`id_type`, `nama`, `dekripsi`, `img`) VALUES
+INSERT INTO `types` (`id_type`, `type`, `dekripsi`, `img`) VALUES
 (1, 'Deluxe Ac', 'Kamar dengan vasilitas lengkap', 'kt1.png'),
 (2, 'Familly Room', 'Kamar keluarga broken home', 'kt2.jpg'),
 (3, 'Superior Ac', 'Ac memiliki kekuatan super', 'kt3.jpg'),
@@ -235,13 +256,13 @@ ALTER TABLE `reservations`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id_room` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_room` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `types`
 --
 ALTER TABLE `types`
-  MODIFY `id_type` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_type` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`

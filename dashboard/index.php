@@ -10,67 +10,72 @@
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
     crossorigin="anonymous"
 />
-<style>
-    header {
-        background-color: aqua;
-        padding: 10px;
+<link rel="stylesheet" href="../css/admin.css">
+<!-- <style>
+    body {
+        display: flex;
+        min-height: 100vh;
+        margin: 0;
     }
-</style>
+    .sidebar {
+        width: 250px;
+        background-color: #343a40;
+        color: white;
+        height: 100vh;
+        position: fixed;
+        padding-top: 20px;
+    }
+    .sidebar a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        display: block;
+    }
+    .sidebar a:hover {
+        background-color: #495057;
+    }
+    .content {
+        margin-left: 250px;
+        padding: 20px;
+        flex: 1;
+    }
+    .form-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+</style> -->
 </head>
 <body>
-<header>
-<div class="wrapper">
-            <header class="main-header">
-                <a href="https://member.ionbroadband.id/dashboard" class="logo">
-                    <span class="logo-mini">
-                        <b>C</b>
-                        P
-                    </span>
-                    <span class="logo-lg">
-                        <b>Customer Portal</b>
-                    </span>
-                </a>
-                <nav class="navbar navbar-static-top">
-                    <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-</header>
-<aside class="main-sidebar">
-    <section class="sidebar">
-        <div class="user-panel">
-            <div class="pull-left image">
-                <img src="../img/kt1.png" class="img-circle">
-            </div>
-            <div class="pull-left info">
-                <a href="#">
-                    <i class="fa fa-circle text-success"></i>
-                    logged in
-                </a>
-            </div>
-        </div>
-        <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">Navigasi Admin</li>
-            <li class="active">
-                <a href="index.php>
-                    <i class="fa fa-home"></i>
-                    <span>Beranda</span>
-                </a>
-            <li>
-                <a href="updatePw.php">
-                    <i class="fa fa-lock"></i>
-                    <span>Ganti Email & Password</span>
-                </a>
-    </section>
-</aside>
-<div class="text-center">
-    <form action="" method="post">
-        <input type="text" name="keyword" size="30" autofocus 
-        placeholder="Masukkan keyword pencarian" autocomplete="off">
-        <button type="submit" name="cari">cari!</button>
-    </form>
+<div class="sidebar">
+    <div class="user-panel text-center mb-4">
+        <img src="../img/person.svg" alt="admin" width="20%">
+        <p class="mt-2"><i class="fa fa-circle text-success"></i> logged in</p>
+    </div>
+    <ul class="list-unstyled">
+        <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
+        <li><a href="rooms.php"><i class="fa fa-lock me-2"></i> Cek Kamar</a></li>
+        <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
+        <li><a href=""><i class="fa fa-lock me-2"></i> Logout</a></li>
+    </ul>
+</div>
+<div class="content">
+    <header>
+        <h1>Admin Portal</h1>
+    </header>
+    <div class="form-container">
+        <form action="" method="post">
+            <input 
+                type="text" 
+                name="keyword" 
+                size="30" 
+                autofocus 
+                placeholder="Masukkan keyword pencarian" 
+                autocomplete="off"
+                class="form-control d-inline-block w-50 mb-2"
+            >
+            <button type="submit" name="cari" class="btn btn-primary">Cari!</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>
