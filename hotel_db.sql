@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 22, 2024 at 12:55 PM
+-- Generation Time: Nov 23, 2024 at 06:53 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -166,10 +166,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`) VALUES
-(1, 'asiap', 'aadsfds@gmail.com', '$2y$10$CWRPnqbF6CT/UHDH1n7h9e1sLv.Bn2Bti0Hm923Dvw01cIFQueNb6', '2024-11-17 11:32:17', 'user'),
-(2, 'Azaa31', 'azaanul10@gmail.com', '$2y$10$yzeblE49MpGMv.f3//y2p.uFqrT3r0Tbvrx8WE/SoMk3zVp1/D.lq', '2024-11-17 12:11:49', 'user'),
-(3, 'jskkahs', 'aasa@yahoo.com', '$2y$10$JEgFwKmvMIlUMGgHJYtcFeXJNPhzGg6maDg4e19TgFWOcki4k1uhq', '2024-11-17 12:24:14', 'user'),
-(4, 'admin', 'admin@admin.com', '$2y$10$dDf80owD5QSM02trXbe3H.gdzIoeXcg0gFN9op/T/sNiXJ9z34nau', '2024-11-18 07:15:22', 'admin');
+(1, 'admin', 'admin@admin.com', '$2y$10$6J9XHDM.TY/Dkn3VLsrlFezPX.JRWU/BYVEDyuZkIC5RAlKmN/69e', '2024-11-23 05:45:21', 'admin'),
+(2, 'user', 'user@gmail.com', '$2y$10$fV3YxwIcA4Cp1k9eXby4CurPsoyOcS6qNw85U507abbUub5qVyhwG', '2024-11-23 05:47:01', 'user');
 
 --
 -- Indexes for dumped tables
@@ -268,7 +266,7 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
