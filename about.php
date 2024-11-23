@@ -1,13 +1,3 @@
-<?php
-require 'db/login.php';
-// Mulai sesi
-session_start();
-
-// Contoh: Periksa apakah pengguna sudah login
-// Gunakan variabel session seperti 'user_id' untuk memverifikasi login
-$is_logged_in = isset($_SESSION['email']); // Ganti 'user_id' dengan key yang sesuai
-?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,20 +52,12 @@ $is_logged_in = isset($_SESSION['email']); // Ganti 'user_id' dengan key yang se
                 <li class="nav-item">
                     <a class="nav-link" id="about" style="color: white; margin-left: 20px;">About</a>
                 </li>
-                <?php if ($is_logged_in): ?>
-                    <!-- Tampilkan menu Profile jika sudah login -->
-                    <li class="nav-item">
-                        <a class="nav-link" id="profile" style="color: white; margin-left:20px; margin-right: 20px;">Profile</a>
-                    </li>
-                <?php else: ?>
-                    <!-- Tampilkan Login dan Sign in jika belum login -->
-                    <li class="nav-item">
-                        <a class="nav-link" id="login" style="color: white; margin-left: 20px;">Log in</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign in</a>
-                    </li>
-                <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link" id="login" style="color: white; margin-left: 20px;">Log in</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign in</a>
+                </li>
             </ul>
         </div>
     </nav>

@@ -1,7 +1,11 @@
 <?php 
 require 'db/connection.php';
-$result = $conn->query("SELECT * FROM types");
-$types = $result->fetch_all();
+try {
+    $result = $pdo->query("SELECT * FROM types");
+    $types = $result->fetchAll(PDO::FETCH_ASSOC); // Menentukan mode fetch
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage(); // Menangkap dan menampilkan error
+}
 ?>
 
 <!DOCTYPE html>
@@ -108,11 +112,11 @@ $types = $result->fetch_all();
             <?php foreach ($types as $type) : ?>
             <div class="col-md-4">
                 <div class="card mb-4">
-                    <img src="img/<?= $type[3]; ?>" class="card-img-top" alt="Card 1">
+                    <img src="img/<?= $type["img"]; ?>" class="card-img-top" alt="Card 1">
                     <div class="card-body">
-                        <h5 class="card-title"><?= $type[1]; ?></h5> 
-                        <p class="card-text"><?= $type[2]; ?></p>
-                        <a href="type.php?id=<?= $type[0]; ?>" class="btn btn-primary">Pesan</a>
+                        <h5 class="card-title"><?= $type["type"]; ?></h5> 
+                        <p class="card-text"><?= $type["dekripsi"]; ?></p>
+                        <a href="type.php?id=<?= $type["id_type"]; ?>" class="btn btn-primary">Pesan</a>
                     </div>
                 </div>
             </div>

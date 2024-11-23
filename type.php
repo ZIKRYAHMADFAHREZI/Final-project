@@ -5,7 +5,8 @@ $today = new DateTime();
 $formattedDate = $today->format('Y-m-d'); // Format tanggal menjadi YYYY-MM-DD
 
 $sql = "SELECT id_room FROM rooms";
-$result = $conn->query($sql);
+$result = $pdo->query($sql);
+$rooms = $result->fetchAll(PDO::FETCH_ASSOC); // Ambil semua data kamar
 ?>
 
 <!DOCTYPE html>
@@ -55,35 +56,34 @@ $result = $conn->query($sql);
     <h2 class="loading-text">GRAND MUTIARA</h2>
 </div>
 
-<form action="paynt/payment.php" method="post">
 <div class="container">
-        <h2 class="text-center">Pilih Tanggal dan Kamar</h2>
-        <form action="paynt/payment.php" method="post">
-            <div class="form-group">
-                <label for="datePicker">Tanggal:</label>
-                <input type="date" class="form-control" id="datePicker" min="<?php echo $formattedDate; ?>" required>
-            </div>
+<h2 class="text-center">Pilih Tanggal dan Kamar</h2>
+    <form action="paynt/payment.php" method="post">
+        <div class="form-group">
+            <label for="datePicker">Tanggal:</label>
+            <input type="date" class="form-control" id="datePicker" name="date" min="<?php echo $formattedDate; ?>" required>
+        </div>
 
-            <div class="form-group">
+        <div class="form-group">
             <label for="id_room">No Kamar:</label>
             <select class="form-control" id="id_room" name="id_room" required>
-                <?php if ($result->num_rows > 0) : ?>
-                    <?php while ($row = $result->fetch_assoc()) : ?>
-                        <option value="<?php echo $row['id_room']; ?>">
-                            <?php echo $row['id_room']; ?>
+                <?php if (count($rooms) > 0) : ?>
+                    <?php foreach ($rooms as $room) : ?>
+                        <option value="<?php echo htmlspecialchars($room['id_room']); ?>">
+                            <?php echo htmlspecialchars($room['id_room']); ?>
                         </option>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 <?php else : ?>
                     <option value="">Tidak ada data</option>
                 <?php endif; ?>
             </select>
         </div>
 
-            <button type="submit" class="btn btn-primary btn-block mt-5" name="submit" id="submit">Pesan Sekarang</button>
-        </form>
-    </div>
+        <button type="submit" class="btn btn-primary btn-block mt-5" name="submit" id="submit">Pesan Sekarang</button>
+    </form>
+</div>
 
-    <script src="js/trans.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="js/trans.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>

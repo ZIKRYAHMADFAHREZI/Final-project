@@ -1,54 +1,44 @@
 <?php
-// Sertakan file koneksi
+ob_start();
+session_start();
 require 'connection.php';
 
-// Daftar email dan password yang sudah ada
-$existing_users = [
-    'user1@example.com' => 'password1',
-    'user2@example.com' => 'password2',
-    // Tambahkan pengguna lain sesuai kebutuhan
-];
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Cek jika form login disubmit
+$error = "";
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $input_username = $_POST['email'];
-    $input_password = $_POST['password'];
+  if (!empty($_POST['email']) && !empty($_POST['password'])) {
+    $usernameOrEmail = $_POST['email'];
+    $password = $_POST['password'];
 
-    // Mencari user di database
-    $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->bind_param("s", $input_username);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->execute([$usernameOrEmail]);
+    $user = $stmt->fetch();
 
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        
-        // Verifikasi password dari database
-        if (password_verify($input_password, $user['password'])) {
-            // Login sukses dari database
-            session_start();
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['email'] = $user['email'];
-            header("Location: ../about.php"); // Ganti dengan halaman tujuan setelah login
-            exit();
-        } else {
-            echo "Password salah.";
-        }
+    // Debugging: Cek apakah user ditemukan
+    error_log("User  found: " . print_r($user, true));
+
+    if ($user && password_verify($password, $user['password'])) {
+      $_SESSION['id_user'] = $user['id_user'];
+      $_SESSION['role'] = $user['role'];
+
+      // Debugging: Cek role pengguna
+      error_log("User  role: " . $_SESSION['role']);
+
+      if ($user['role'] === 'admin') {
+        header("Location: ../dashboard/index.php");
+        exit();
+      } elseif ($user['role'] === 'user') {
+        header("Location: ../index.php");
+        exit();
+      }
     } else {
-        // Jika tidak ditemukan di database, periksa di array
-        if (array_key_exists($input_username, $existing_users) && $existing_users[$input_username] === $input_password) {
-            // Login sukses dari array
-            session_start();
-            $_SESSION['email'] = $input_username;
-            header("Location: ../dashboard/index.php"); // Ganti dengan halaman tujuan setelah login
-            exit();
-        } else {
-            echo "Email tidak ditemukan.";
-        }
+      $error = "Username, email, atau password salah.";
     }
-
-    $stmt->close();
+  } else {
+    $error = "Harap isi semua kolom.";
+  }
 }
-
-$conn->close();
 ?>
