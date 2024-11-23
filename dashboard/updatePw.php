@@ -11,42 +11,6 @@
     crossorigin="anonymous"
 />
 <link rel="stylesheet" href="../css/admin.css">
-<!-- <style>
-    body {
-        display: flex;
-        min-height: 100vh;
-        margin: 0;
-    }
-    .sidebar {
-        width: 250px;
-        background-color: #343a40;
-        color: white;
-        height: 100vh;
-        position: fixed;
-        padding-top: 20px;
-    }
-    .sidebar a {
-        color: white;
-        text-decoration: none;
-        padding: 10px 20px;
-        display: block;
-    }
-    .sidebar a:hover {
-        background-color: #495057;
-    }
-    .content {
-        margin-left: 250px;
-        padding: 20px;
-        flex: 1;
-    }
-    .form-container {
-        max-width: 600px;
-        margin: 0 auto;
-    }
-    .form-container label {
-        font-weight: bold;
-    }
-</style> -->
 </head>
 <body>
 <div class="sidebar">
