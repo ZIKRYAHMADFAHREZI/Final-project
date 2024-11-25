@@ -25,6 +25,18 @@ $rooms = $result->fetchAll(PDO::FETCH_ASSOC); // Ambil semua data kamar
     .container {
         padding-top: 70px;
     }
+    .custom-checkbox {
+    width: 40px; /* Ukuran kotak */
+    height: 40px; /* Ukuran kotak */
+    appearance: none; /* Menghilangkan gaya default */
+    background-color: green; /* Warna default kotak */
+    border: 2px solid #000; /* Border kotak */
+    border-radius: 3px; /* Sudut kotak */  
+    cursor: pointer; /* Menunjukkan pointer saat hover */
+}
+.custom-checkbox:checked {
+    background-color: yellow; /* Warna saat dicentang */
+}
 </style>
 </head>
 <body>
@@ -57,29 +69,39 @@ $rooms = $result->fetchAll(PDO::FETCH_ASSOC); // Ambil semua data kamar
 </div>
 
 <div class="container">
-<h2 class="text-center">Pilih Tanggal dan Kamar</h2>
-    <form action="paynt/payment.php" method="post">
+    <h2 class="text-center mb-4 mt-5">Pilih Tanggal dan Nomor Kamar</h2>
+    <form action="paynt/payment.php" method="post" class="border p-4 rounded shadow">
         <div class="form-group">
             <label for="datePicker">Tanggal:</label>
-            <input type="date" class="form-control" id="datePicker" name="date" min="<?php echo $formattedDate; ?>" required>
+            <input type="date" class="form-control" id="datePicker" name="date" min="<?= $formattedDate; ?>" style="width: 150px;" required>
         </div>
-
+        <div class="form-group">
+        <label for="id_duration">Pilih Durasi</label>
+        <section>
+            <select class="form-control" id="id_duration" name="id_duration" style="width: 150px;" required>
+                <option value="" disabled selected>Pilih durasi</option>
+                <option value="1_hour">1 Jam</option>
+            </select>
+        </section>
+    </div>
+        
         <div class="form-group">
             <label for="id_room">No Kamar:</label>
-            <select class="form-control" id="id_room" name="id_room" required>
+            <div id="id_room" name="id_room" required>
                 <?php if (count($rooms) > 0) : ?>
                     <?php foreach ($rooms as $room) : ?>
-                        <option value="<?php echo htmlspecialchars($room['id_room']); ?>">
-                            <?php echo htmlspecialchars($room['id_room']); ?>
-                        </option>
+                        <div class="form-check-inline">
+                            <input type="radio" id="room_<?= htmlspecialchars($room['id_room']); ?>" name="id_room[]" value="<?= htmlspecialchars($room['id_room']); ?>" required class="custom-checkbox">
+                            <label for="room_<?= htmlspecialchars($room['id_room']); ?>" class="form-check-label" style="font-size: 20px;"><?= htmlspecialchars($room['id_room']); ?></label>
+                        </div>
                     <?php endforeach; ?>
                 <?php else : ?>
-                    <option value="">Tidak ada data</option>
+                    <div class="alert alert-warning" role="alert">Tidak ada data</div>
                 <?php endif; ?>
-            </select>
+            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block mt-5" name="submit" id="submit">Pesan Sekarang</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block mt-4" name="submit" id="submit">Pesan Sekarang</button>
     </form>
 </div>
 

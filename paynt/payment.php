@@ -1,13 +1,16 @@
 <?php 
 require '../db/connection.php';
 
-// Ambil data dari database
-$result = $conn->query("SELECT id_pay, method FROM pay_methods");
+try {
+    // Ambil data dari database
+    $stmt = $pdo->query("SELECT id_pay, method FROM pay_methods");
+    
+    // Ambil data sebagai array asosiatif
+    $pay_methods = $stmt->fetchAll(PDO::FETCH_ASSOC); 
 
-// Pastikan query berhasil
-if ($result && $result->num_rows > 0) {
-    $pay_methods = $result->fetch_all(MYSQLI_ASSOC); // Ambil data sebagai array asosiatif
-} else {
+} catch (PDOException $e) {
+    // Tangani kesalahan jika query gagal
+    echo "Error: " . $e->getMessage();
     $pay_methods = []; // Atur default jika tidak ada data
 }
 ?>
@@ -22,13 +25,17 @@ if ($result && $result->num_rows > 0) {
 <body>
     <h1>Pilih Metode Pembayaran</h1>
     <ul>
-        <?php foreach ($pay_methods as $pm) : ?>
-            <li>
-                <a href="method.php?id_pay=<?= $pm['id_pay']; ?>"> <!-- Link ke method.php dengan id_pay -->
-                    <?= $pm['method']; ?>
-                </a>
-            </li>
-        <?php endforeach; ?>
+        <?php if (!empty($pay_methods)) : ?>
+            <?php foreach ($pay_methods as $pm) : ?>
+                <li>
+                    <a href="method.php?id_pay=<?= htmlspecialchars($pm['id_pay']); ?>"> <!-- Link ke method.php dengan id_pay -->
+                        <?= htmlspecialchars($pm['method']); ?>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        <?php else : ?>
+            <li>Tidak ada metode pembayaran yang tersedia.</li>
+        <?php endif; ?>
     </ul>
 </body>
 </html>
