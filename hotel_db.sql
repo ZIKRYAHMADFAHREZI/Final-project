@@ -85,7 +85,7 @@ CREATE TABLE `reservations` (
   `id_reservation` int(11) NOT NULL,
   `id_users` int(11) DEFAULT NULL,
   `id_kamar` int(11) DEFAULT NULL,
-  `tanggal` date DEFAULT curdate(),
+  `tanggal` date,
   `total_price` decimal(10,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
