@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 26, 2024 at 12:32 PM
+-- Generation Time: Nov 26, 2024 at 01:17 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -138,7 +138,7 @@ INSERT INTO `types` (`id_type`, `type`, `description`, `img`) VALUES
 (1, 'Deluxe Ac', 'Kamar bersama admin', 'deluxe.jpg'),
 (2, 'Familly Room', 'Kamar bersama admin', 'familly.jpg'),
 (3, 'Superior Ac', 'Kamar bersama admin', 'superAc.jpg'),
-(4, 'Standar Ac', 'Kamar bersama admin', 'StanAc.jpg'),
+(4, 'Standar Ac', 'Kamar bersama admin', 'StandAc.jpg'),
 (5, 'Superior Fan', 'Kamar bersama admin', 'SuperFan.jpg'),
 (6, 'Standar Fan', 'Kamar bersama admin', 'StandFan.jpg');
 
