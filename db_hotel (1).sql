@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 26, 2024 at 06:16 AM
+-- Generation Time: Nov 26, 2024 at 06:52 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -145,8 +145,16 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `created_at` timestamp(6) NULL DEFAULT NULL,
-  `role` enum('admin','user') DEFAULT NULL
+  `role` enum('admin','user') NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`) VALUES
+(1, 'admin', 'admin@gmail.com', '$2y$10$BdivduoXusa7gWibeoV5MuT0LZvAoPKOMAzljAvKf.5BOaj.8ypD.', NULL, 'admin'),
+(2, 'yuda', 'yuda@yahoo.com', '$2y$10$NEDzCVwNVIZM1OUYMvlIxOQFOYU2pz/od/ppkKSwKx8MuHnD0dXNC', NULL, 'user');
 
 -- --------------------------------------------------------
 
@@ -286,7 +294,7 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user_profile`
