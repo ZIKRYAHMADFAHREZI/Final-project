@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 26, 2024 at 08:13 AM
+-- Generation Time: Nov 26, 2024 at 08:31 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -120,6 +120,18 @@ CREATE TABLE `types` (
   `description` text NOT NULL,
   `img` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `types`
+--
+
+INSERT INTO `types` (`id_type`, `type`, `description`, `img`) VALUES
+(1, 'Deluxe Ac', 'Kamar bersama admin', 'deluxe.jpg'),
+(2, 'Familly Room', 'Kamar bersama admin', 'familly.jpg'),
+(3, 'Superior Ac', 'Kamar bersama admin', 'superAc.jpg'),
+(4, 'Standar Ac', 'Kamar bersama admin', 'StanAc.jpg'),
+(5, 'Superior Fan', 'Kamar bersama admin', 'SuperFan.jpg'),
+(6, 'Standar Fan', 'Kamar bersama admin', 'StandFan.jpg');
 
 -- --------------------------------------------------------
 
@@ -268,7 +280,7 @@ ALTER TABLE `transits`
 -- AUTO_INCREMENT for table `types`
 --
 ALTER TABLE `types`
-  MODIFY `id_type` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_type` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
