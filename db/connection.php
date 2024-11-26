@@ -2,7 +2,7 @@
 $servername = "localhost"; 
 $username = "root"; 
 $password = ""; 
-$dbname = "hotel_db"; 
+$dbname = "db_hotel"; 
 
 
 try {

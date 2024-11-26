@@ -115,7 +115,7 @@ try {
                     <img src="img/<?= $type["img"]; ?>" class="card-img-top" alt="Card 1">
                     <div class="card-body">
                         <h5 class="card-title"><?= $type["type"]; ?></h5> 
-                        <p class="card-text"><?= $type["dekripsi"]; ?></p>
+                        <p class="card-text"><?= $type["description"]; ?></p>
                         <a href="type.php?id=<?= $type["id_type"]; ?>" class="btn btn-primary">Pesan</a>
                     </div>
                 </div>
