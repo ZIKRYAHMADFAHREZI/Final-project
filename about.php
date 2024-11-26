@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -69,7 +68,7 @@
 </header>
     <h2 class="title">About</h2>
     <div class="isi">
-        <img src="./img/logo.jpg" alt="grand" class="logo">
+        <img src="./img/GRAND MUTIARA.png" alt="grandmutiara" class="logo">
         <div class="text">
             <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error asperiores vero blanditiis non deserunt ducimus reiciendis. Doloremque porro assumenda odit adipisci dicta nobis. Dicta deleniti ipsam rerum vero consequatur fugiat.</p>
             <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque quam earum dignissimos quis accusamus. Sunt molestias doloremque, consequuntur, a aperiam nobis ea quod voluptatum delectus doloribus odit alias dignissimos magnam!</p>
