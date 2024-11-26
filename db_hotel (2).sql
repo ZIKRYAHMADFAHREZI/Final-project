@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 26, 2024 at 06:52 AM
+-- Generation Time: Nov 26, 2024 at 08:13 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -29,13 +29,13 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `payments` (
   `id_payment` int NOT NULL,
-  `id_user` int DEFAULT NULL,
-  `id_pay_method` int DEFAULT NULL,
-  `id_reservation` int DEFAULT NULL,
-  `img` tinytext,
-  `name_send` varchar(50) DEFAULT NULL,
-  `created_at` timestamp(6) NULL DEFAULT NULL,
-  `status` enum('pending','confirmed') DEFAULT NULL
+  `id_user` int NOT NULL,
+  `id_pay_method` int NOT NULL,
+  `id_reservation` int NOT NULL,
+  `img` tinytext NOT NULL,
+  `name_send` varchar(50) NOT NULL,
+  `created_at` timestamp(6) NOT NULL,
+  `status` enum('pending','confirmed') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -59,11 +59,11 @@ CREATE TABLE `pay_methods` (
 
 CREATE TABLE `resevations` (
   `id_reservation` int NOT NULL,
-  `id_user` int DEFAULT NULL,
-  `id_room` int DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `total_price` decimal(10,2) DEFAULT NULL,
-  `create_at` timestamp(6) NULL DEFAULT NULL
+  `id_user` int NOT NULL,
+  `id_room` int NOT NULL,
+  `date` date NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `create_at` timestamp(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -74,8 +74,8 @@ CREATE TABLE `resevations` (
 
 CREATE TABLE `rooms` (
   `id_room` int NOT NULL,
-  `id_type` int DEFAULT NULL,
-  `number_room` int DEFAULT NULL,
+  `id_type` int NOT NULL,
+  `number_room` int NOT NULL,
   `status` enum('available','unvailable','pending') NOT NULL DEFAULT 'available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -87,11 +87,11 @@ CREATE TABLE `rooms` (
 
 CREATE TABLE `room_rates` (
   `id_room_rate` int NOT NULL,
-  `id_room` int DEFAULT NULL,
-  `id_type` int DEFAULT NULL,
-  `id_payment` int DEFAULT NULL,
-  `12hour` varchar(45) DEFAULT NULL,
-  `24hour` varchar(45) DEFAULT NULL
+  `id_room` int NOT NULL,
+  `id_type` int NOT NULL,
+  `id_payment` int NOT NULL,
+  `12hour` varchar(45) NOT NULL,
+  `24hour` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -102,10 +102,10 @@ CREATE TABLE `room_rates` (
 
 CREATE TABLE `transits` (
   `id_transit` int NOT NULL,
-  `id_room` int DEFAULT NULL,
-  `id_type` int DEFAULT NULL,
-  `id_payment` int DEFAULT NULL,
-  `hour` varchar(45) DEFAULT NULL
+  `id_room` int NOT NULL,
+  `id_type` int NOT NULL,
+  `id_payment` int NOT NULL,
+  `hour` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -116,22 +116,10 @@ CREATE TABLE `transits` (
 
 CREATE TABLE `types` (
   `id_type` int NOT NULL,
-  `type` varchar(255) DEFAULT NULL,
-  `description` text,
-  `img` varchar(255) DEFAULT NULL
+  `type` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `img` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `types`
---
-
-INSERT INTO `types` (`id_type`, `type`, `description`, `img`) VALUES
-(1, 'Deluxe Ac', 'Kamar bersama admin', 'deluxe.jpg'),
-(2, 'Familly Room', 'Kamar bersama admin', 'familly.jpg'),
-(3, 'Superior Ac', 'Kamar bersama admin', 'superAc.jpg'),
-(4, 'Standar Ac', 'Kamar bersama admin', 'StanAc.jpg'),
-(5, 'Superior Fan', 'Kamar bersama admin', 'SuperFan.jpg'),
-(6, 'Standar Fan', 'Kamar bersama admin', 'StandFan.jpg');
 
 -- --------------------------------------------------------
 
@@ -141,20 +129,12 @@ INSERT INTO `types` (`id_type`, `type`, `description`, `img`) VALUES
 
 CREATE TABLE `users` (
   `id_user` int NOT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `created_at` timestamp(6) NULL DEFAULT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `created_at` timestamp(6) NOT NULL,
   `role` enum('admin','user') NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`) VALUES
-(1, 'admin', 'admin@gmail.com', '$2y$10$BdivduoXusa7gWibeoV5MuT0LZvAoPKOMAzljAvKf.5BOaj.8ypD.', NULL, 'admin'),
-(2, 'yuda', 'yuda@yahoo.com', '$2y$10$NEDzCVwNVIZM1OUYMvlIxOQFOYU2pz/od/ppkKSwKx8MuHnD0dXNC', NULL, 'user');
 
 -- --------------------------------------------------------
 
@@ -164,13 +144,13 @@ INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `
 
 CREATE TABLE `user_profile` (
   `id_profile` int NOT NULL,
-  `id_user` int DEFAULT NULL,
-  `firs_name` varchar(50) DEFAULT NULL,
-  `last_name` varchar(50) DEFAULT NULL,
-  `phone_name` varchar(45) DEFAULT NULL,
-  `email` varchar(45) DEFAULT NULL,
-  `date_of_birth` date DEFAULT NULL,
-  `create_at` timestamp(6) NULL DEFAULT NULL
+  `id_user` int NOT NULL,
+  `firs_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `phone_name` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `create_at` timestamp(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -288,13 +268,13 @@ ALTER TABLE `transits`
 -- AUTO_INCREMENT for table `types`
 --
 ALTER TABLE `types`
-  MODIFY `id_type` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_type` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_profile`
