@@ -70,19 +70,19 @@ try {
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="img/1.jpg" class="d-block w-100" alt="G1" style="aspect-ratio: 19 / 7; text-decoration: none;">
+            <img src="img/hotel.jpg" class="d-block w-100" alt="G1" style="aspect-ratio: 19 / 7; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/2.jpg" class="d-block w-100" alt="G2" style="aspect-ratio: 19 / 7; text-decoration: none;">
+            <img src="img/hotel3.jpg" class="d-block w-100" alt="G3" style="aspect-ratio: 19 / 7; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/3.jpg" class="d-block w-100" alt="G3" style="aspect-ratio: 19 / 7; text-decoration: none;">
+        <img src="img/hotel4.jpg" class="d-block w-100" alt="G4" style="aspect-ratio: 19 / 7; text-decoration: none;">
         </div>
         <div class="carousel-item">
-        <img src="img/kt1.png" class="d-block w-100" alt="G4" style="aspect-ratio: 19 / 7; text-decoration: none;">
+            <img src="img/hotel5.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 7; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/kt2.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 7; text-decoration: none;">
+            <img src="img/hotel6.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 7; text-decoration: none;">
         </div>
 </div>
 <!-- <p class="carousel-control-prev fw-medium text-black fs-2 font-monospace">hallo</p> -->
