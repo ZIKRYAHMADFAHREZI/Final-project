@@ -3,7 +3,7 @@ require '../db/connection.php';
 
 try {
     // Ambil data dari database
-    $stmt = $pdo->query("SELECT id_pay, method FROM pay_methods");
+    $stmt = $pdo->query("SELECT id_pay_method, method FROM pay_methods");
     
     // Ambil data sebagai array asosiatif
     $pay_methods = $stmt->fetchAll(PDO::FETCH_ASSOC); 
@@ -33,7 +33,7 @@ try {
                     <?php if (!empty($pay_methods)) : ?>
                         <?php foreach ($pay_methods as $pm) : ?>
                             <li class="list-group-item">
-                                <a href="method.php?id_pay=<?= htmlspecialchars($pm['id_pay']); ?>" class="btn btn-primary btn-block">
+                                <a href="method.php?id_pay_method=<?= htmlspecialchars($pm['id_pay_method']); ?>" class="btn btn-primary btn-block">
                                     <?= htmlspecialchars($pm['method']); ?>
                                 </a>
                             </li>

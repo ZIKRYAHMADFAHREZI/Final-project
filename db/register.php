@@ -1,4 +1,7 @@
 <?php
+
+session_start();
+
 // Menginclude file koneksi
 require 'connection.php'; // Pastikan path ini sesuai dengan lokasi file koneksi.php
 
@@ -28,7 +31,7 @@ if (isset($_POST['submit'])) {
 
     // Eksekusi query
     if ($stmt->execute()) {
-        echo "Registrasi berhasil! Anda sekarang dapat <a href='../login.html'>login</a>.";
+        header('Location: ../index.php');
     } else {
         echo "Error: " . $stmt->errorInfo()[2];
     }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 26, 2024 at 08:31 AM
+-- Generation Time: Nov 26, 2024 at 12:32 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -34,7 +34,7 @@ CREATE TABLE `payments` (
   `id_reservation` int NOT NULL,
   `img` tinytext NOT NULL,
   `name_send` varchar(50) NOT NULL,
-  `created_at` timestamp(6) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `status` enum('pending','confirmed') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -51,6 +51,15 @@ CREATE TABLE `pay_methods` (
   `name_acc` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `pay_methods`
+--
+
+INSERT INTO `pay_methods` (`id_pay_method`, `method`, `no_pay`, `name_acc`) VALUES
+(1, 'Dana', '0878-7888-4000', 'Bagus Subandar'),
+(2, 'Gopay', '0878-7888-4000', 'Bagus Subandar'),
+(3, 'BNI', '12313223', 'Bagus Subandar');
+
 -- --------------------------------------------------------
 
 --
@@ -63,7 +72,7 @@ CREATE TABLE `resevations` (
   `id_room` int NOT NULL,
   `date` date NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
-  `create_at` timestamp(6) NOT NULL
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -144,9 +153,16 @@ CREATE TABLE `users` (
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `created_at` timestamp(6) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `role` enum('admin','user') NOT NULL DEFAULT 'user'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`) VALUES
+(1, 'admin', 'admin@admin.com', '$2y$10$R1eJRC2U4Y8YWs5PuswEJOErrPiQk56rZ6s7hOCPBn6k5H.PqFX5a', '2024-11-26 11:23:58', 'admin');
 
 -- --------------------------------------------------------
 
@@ -162,7 +178,7 @@ CREATE TABLE `user_profile` (
   `phone_name` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   `date_of_birth` date NOT NULL,
-  `create_at` timestamp(6) NOT NULL
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -250,7 +266,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `pay_methods`
 --
 ALTER TABLE `pay_methods`
-  MODIFY `id_pay_method` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pay_method` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `resevations`
@@ -286,7 +302,7 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user_profile`

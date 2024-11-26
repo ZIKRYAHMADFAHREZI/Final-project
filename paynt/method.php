@@ -2,12 +2,12 @@
 require '../db/connection.php';
 
 // Pastikan parameter id_pay ada di URL
-if (isset($_GET['id_pay']) && is_numeric($_GET['id_pay'])) {
-    $id_pay = intval($_GET['id_pay']);
+if (isset($_GET['id_pay_method']) && is_numeric($_GET['id_pay_method'])) {
+    $id_pay_method = intval($_GET['id_pay_method']);
 
-    // Ambil data metode pembayaran berdasarkan id_pay
-    $stmt = $pdo->prepare("SELECT method, no_pay, name_acc FROM pay_methods WHERE id_pay = ?");
-    $stmt->execute([$id_pay]);
+    // Ambil data metode pembayaran berdasarkan id_pay_method
+    $stmt = $pdo->prepare("SELECT method, no_pay, name_acc FROM pay_methods WHERE id_pay_method = ?");
+    $stmt->execute([$id_pay_method]);
     
     // Jika data ditemukan
     if ($stmt->rowCount() > 0) {
@@ -16,7 +16,7 @@ if (isset($_GET['id_pay']) && is_numeric($_GET['id_pay'])) {
         die("Data tidak ditemukan.");
     }
 } else {
-    die("Parameter id_pay tidak valid.");
+    die("Parameter id_pay_method tidak valid.");
 }
 ?>
 

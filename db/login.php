@@ -1,5 +1,4 @@
 <?php
-ob_start();
 session_start();
 require 'connection.php';
 
@@ -16,9 +15,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->execute([$usernameOrEmail]);
     $user = $stmt->fetch();
-
-    // Debugging: Cek apakah user ditemukan
-    error_log("User  found: " . print_r($user, true));
 
     if ($user && password_verify($password, $user['password'])) {
       $_SESSION['id_user'] = $user['id_user'];

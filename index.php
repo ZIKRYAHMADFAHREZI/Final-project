@@ -107,23 +107,22 @@ try {
         </div>
     </div>
     <!-- Tiga Card -->
-    <div class="container">
-        <div class="row">
-            <?php foreach ($types as $type) : ?>
-            <div class="col-md-4">
-                <div class="card mb-4">
-                    <img src="img/<?= $type["img"]; ?>" class="card-img-top" alt="Card 1">
-                    <div class="card-body">
-                        <h5 class="card-title"><?= $type["type"]; ?></h5> 
-                        <p class="card-text"><?= $type["description"]; ?></p>
-                        <a href="type.php?id=<?= $type["id_type"]; ?>" class="btn btn-primary">Pesan</a>
-                    </div>
+<div class="container">
+    <div class="row">
+        <?php foreach ($types as $type) : ?>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="img/<?= $type["img"]; ?>" class="card-img-top" alt="type" style="width: 100%; height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title"><?= $type["type"]; ?></h5> 
+                    <p class="card-text"><?= $type["description"]; ?></p>
+                    <a href="type.php?id=<?= $type["id_type"]; ?>" class="btn btn-primary">Pesan</a>
                 </div>
             </div>
-            <?php endforeach; ?>
         </div>
+        <?php endforeach; ?>
     </div>
-
+</div>
 <footer>
 <div class="text-center py-4">
     <p class="mb-0">&copy; 2024 Grand Mutiara. All right reserved.</p>
