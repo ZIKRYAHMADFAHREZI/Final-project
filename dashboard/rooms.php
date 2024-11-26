@@ -122,7 +122,7 @@ $conn->close();
         <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
         <li><a href="rooms.php"><i class="fa fa-lock me-2"></i> Cek Kamar</a></li>
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
-        <li><a href=""><i class="fa fa-lock me-2"></i> Logout</a></li>
+        <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
     </ul>
 </div>
     <div class="container mt-5">
@@ -147,5 +147,25 @@ $conn->close();
             </div>
         <?php endforeach; ?>
     </div>
+<!-- sweet alert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: "Apakah Anda yakin ingin logout?",
+        text: "Anda akan keluar dari akun ini.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, logout!",
+        cancelButtonText: "Batal"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '../logout.php'; // Ganti URL sesuai dengan rute logout Anda
+        }
+    });
+}
+</script>
 </body>
 </html>
