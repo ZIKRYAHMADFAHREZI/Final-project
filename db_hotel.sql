@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 26, 2024 at 01:17 PM
+-- Generation Time: Nov 28, 2024 at 08:07 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -72,7 +72,11 @@ CREATE TABLE `resevations` (
   `id_room` int NOT NULL,
   `date` date NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
-  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `destroy_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `id_type` int DEFAULT NULL,
+  `id_room_rate` int DEFAULT NULL,
+  `id_payment` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -88,6 +92,38 @@ CREATE TABLE `rooms` (
   `status` enum('available','unvailable','pending') NOT NULL DEFAULT 'available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `rooms`
+--
+
+INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
+(1, 1, 66, 'available'),
+(2, 1, 104, 'available'),
+(3, 2, 58, 'available'),
+(4, 2, 60, 'available'),
+(5, 3, 54, 'available'),
+(6, 3, 62, 'available'),
+(7, 4, 101, 'available'),
+(8, 4, 102, 'available'),
+(9, 4, 103, 'available'),
+(10, 4, 105, 'available'),
+(11, 4, 107, 'available'),
+(12, 5, 142, 'available'),
+(13, 5, 144, 'available'),
+(14, 5, 146, 'available'),
+(15, 5, 148, 'available'),
+(16, 5, 150, 'available'),
+(17, 5, 152, 'available'),
+(18, 5, 154, 'available'),
+(19, 6, 106, 'available'),
+(20, 6, 108, 'available'),
+(21, 6, 110, 'available'),
+(22, 6, 112, 'available'),
+(23, 6, 118, 'available'),
+(24, 6, 120, 'available'),
+(25, 6, 122, 'available'),
+(26, 6, 124, 'available');
+
 -- --------------------------------------------------------
 
 --
@@ -98,10 +134,40 @@ CREATE TABLE `room_rates` (
   `id_room_rate` int NOT NULL,
   `id_room` int NOT NULL,
   `id_type` int NOT NULL,
-  `id_payment` int NOT NULL,
-  `12hour` varchar(45) NOT NULL,
-  `24hour` varchar(45) NOT NULL
+  `12hour` decimal(10,3) NOT NULL,
+  `24hour` decimal(10,3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `room_rates`
+--
+
+INSERT INTO `room_rates` (`id_room_rate`, `id_room`, `id_type`, `12hour`, `24hour`) VALUES
+(1, 1, 1, '250.000', '350.000'),
+(2, 2, 1, '250.000', '350.000'),
+(3, 3, 2, '250.000', '350.000'),
+(4, 4, 2, '250.000', '350.000'),
+(5, 5, 3, '200.000', '300.000'),
+(6, 6, 3, '200.000', '300.000'),
+(7, 7, 4, '175.000', '275.000'),
+(8, 8, 4, '175.000', '275.000'),
+(9, 9, 4, '175.000', '275.000'),
+(10, 10, 4, '175.000', '275.000'),
+(11, 11, 4, '175.000', '275.000'),
+(12, 12, 5, '150.000', '200.000'),
+(13, 13, 5, '150.000', '200.000'),
+(14, 14, 5, '150.000', '200.000'),
+(15, 15, 5, '150.000', '200.000'),
+(16, 16, 5, '150.000', '200.000'),
+(17, 17, 5, '150.000', '200.000'),
+(18, 18, 5, '150.000', '200.000'),
+(19, 19, 6, '120.000', '150.000'),
+(20, 20, 6, '120.000', '150.000'),
+(21, 21, 6, '120.000', '150.000'),
+(22, 22, 6, '120.000', '150.000'),
+(23, 23, 6, '120.000', '150.000'),
+(24, 24, 6, '120.000', '150.000'),
+(25, 25, 6, '120.000', '150.000');
 
 -- --------------------------------------------------------
 
@@ -113,9 +179,26 @@ CREATE TABLE `transits` (
   `id_transit` int NOT NULL,
   `id_room` int NOT NULL,
   `id_type` int NOT NULL,
-  `id_payment` int NOT NULL,
-  `hour` varchar(45) NOT NULL
+  `price` decimal(10,3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `transits`
+--
+
+INSERT INTO `transits` (`id_transit`, `id_room`, `id_type`, `price`) VALUES
+(1, 7, 4, '150.000'),
+(2, 8, 4, '150.000'),
+(3, 9, 4, '150.000'),
+(4, 10, 4, '150.000'),
+(5, 11, 4, '150.000'),
+(6, 19, 6, '100.000'),
+(7, 20, 6, '100.000'),
+(8, 21, 6, '100.000'),
+(9, 22, 6, '100.000'),
+(10, 23, 1, '100.000'),
+(11, 24, 6, '100.000'),
+(12, 25, 6, '100.000');
 
 -- --------------------------------------------------------
 
@@ -206,7 +289,10 @@ ALTER TABLE `pay_methods`
 ALTER TABLE `resevations`
   ADD PRIMARY KEY (`id_reservation`),
   ADD KEY `id_user` (`id_user`),
-  ADD KEY `id_room` (`id_room`);
+  ADD KEY `id_room` (`id_room`),
+  ADD KEY `fk_id_type` (`id_type`),
+  ADD KEY `fk_id_room_rate` (`id_room_rate`),
+  ADD KEY `fk_id_payment` (`id_payment`);
 
 --
 -- Indexes for table `rooms`
@@ -221,8 +307,7 @@ ALTER TABLE `rooms`
 ALTER TABLE `room_rates`
   ADD PRIMARY KEY (`id_room_rate`),
   ADD KEY `id_room` (`id_room`),
-  ADD KEY `id_type` (`id_type`),
-  ADD KEY `id_payment` (`id_payment`);
+  ADD KEY `id_type` (`id_type`);
 
 --
 -- Indexes for table `transits`
@@ -230,8 +315,7 @@ ALTER TABLE `room_rates`
 ALTER TABLE `transits`
   ADD PRIMARY KEY (`id_transit`),
   ADD KEY `id_room` (`id_room`),
-  ADD KEY `id_type` (`id_type`),
-  ADD KEY `id_payment` (`id_payment`);
+  ADD KEY `id_type` (`id_type`);
 
 --
 -- Indexes for table `types`
@@ -278,19 +362,19 @@ ALTER TABLE `resevations`
 -- AUTO_INCREMENT for table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id_room` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_room` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `room_rates`
 --
 ALTER TABLE `room_rates`
-  MODIFY `id_room_rate` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_room_rate` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `transits`
 --
 ALTER TABLE `transits`
-  MODIFY `id_transit` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_transit` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `types`
@@ -326,6 +410,9 @@ ALTER TABLE `payments`
 -- Constraints for table `resevations`
 --
 ALTER TABLE `resevations`
+  ADD CONSTRAINT `fk_id_payment` FOREIGN KEY (`id_payment`) REFERENCES `payments` (`id_payment`),
+  ADD CONSTRAINT `fk_id_room_rate` FOREIGN KEY (`id_room_rate`) REFERENCES `room_rates` (`id_room_rate`),
+  ADD CONSTRAINT `fk_id_type` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`),
   ADD CONSTRAINT `resevations_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`),
   ADD CONSTRAINT `resevations_ibfk_2` FOREIGN KEY (`id_room`) REFERENCES `rooms` (`id_room`);
 
@@ -340,16 +427,14 @@ ALTER TABLE `rooms`
 --
 ALTER TABLE `room_rates`
   ADD CONSTRAINT `room_rates_ibfk_1` FOREIGN KEY (`id_room`) REFERENCES `rooms` (`id_room`),
-  ADD CONSTRAINT `room_rates_ibfk_2` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`),
-  ADD CONSTRAINT `room_rates_ibfk_3` FOREIGN KEY (`id_payment`) REFERENCES `payments` (`id_payment`);
+  ADD CONSTRAINT `room_rates_ibfk_2` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`);
 
 --
 -- Constraints for table `transits`
 --
 ALTER TABLE `transits`
   ADD CONSTRAINT `transits_ibfk_1` FOREIGN KEY (`id_room`) REFERENCES `rooms` (`id_room`),
-  ADD CONSTRAINT `transits_ibfk_2` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`),
-  ADD CONSTRAINT `transits_ibfk_3` FOREIGN KEY (`id_payment`) REFERENCES `payments` (`id_payment`);
+  ADD CONSTRAINT `transits_ibfk_2` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`);
 
 --
 -- Constraints for table `user_profile`
