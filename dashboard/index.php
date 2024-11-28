@@ -10,7 +10,75 @@
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
     crossorigin="anonymous"
 />
-<link rel="stylesheet" href="../css/admin.css">
+<style>
+body {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.sidebar {
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    padding-top: 20px;
+}
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+}
+.sidebar a:hover {
+    background-color: #495057;
+}
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    flex: 1;
+}
+.card-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px; /* Jarak antar box */
+    flex-wrap: wrap; /* Agar responsif */
+}
+h2 {
+    padding: 10px;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    margin: 0; /* Menghapus margin bawaan */
+}
+.card {
+    flex: 1;
+    max-width: 30%; /* Lebar maksimal untuk box */
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 15px;
+}
+.green-bg {
+    background-color: green;
+}
+.red-bg {
+    background-color: red;
+}
+.yellow-bg {
+    background-color: yellow;
+    color: black; /* Kontras untuk teks di latar belakang kuning */
+}
+.card a {
+    text-decoration: none;
+    color: inherit; /* Warna sesuai dengan latar belakang */
+    font-size: 18px;
+    font-weight: bold;
+    display: block;
+}
+</style>
 </head>
 <body>
 <div class="sidebar">
@@ -27,24 +95,24 @@
 </div>
 <div class="content">
     <header>
-        <h1>Admin Portal</h1>
+        <h1 class="text-center mb-5">Admin Portal</h1>
     </header>
-    <div class="form-container">
-        <form action="" method="post">
-            <input 
-                type="text" 
-                name="keyword" 
-                size="30" 
-                autofocus 
-                placeholder="Masukkan keyword pencarian" 
-                autocomplete="off"
-                class="form-control d-inline-block w-50 mb-2"
-            >
-            <button type="submit" name="cari" class="btn btn-primary">Cari!</button>
-        </form>
+
+    <!-- Box Elements -->
+    <div class="card-container">
+        <div class="card green-bg">
+            <a href="available_rooms.php">Total Kamar Tersedia: <?= $room; ?></a>
+        </div>
+        <div class="card red-bg">
+            <a href="occupied_rooms.php">Total Kamar Terpakai: <?= $room; ?></a>
+        </div>
+        <div class="card yellow-bg">
+            <a href="pending_rooms.php">Total Kamar Terpending: <?= $room; ?></a>
+        </div>
     </div>
 </div>
-<!-- sweet alert2 -->
+
+<!-- Sweet Alert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function confirmLogout() {
