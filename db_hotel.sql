@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 28, 2024 at 08:07 AM
+-- Generation Time: Nov 29, 2024 at 03:25 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -196,7 +196,7 @@ INSERT INTO `transits` (`id_transit`, `id_room`, `id_type`, `price`) VALUES
 (7, 20, 6, '100.000'),
 (8, 21, 6, '100.000'),
 (9, 22, 6, '100.000'),
-(10, 23, 1, '100.000'),
+(10, 23, 6, '100.000'),
 (11, 24, 6, '100.000'),
 (12, 25, 6, '100.000');
 

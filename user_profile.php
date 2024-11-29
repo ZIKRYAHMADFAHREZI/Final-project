@@ -84,38 +84,58 @@
 </div>
 
 <div class="form-container">
-        <h1>Form Profil Pengguna</h1>
-        <form action="user.php" method="POST">
-            <div class="form-group">
-                <label for="first_name">Nama Depan:</label>
-                <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
-            </div>
-            <div class="form-group">
-                <label for="last_name">Nama Belakang:</label>
-                <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" value="{{ user.email }}" required>
-            </div>
-            <div class="input-group">
-                <span class="input-group-text" id="basic-addon1">+62</span>
-                <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
-            </div>
-            <div class="form-group">
-                <label for="date_of_birth">Tanggal Lahir:</label>
-                <input type="date" id="date_of_birth" name="date_of_birth" value="{{ user.date_of_birth }}" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Simpan</button>
-            </div>
-        </form>
-    </div>
+    <h1>Form Profil Pengguna</h1>
+    <form action="user.php" method="POST">
+        <div class="form-group">
+            <label for="first_name">Nama Depan:</label>
+            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="last_name">Nama Belakang:</label>
+            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}" required>
+        </div>
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon1">+62</span>
+            <input type="text" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+        </div>
+        <div class="form-group">
+            <label for="date_of_birth">Tanggal Lahir:</label>
+            <input type="date" id="date_of_birth" name="date_of_birth" value="{{ user.date_of_birth }}" required>
+        </div>
+        <div class="form-group">
+            <button type="submit">Simpan</button>
+        </div>
+    </form>
+</div>
 
 
-    <a href="index.html" id="logout" class="btn btn-danger">Logout</a>
+<a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-    <script src="js/trans.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script src="js/trans.js"></script>
+    <!-- Sweet Alert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmLogout() {
+    Swal.fire({
+        title: "Apakah Anda yakin ingin logout?",
+        text: "Anda akan keluar dari akun ini.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, logout!",
+        cancelButtonText: "Batal"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = 'logout.php'; // Ganti URL sesuai dengan rute logout Anda
+        }
+    });
+}
+</script>
 </body>
 </html>
