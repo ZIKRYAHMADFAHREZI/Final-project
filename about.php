@@ -1,3 +1,6 @@
+<?php 
+include 'navbar.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,36 +39,10 @@
     </style>
 </head>
 <body>
-<header>
-    <!-- place navbar here -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-light" style="background-color: #a1a0a5 !important; position: fixed; width: 100%; z-index: 1000;">
-        <a class="navbar-brand" id="name" style="color: white; margin-left: 20px; cursor: pointer;">Grand Mutiara</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" id="home" style="color: white; margin-left: 20px;">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="about" style="color: white; margin-left: 20px;">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="login" style="color: white; margin-left: 20px;">Log in</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign in</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
 <div id="loading" class="loading">
     <div class="spinner"></div>
     <h2 class="loading-text">GRAND MUTIARA</h2>
 </div>
-</header>
     <h2 class="title">About</h2>
     <div class="isi">
         <img src="./img/GRAND MUTIARA.png" alt="grandmutiara" class="logo">

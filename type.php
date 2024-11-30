@@ -1,13 +1,35 @@
 <?php
+include 'navbar.php';
 require 'db/connection.php';
-$id = $_GET['id'];
+
 $today = new DateTime();
 $formattedDate = $today->format('Y-m-d'); // Format tanggal menjadi YYYY-MM-DD
 
-$sql = "SELECT number_room FROM rooms";
-$result = $pdo->query($sql);
-$number_room = $result->fetchAll(PDO::FETCH_ASSOC); // Ambil semua data kamar
+if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
+    $id_type = intval($_GET['id_type']);
+
+    // Ambil nomor kamar berdasarkan id_type
+    $stmt = $pdo->prepare("SELECT number_room FROM rooms WHERE id_type = ?");
+    $stmt->execute([$id_type]);
+    $number_room = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // ID tertentu yang mendukung transit
+    $stmt = $pdo->prepare("SELECT id_type, 12hour, 24hour FROM room_rates WHERE id_type = ?");
+    $stmt->execute([$id_type]);
+    $room_rate = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Khusus untuk id 4 dan 6, ambil juga harga transit
+    $transit_price = null;
+    if (in_array($id_type, [4, 6])) {
+        $stmt = $pdo->prepare("SELECT price FROM transits WHERE id_type = ?");
+        $stmt->execute([$id_type]);
+        $transit_price = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+}
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -25,44 +47,42 @@ $number_room = $result->fetchAll(PDO::FETCH_ASSOC); // Ambil semua data kamar
     .container {
         padding-top: 70px;
     }
-    .custom-checkbox {
-    width: 50px; /* Ukuran kotak */
-    height: 50px; /* Ukuran kotak */
-    appearance: none; /* Menghilangkan gaya default */
-    background-color: green; /* Warna default kotak */
-    border: 2px solid #000; /* Border kotak */
-    border-radius: 3px; /* Sudut kotak */  
-    cursor: pointer; /* Menunjukkan pointer saat hover */
-}
-.custom-checkbox:checked {
-    background-color: yellow; /* Warna saat dicentang */
-}
+    .number_room {
+            display: flex; /* Menggunakan flexbox untuk menyusun radio button */
+            gap: 10px; /* Jarak antar radio button */
+            margin: 20px auto; /* Pusatkan kotak */
+            flex-wrap: wrap; /* Membungkus ke baris berikutnya jika diperlukan */
+            justify-content: center;
+        }
+        .number_room label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer; /* Menunjukkan pointer saat hover */
+        }
+        .number_room input[type="radio"] {
+            display: none; /* Sembunyikan radio button asli */
+        }
+        .custom-radio {
+            width: 50px; /* Ukuran kotak */
+            height: 50px; /* Ukuran kotak */
+            appearance: none; /* Menghilangkan gaya default */
+            background-color: green; /* Warna default kotak */
+            border: 2px solid #000; /* Border kotak */
+            border-radius: 3px; /* Sudut kotak */  
+            cursor: pointer; /* Menunjukkan pointer saat hover */
+            display: flex; /* Menggunakan flex untuk menempatkan angka */
+            align-items: center; /* Pusatkan secara vertikal */
+            justify-content: center; /* Pusatkan secara horizontal */
+            color: white; /* Warna teks angka */
+            font-size: 20px; /* Ukuran font angka */
+        }
+        .number_room input[type="radio"]:checked + label .custom-radio {
+            background-color: yellow; /* Warna saat dicentang */
+        }
 </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-light" style="background-color: #a1a0a5 !important; position: fixed; width: 100%; z-index: 1000;">
-    <a class="navbar-brand" id="name" style="color: white; margin-left: 20px; cursor: pointer;">Grand Mutiara</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item active">
-                <a class="nav-link" id="home" style="color: white; margin-left: 20px;">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="about" style="color: white; margin-left: 20px;">About</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="login" style="color: white; margin-left: 20px;">Log in</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign in</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-
 <div id="loading" class="loading">
     <div class="spinner"></div>
     <h2 class="loading-text">GRAND MUTIARA</h2>
@@ -76,32 +96,41 @@ $number_room = $result->fetchAll(PDO::FETCH_ASSOC); // Ambil semua data kamar
             <input type="date" class="form-control" id="datePicker" name="date" min="<?= $formattedDate; ?>" style="width: 150px;" required>
         </div>
         <div class="form-group mt-2">
-        <label for="id_duration">Pilih Lama Menginap</label>
-        <section>
-            <select class="form-control" id="id_duration" name="id_duration" style="width: 150px;" required>
-                <option value="" disabled selected>Durasi Menginap</option>
-                <option value="hour">3 Jam</option>
-                <option value="hour">12 Jam</option>
-                <option value="hour">24 Jam</option>
-            </select>
-        </section>
+    <label for="id_duration">Pilih Lama Menginap</label>
+    <select class="form-control" id="id_duration" name="id_duration" style="width: 150px;" required onchange="updatePrice()">
+        <?php if (in_array($id_type, [4, 6])): ?>
+            <option value="transit" data-price="<?= $transit_price['price'] ?>">Transit(3jam)</option>
+        <?php endif; ?>
+        <option value="12hour" data-price="<?= $room_rate['12hour'] ?>">12 Jam</option>
+        <option value="24hour" data-price="<?= $room_rate['24hour'] ?>">24 Jam</option>
+    </select>
+</div>
+
+
+<div class="form-group mt-2">
+    <label for="number_room">No Kamar:</label>
+    <div class="number_room" required>
+        <?php if (!empty($number_room)): ?>
+            <?php foreach ($number_room as $number): ?>
+                <div class="form-check-inline">
+                    <input type="radio" 
+                           id="number<?= htmlspecialchars($number['number_room']) ?>" 
+                           name="number_room" 
+                           value="<?= htmlspecialchars($number['number_room']) ?>" 
+                           class="custom-radio">
+                    <label for="number<?= htmlspecialchars($number['number_room']) ?>"
+                           class="form-check-label">
+                        <div class="custom-radio"><?= htmlspecialchars($number['number_room']) ?></div>
+                    </label>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="alert alert-warning" role="alert">Tidak ada kamar</div>
+        <?php endif; ?>
     </div>
-        
-    <div class="form-group mt-2">
-        <label for="number_room">No Kamar:</label>
-        <div id="number_room" required>
-            <?php if (count($number_room) > 0) : ?>
-                <?php foreach ($number_room as $number) : ?>
-                    <div class="form-check-inline">
-                        <input type="radio" id="number<?= htmlspecialchars($number['number_room']); ?>" name="number_room" value="<?= htmlspecialchars($number['number_room']); ?>" required class="custom-checkbox">
-                        <label for="number<?= htmlspecialchars($number['number_room']); ?>" class="form-check-label" style="font-size: 20px;"><?= htmlspecialchars($number['number_room']); ?></label>
-                    </div>
-                <?php endforeach; ?>
-            <?php else : ?>
-                <div class="alert alert-warning" role="alert">Tidak ada data</div>
-            <?php endif; ?>
-        </div>
-    </div>
+    <div id="priceDisplay" class="mt-3 h4"></div>
+</div>
+
 
         <button type="submit" class="btn btn-primary btn-lg btn-block mt-4" name="submit" id="submit">Pesan Sekarang</button>
     </form>
@@ -109,5 +138,20 @@ $number_room = $result->fetchAll(PDO::FETCH_ASSOC); // Ambil semua data kamar
 
 <script src="js/trans.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script>
+    function updatePrice() {
+        const select = document.getElementById('id_duration');
+        const priceDisplay = document.getElementById('priceDisplay');
+        const selectedOption = select.options[select.selectedIndex];
+        
+        if (selectedOption.value) {
+            const price = selectedOption.dataset.price; // pastikan ini adalah string
+            priceDisplay.textContent = `Harga: Rp${price}`; // Menampilkan harga tanpa mengubah format
+        } else {
+            priceDisplay.textContent = '';
+        }
+    }
+document.addEventListener('DOMContentLoaded', updatePrice);
+</script>
 </body>
 </html>

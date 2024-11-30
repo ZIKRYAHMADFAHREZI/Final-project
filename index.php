@@ -1,11 +1,6 @@
 <?php 
-require 'db/connection.php';
-try {
-    $result = $pdo->query("SELECT * FROM types");
-    $types = $result->fetchAll(PDO::FETCH_ASSOC); // Menentukan mode fetch
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage(); // Menangkap dan menampilkan error
-}
+require 'db/index.php';
+include 'navbar.php';
 ?>
 
 <!DOCTYPE html>
@@ -35,37 +30,10 @@ try {
 </style>
 </head>
 <body>
-<header>
-    <!-- place navbar here -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-light fixed-top" style="background-color: #a1a0a5 !important; width: 100%; z-index: 1000;">
-    <a class="navbar-brand" id="name" style="color: white; margin-left: 20px; cursor: pointer;">Grand Mutiara</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item active">
-                <a class="nav-link" id="home" style="color: white; margin-left: 20px;">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="about" style="color: white; margin-left: 20px;">About</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="login" style="color: white; margin-left: 20px;">Log in</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign in</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-
 <div id="loading" class="loading">
     <div class="spinner"></div>
     <h2 class="loading-text">GRAND MUTIARA</h2>
 </div>
-
-</header>
     <!-- Gambar Auto Slide -->
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-inner">
@@ -96,17 +64,16 @@ try {
 </button>
 </div>
 
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center mb-4">Welcome to Hotel <span id="typing-text" class="typing-effect"></span></h2>
+            <p class="text-center mb-5">Jika kamu check ini disini kamu akan dapat hotel ini juga</p>
 
-    <div class="container py-4">
-        <div class="row">
-            <div class="col-md-12">
-                <h2 class="text-center mb-4">Welcome to Hotel <span id="typing-text" class="typing-effect"></span></h2>
-                <p class="text-center mb-5">Jika kamu check ini disini kamu akan dapat hotel ini juga</p>
-
-            </div>
         </div>
     </div>
-    <!-- Tiga Card -->
+</div>
+    <!-- Card -->
 <div class="container">
     <div class="row">
         <?php foreach ($types as $type) : ?>
@@ -116,7 +83,8 @@ try {
                 <div class="card-body">
                     <h5 class="card-title"><?= $type["type"]; ?></h5> 
                     <p class="card-text"><?= $type["description"]; ?></p>
-                    <a href="type.php?id=<?= $type["id_type"]; ?>" class="btn btn-primary">Pesan</a>
+                    <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai dari Rp<?= $type["start"]; ?></p>
+                    <a href="type.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Pesan</a>
                 </div>
             </div>
         </div>

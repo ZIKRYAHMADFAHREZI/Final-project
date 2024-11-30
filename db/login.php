@@ -9,15 +9,15 @@ $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (!empty($_POST['email']) && !empty($_POST['password'])) {
-    $usernameOrEmail = $_POST['email'];
+    $email = $_POST['email'];
     $password = $_POST['password'];
 
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$usernameOrEmail]);
+    $stmt->execute([$email]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password'])) {
-      $_SESSION['id_user'] = $user['id_user'];
+      $_SESSION['email'] = $user['email'];
       $_SESSION['role'] = $user['role'];
 
       // Debugging: Cek role pengguna
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit();
       }
     } else {
-      $error = "Username, email, atau password salah.";
+      $error = "Email, atau password salah.";
     }
   } else {
     $error = "Harap isi semua kolom.";

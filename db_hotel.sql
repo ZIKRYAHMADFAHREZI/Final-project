@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 29, 2024 at 03:25 AM
+-- Generation Time: Nov 30, 2024 at 11:59 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -210,6 +210,7 @@ CREATE TABLE `types` (
   `id_type` int NOT NULL,
   `type` varchar(255) NOT NULL,
   `description` text NOT NULL,
+  `start` varchar(50) NOT NULL,
   `img` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -217,13 +218,13 @@ CREATE TABLE `types` (
 -- Dumping data for table `types`
 --
 
-INSERT INTO `types` (`id_type`, `type`, `description`, `img`) VALUES
-(1, 'Deluxe Ac', 'Kamar bersama admin', 'deluxe.jpg'),
-(2, 'Familly Room', 'Kamar bersama admin', 'familly.jpg'),
-(3, 'Superior Ac', 'Kamar bersama admin', 'superAc.jpg'),
-(4, 'Standar Ac', 'Kamar bersama admin', 'StandAc.jpg'),
-(5, 'Superior Fan', 'Kamar bersama admin', 'SuperFan.jpg'),
-(6, 'Standar Fan', 'Kamar bersama admin', 'StandFan.jpg');
+INSERT INTO `types` (`id_type`, `type`, `description`, `start`, `img`) VALUES
+(1, 'Deluxe Ac', 'Kamar mewah dengan desain elegan, dilengkapi AC, tempat tidur king size, TV, meja, kamar mandi yang dilengkapi dengan shower, dan area duduk. Ideal untuk tamu yang menginginkan kenyamanan premium.', '250.000', 'deluxe.jpg'),
+(2, 'Familly Room', 'Kamar luas untuk 3-5 orang, dilengkapi AC, tempat tidur besar, kamar mandi, dan fasilitas tambahan seperti area duduk dan meja.', '250.000', 'familly.jpg'),
+(3, 'Superior Ac', 'Kamar luas dan nyaman dengan AC, tempat tidurvking size,dan kamar mandi. Cocok untuk tamu yang mengutamakan kenyamanan lebih.', '200.000', 'superAc.jpg'),
+(4, 'Standar Ac', 'Kamar nyaman dengan AC, tempat tidur double, kamar mandi pribadi, fasilitas dasar.', '150.000', 'StandAc.jpg'),
+(5, 'Superior Fan', 'Kamar Superior Fan menawarkan kenyamanan dengan kasur besar, kipas angin, dan kamar mandi.', '150.000', 'SuperFan.jpg'),
+(6, 'Standar Fan', 'Kamar sederhana dengan kipas angin, tempat tidur double, kamar mandi, dan fasilitas dasar.', '100.000', 'StandFan.jpg');
 
 -- --------------------------------------------------------
 
@@ -245,7 +246,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`) VALUES
-(1, 'admin', 'admin@admin.com', '$2y$10$R1eJRC2U4Y8YWs5PuswEJOErrPiQk56rZ6s7hOCPBn6k5H.PqFX5a', '2024-11-26 11:23:58', 'admin');
+(1, 'admin', 'admin@admin.com', '$2y$10$R1eJRC2U4Y8YWs5PuswEJOErrPiQk56rZ6s7hOCPBn6k5H.PqFX5a', '2024-11-26 11:23:58', 'admin'),
+(2, 'yuda69', 'yuda@gmail.com', '$2y$10$Tyb9VAQgjHFp4ZufrWT1FuqIbKpd64ryxy6hx/RmoeDRfdGCG5AAi', '2024-11-30 09:48:28', 'user');
 
 -- --------------------------------------------------------
 
@@ -386,7 +388,7 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `user_profile`

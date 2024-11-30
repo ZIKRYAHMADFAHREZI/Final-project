@@ -1,258 +1,202 @@
 <?php 
 require '../db/connection.php';
 
-// Ambil data tipe kamar
+// Fetch room types
 $typeQuery = "SELECT * FROM types";
 $typeResult = $pdo->query($typeQuery);
-$roomTypes = [];
+$roomTypes = $typeResult->fetchAll(PDO::FETCH_KEY_PAIR);
 
-if ($typeResult->rowCount() > 0) {
-    while ($row = $typeResult->fetch(PDO::FETCH_ASSOC)) {
-        $roomTypes[$row['id_type']] = $row['type'];
-    }
-}
-
-// Ambil data kamar dan urutkan berdasarkan tipe dan nomor
+// Fetch rooms grouped by type
 $roomQuery = "SELECT * FROM rooms ORDER BY id_type, number_room ASC";
 $roomResult = $pdo->query($roomQuery);
-
-// Array untuk menyimpan kamar berdasarkan tipe
 $roomsByType = [];
 
-if ($roomResult->rowCount() > 0) {
-    while ($row = $roomResult->fetch(PDO::FETCH_ASSOC)) {
-        $roomsByType[$row['id_type']][] = $row;
-    }
+while ($row = $roomResult->fetch(PDO::FETCH_ASSOC)) {
+    $roomsByType[$row['id_type']][] = $row;
 }
 
-// Ambil ID kamar
-$roomId = intval($_GET['id_room']);
-
-// Ambil status kamar saat ini
-$query = "SELECT status FROM rooms WHERE id_room = :id_room";
-$stmt = $pdo->prepare($query);
-$stmt->bindParam(':id_room', $roomId, PDO::PARAM_INT);
-$stmt->execute();
-$room = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if ($room) {
-    switch ($room['status']) {
-        case 'available':
-            $newStatus = 'unavailable';
-            break;
-        case 'unavailable':
-            $newStatus = 'pending';
-            break;
-        case 'pending':
-            $newStatus = 'available';
-            break;
-        default:
-            $newStatus = 'available';
+// Handle room status update
+if (isset($_GET['id_room'])) {
+    $roomId = filter_var($_GET['id_room'], FILTER_VALIDATE_INT);
+    
+    if ($roomId !== false) {
+        $statusMap = [
+            'available' => 'unavailable',
+            'unavailable' => 'pending',
+            'pending' => 'available'
+        ];
+        
+        try {
+            $pdo->beginTransaction();
+            
+            $stmt = $pdo->prepare("SELECT status FROM rooms WHERE id_room = ?");
+            $stmt->execute([$roomId]);
+            $currentStatus = $stmt->fetchColumn();
+            
+            $newStatus = $statusMap[$currentStatus] ?? 'available';
+            
+            $updateStmt = $pdo->prepare("UPDATE rooms SET status = ? WHERE id_room = ?");
+            $success = $updateStmt->execute([$newStatus, $roomId]);
+            
+            $pdo->commit();
+            echo json_encode(["success" => $success, "newStatus" => $newStatus]);
+            exit;
+            
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            error_log($e->getMessage());
+            echo json_encode(["success" => false, "message" => "Database error"]);
+            exit;
+        }
     }
-
-    $updateQuery = "UPDATE rooms SET status = :newStatus WHERE id_room = :id_room";
-    $updateStmt = $pdo->prepare($updateQuery);
-    $updateStmt->bindParam(':newStatus', $newStatus);
-    $updateStmt->bindParam(':id_room', $roomId, PDO::PARAM_INT);
-
-    if ($updateStmt->execute()) {
-        echo json_encode(["success" => true, "newStatus" => $newStatus]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Gagal memperbarui status"]);
-    }
-} 
-
-$pdo = null; // Tutup koneksi
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cek Kamar</title>
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-    crossorigin="anonymous"
-/>
-<link rel="stylesheet" href="../css/admin.css">
-<style>
-    .room {
-        display: inline-block;
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-        margin: 5px;
-        text-align: center;
-        border-radius: 5px;
-        color: white;
-        cursor: pointer;
-    }
-    .room.available {
-        background-color: green;
-    }
-    .room.unavailable {
-        background-color: red;
-    }
-    .room.pending {
-        background-color: yellow; /* Kamar dalam status pending berwarna kuning */
-    }
-</style>
-<script>
-    function toggleRoomStatus(roomId) {
-        const isConfirmed = confirm("Yakin?");
-        if (isConfirmed) {
-            fetch(`updateRoomStatus.php?id_room=${roomId}`, { method: "GET"
-                            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const roomElement = document.getElementById(`room-${roomId}`);
-                        roomElement.classList.remove("available", "unavailable", "pending"); // Hapus semua kelas
-                        roomElement.classList.add(data.newStatus); // Tambahkan kelas baru berdasarkan status
-                    } else {
-                        alert("Gagal mengubah status kamar!");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("Terjadi kesalahan saat mengubah status kamar!");
-                });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Kamar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        .room {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            margin: 8px;
+            text-align: center;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
         }
-    }
-</script>
+        .room:hover {
+            transform: scale(1.1);
+        }
+        .room.available { background-color: #28a745; }
+        .room.unavailable { background-color: #dc3545; }
+        .room.pending { background-color: #ffc107; color: #000; }
+        
+        .status-legend {
+            margin: 20px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .status-legend span {
+            margin-right: 20px;
+            display: inline-flex;
+            align-items: center;
+        }
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            margin-right: 5px;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-<div class="sidebar">
-    <div class="user-panel text-center mb-4">
-        <img src="../img/person.svg" alt="admin" width="20%">
-        <p class="mt-2"><i class="fa fa-circle text-success"></i> logged in</p>
-    </div>
-    <ul class="list-unstyled">
-        <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
-        <li><a href="rooms.php"><i class="fa fa-lock me-2"></i> Cek Kamar</a></li>
-        <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
-        <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
-    </ul>
-</div>
-<div class="container mt-5">
-    <h1 class="mb-4">Cek Kamar</h1>
-    <?php foreach ($roomTypes as $typeId => $typeName): ?>
-        <div>
-            <h3><?php echo htmlspecialchars($typeName); ?></h3>
-            <div>
-                <?php if (!empty($roomsByType[$typeId])): ?>
-                    <?php foreach ($roomsByType[$typeId] as $room): ?>
-                        <span
-                            id="room-<?php echo $room['id_room']; ?>"
-                            class="room <?php echo htmlspecialchars($room['status']); ?>"
-                            onclick="toggleRoomStatus(<?php echo $room['id_room']; ?>)">
-                            <?php echo htmlspecialchars($room['number_room']); ?>
-                        </span>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>Tidak ada kamar tersedia untuk tipe ini.</p>
-                <?php endif; ?>
-            </div>
+    <div class="sidebar">
+        <div class="user-panel text-center mb-4">
+            <img src="../img/person.svg" alt="admin" width="20%">
+            <p class="mt-2"><i class="fa fa-circle text-success"></i> logged in</p>
         </div>
-    <?php endforeach; ?>
-</div>
-<!-- sweet alert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-function confirmLogout() {
-    Swal.fire({
-        title: "Apakah Anda yakin ingin logout?",
-        text: "Anda akan keluar dari akun ini.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Ya, logout!",
-        cancelButtonText: "Batal"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = '../logout.php'; // Ganti URL sesuai dengan rute logout Anda
-        }
-    });
-}
-</script>
-</body>
-</html>            })
-                .then(response => response.json())
-                .then(data => {
+        <ul class="list-unstyled">
+            <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
+            <li><a href="rooms.php" class="active"><i class="fa fa-bed me-2"></i> Cek Kamar</a></li>
+            <li><a href="updatePw.php"><i class="fa fa-key me-2"></i> Ganti Email & Password</a></li>
+            <li><a href="#" onclick="confirmLogout()"><i class="fa fa-sign-out me-2"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Manajemen Kamar</h1>
+        
+        <div class="status-legend">
+            <span><div class="status-indicator available"></div> Tersedia</span>
+            <span><div class="status-indicator unavailable"></div> Terisi</span>
+            <span><div class="status-indicator pending"></div> Pending</span>
+        </div>
+
+        <?php foreach ($roomTypes as $typeId => $typeName): ?>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="m-0"><?= htmlspecialchars($typeName) ?></h3>
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($roomsByType[$typeId])): ?>
+                        <?php foreach ($roomsByType[$typeId] as $room): ?>
+                            <span id="room-<?= $room['id_room'] ?>" 
+                                  class="room <?= htmlspecialchars($room['status']) ?>"
+                                  onclick="toggleRoomStatus(<?= $room['id_room'] ?>)">
+                                <?= htmlspecialchars($room['number_room']) ?>
+                            </span>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="text-muted">Tidak ada kamar tersedia untuk tipe ini.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        async function toggleRoomStatus(roomId) {
+            try {
+                const result = await Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin mengubah status kamar ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya',
+                    cancelButtonText: 'Batal'
+                });
+
+                if (result.isConfirmed) {
+                    const response = await fetch(`?id_room=${roomId}`);
+                    const data = await response.json();
+
                     if (data.success) {
                         const roomElement = document.getElementById(`room-${roomId}`);
-                        roomElement.classList.remove("available", "unavailable", "pending"); // Hapus semua kelas
-                        roomElement.classList.add(data.newStatus); // Tambahkan kelas baru berdasarkan status
+                        roomElement.classList.remove('available', 'unavailable', 'pending');
+                        roomElement.classList.add(data.newStatus);
+
+                        await Swal.fire('Berhasil', 'Status kamar berhasil diperbarui', 'success');
                     } else {
-                        alert("Gagal mengubah status kamar!");
+                        throw new Error(data.message || 'Gagal mengubah status kamar');
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("Terjadi kesalahan saat mengubah status kamar!");
-                });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                await Swal.fire('Error', 'Terjadi kesalahan saat mengubah status kamar', 'error');
+            }
         }
-    }
-</script>
-</head>
-<body>
-<div class="sidebar">
-    <div class="user-panel text-center mb-4">
-        <img src="../img/person.svg" alt="admin" width="20%">
-        <p class="mt-2"><i class="fa fa-circle text-success"></i> logged in</p>
-    </div>
-    <ul class="list-unstyled">
-        <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
-        <li><a href="rooms.php"><i class="fa fa-lock me-2"></i> Cek Kamar</a></li>
-        <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
-        <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
-    </ul>
-</div>
-<div class="container mt-5">
-    <h1 class="mb-4">Cek Kamar</h1>
-    <?php foreach ($roomTypes as $typeId => $typeName): ?>
-        <div>
-            <h3><?php echo htmlspecialchars($typeName); ?></h3>
-            <div>
-                <?php if (!empty($roomsByType[$typeId])): ?>
-                    <?php foreach ($roomsByType[$typeId] as $room): ?>
-                        <span
-                            id="room-<?php echo $room['id_room']; ?>"
-                            class="room <?php echo htmlspecialchars($room['status']); ?>"
-                            onclick="toggleRoomStatus(<?php echo $room['id_room']; ?>)">
-                            <?php echo htmlspecialchars($room['number_room']); ?>
-                        </span>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>Tidak ada kamar tersedia untuk tipe ini.</p>
-                <?php endif; ?>
-            </div>
-        </div>
-    <?php endforeach; ?>
-</div>
-<!-- sweet alert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-function confirmLogout() {
-    Swal.fire({
-        title: "Apakah Anda yakin ingin logout?",
-        text: "Anda akan keluar dari akun ini.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Ya, logout!",
-        cancelButtonText: "Batal"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = '../logout.php'; // Ganti URL sesuai dengan rute logout Anda
+
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Konfirmasi Logout',
+                text: 'Apakah Anda yakin ingin keluar?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '../logout.php';
+                }
+            });
         }
-    });
-}
-</script>
+    </script>
 </body>
 </html>
