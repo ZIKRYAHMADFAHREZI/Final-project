@@ -38,3 +38,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 ?>
+
+tambahkan kondisi jika login menggunakan username

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 30, 2024 at 11:59 AM
+-- Generation Time: Dec 03, 2024 at 05:27 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -247,7 +247,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`) VALUES
 (1, 'admin', 'admin@admin.com', '$2y$10$R1eJRC2U4Y8YWs5PuswEJOErrPiQk56rZ6s7hOCPBn6k5H.PqFX5a', '2024-11-26 11:23:58', 'admin'),
-(2, 'yuda69', 'yuda@gmail.com', '$2y$10$Tyb9VAQgjHFp4ZufrWT1FuqIbKpd64ryxy6hx/RmoeDRfdGCG5AAi', '2024-11-30 09:48:28', 'user');
+(2, 'yuda69', 'yuda@gmail.com', '$2y$10$Tyb9VAQgjHFp4ZufrWT1FuqIbKpd64ryxy6hx/RmoeDRfdGCG5AAi', '2024-11-30 09:48:28', 'user'),
+(3, 'yuda666', 'yuda666@yahaha.com', '$2y$10$ooaZUV4B75cQG6L7xZPU2uqZ2mEEIOOviEVvFlExTZtgiV9OsG6MW', '2024-12-03 01:16:46', 'user');
 
 -- --------------------------------------------------------
 
@@ -258,7 +259,7 @@ INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `
 CREATE TABLE `user_profile` (
   `id_profile` int NOT NULL,
   `id_user` int NOT NULL,
-  `firs_name` varchar(50) NOT NULL,
+  `first_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `last_name` varchar(50) NOT NULL,
   `phone_name` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
@@ -388,7 +389,7 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `user_profile`
