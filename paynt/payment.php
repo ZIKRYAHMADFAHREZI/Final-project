@@ -10,6 +10,7 @@ require '../db/payment.php';
     <title>Pilih Metode Pembayaran</title>
     <!-- Link ke CSS Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="icon" type="png" href="../img/icon.png">
 </head>
 <body>
     <div class="container mt-5">

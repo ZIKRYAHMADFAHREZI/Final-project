@@ -55,51 +55,52 @@ if (isset($_GET['id_room'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Kamar</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/admin.css">
-    <style>
-        .room {
-            display: inline-block;
-            width: 60px;
-            height: 60px;
-            line-height: 60px;
-            margin: 8px;
-            text-align: center;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: bold;
-        }
-        .room:hover {
-            transform: scale(1.1);
-        }
-        .room.available { background-color: #28a745; }
-        .room.unavailable { background-color: #dc3545; }
-        .room.pending { background-color: #ffc107; color: #000; }
-        
-        .status-legend {
-            margin: 20px 0;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        .status-legend span {
-            margin-right: 20px;
-            display: inline-flex;
-            align-items: center;
-        }
-        .status-indicator {
-            width: 20px;
-            height: 20px;
-            display: inline-block;
-            margin-right: 5px;
-            border-radius: 4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manajemen Kamar</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="icon" type="png" href="img/icon.png">
+<style>
+    .room {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        line-height: 60px;
+        margin: 8px;
+        text-align: center;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+    .room:hover {
+        transform: scale(1.1);
+    }
+    .room.available { background-color: #28a745; }
+    .room.unavailable { background-color: #dc3545; }
+    .room.pending { background-color: #ffc107; color: #000; }
+    
+    .status-legend {
+        margin: 20px 0;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .status-legend span {
+        margin-right: 20px;
+        display: inline-flex;
+        align-items: center;
+    }
+    .status-indicator {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        margin-right: 5px;
+        border-radius: 4px;
+    }
+</style>
 </head>
 <body>
     <div class="sidebar">

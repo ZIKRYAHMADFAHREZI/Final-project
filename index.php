@@ -22,7 +22,7 @@ include 'navbar.php';
 />
 <link rel="stylesheet" href="css/index.css">
 <link rel="stylesheet" href="css/trans.css">
-<link rel="icon" type="png" href="./img/logoo.png">
+<link rel="icon" type="png" href="img/icon.png">
 <style>
     body {
         background-color: #DCDCDC;

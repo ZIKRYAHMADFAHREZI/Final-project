@@ -1,3 +1,54 @@
+<?php
+require '../db/connection.php'; // Pastikan $pdo sudah terinisialisasi di file ini
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $email_baru = htmlspecialchars($_POST['email_baru']);
+        $password_lama = htmlspecialchars($_POST['password_lama']);
+        $password_baru = htmlspecialchars($_POST['password_baru']);
+        $konfirmasi_password = htmlspecialchars($_POST['konfirmasi_password']);
+
+        // Validasi input
+        if (empty($email_baru) || empty($password_lama) || empty($password_baru) || empty($konfirmasi_password)) {
+            echo "<script>Swal.fire('Error', 'Semua field harus diisi!', 'error');</script>";
+            exit;
+        }
+
+        if ($password_baru !== $konfirmasi_password) {
+            echo "<script>Swal.fire('Error', 'Password baru dan konfirmasi tidak cocok!', 'error');</script>";
+            exit;
+        }
+
+        // Cek password lama
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->bindParam(':email', $_POST['email']); // Email lama yang digunakan untuk login
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user && password_verify($password_lama, $user['password'])) {
+            // Jika password lama cocok, lakukan update
+            $hashed_password = password_hash($password_baru, PASSWORD_BCRYPT);
+            $update_stmt = $pdo->prepare("UPDATE users SET email = :email_baru, password = :password_baru WHERE email = :email_lama");
+            $update_stmt->bindParam(':email_baru', $email_baru);
+            $update_stmt->bindParam(':password_baru', $hashed_password);
+            $update_stmt->bindParam(':email_lama', $_POST['email']);
+            $update_stmt->execute();
+
+            if ($update_stmt->rowCount() > 0) {
+                echo "<script>Swal.fire('Berhasil', 'Data berhasil diubah!', 'success');</script>";
+            } else {
+                echo "<script>Swal.fire('Error', 'Tidak ada perubahan pada data!', 'error');</script>";
+            }
+        } else {
+            echo "<script>Swal.fire('Error', 'Password lama salah!', 'error');</script>";
+        }
+    } catch (PDOException $e) {
+        echo "<script>Swal.fire('Error', 'Terjadi kesalahan pada server!', 'error');</script>";
+        error_log("Database Error: " . $e->getMessage()); // Log error untuk debugging
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +62,7 @@
     crossorigin="anonymous"
 />
 <link rel="stylesheet" href="../css/admin.css">
+<link rel="icon" type="png" href="img/icon.png">
 </head>
 <body>
 <div class="sidebar">
@@ -30,7 +82,7 @@
         <h1>Ganti Email & Password</h1>
     </header>
     <div class="form-container">
-        <form action="" method="post" enctype="multipart/form-data">
+        <form id="updateForm" action="" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <input 
                     type="email" 
@@ -38,6 +90,7 @@
                     id="email_baru" 
                     name="email_baru"
                     placeholder="Masukkan Email Baru"
+                    required
                 >
             </div>
             <div class="mb-3">
@@ -72,7 +125,8 @@
             </div>
             <div class="d-flex justify-content-between">
                 <button type="reset" class="btn btn-secondary">Cancel</button>
-                <button type="submit" name="submit" class="btn btn-primary">Ubah Data!</button>
+                <!-- Tombol ini akan memicu SweetAlert2 -->
+                <button type="button" id="submitButton" class="btn btn-primary">Ubah Data!</button>
             </div>
         </form>
     </div>
@@ -80,6 +134,24 @@
 <!-- sweet alert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// SweetAlert2 untuk tombol submit
+document.getElementById('submitButton').addEventListener('click', function (e) {
+    Swal.fire({
+        title: 'Konfirmasi Ubah Data',
+        text: "Apakah Anda yakin ingin mengubah email dan password?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Ubah!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('updateForm').submit(); // Submit form
+        }
+    });
+});
+
 function confirmLogout() {
     Swal.fire({
         title: "Apakah Anda yakin ingin logout?",

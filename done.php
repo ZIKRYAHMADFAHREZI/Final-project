@@ -21,8 +21,14 @@ include 'navbar.php';
     crossorigin="anonymous"
 />
 <link rel="stylesheet" href="css/trans.css">
+<link rel="icon" type="png" href="img/icon.png">
 </head>
 <body>
+<div id="loading" class="loading">
+    <div class="spinner"></div>
+    <h2 class="loading-text">GRAND MUTIARA</h2>
+</div>
+
 <h1 class="text-center" style="padding-top: 50px;">Donee</h1>
 
 
