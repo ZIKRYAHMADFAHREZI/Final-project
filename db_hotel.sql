@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 03, 2024 at 05:27 AM
+-- Generation Time: Dec 03, 2024 at 09:05 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -234,8 +234,8 @@ INSERT INTO `types` (`id_type`, `type`, `description`, `start`, `img`) VALUES
 
 CREATE TABLE `users` (
   `id_user` int NOT NULL,
-  `username` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `role` enum('admin','user') NOT NULL DEFAULT 'user'
@@ -259,11 +259,12 @@ INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `
 CREATE TABLE `user_profile` (
   `id_profile` int NOT NULL,
   `id_user` int NOT NULL,
-  `first_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `phone_name` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `date_of_birth` date NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(45) DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `date_of_birth` date DEFAULT NULL,
   `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -330,13 +331,17 @@ ALTER TABLE `types`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id_user`);
+  ADD PRIMARY KEY (`id_user`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `user_profile`
 --
 ALTER TABLE `user_profile`
   ADD PRIMARY KEY (`id_profile`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `username` (`username`),
   ADD KEY `id_user` (`id_user`);
 
 --
@@ -443,6 +448,8 @@ ALTER TABLE `transits`
 -- Constraints for table `user_profile`
 --
 ALTER TABLE `user_profile`
+  ADD CONSTRAINT `fk_email` FOREIGN KEY (`email`) REFERENCES `users` (`email`),
+  ADD CONSTRAINT `fk_username` FOREIGN KEY (`username`) REFERENCES `users` (`username`),
   ADD CONSTRAINT `user_profile_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`);
 COMMIT;
 
