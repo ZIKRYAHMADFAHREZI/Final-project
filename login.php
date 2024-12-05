@@ -6,38 +6,48 @@ ini_set('display_errors', 1);
 
 $error = "";
 
+// Login Proses
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST['login']) && !empty($_POST['password'])) {
-        $login = trim($_POST['login']);
+        $login = trim(htmlspecialchars($_POST['login'])); // Sanitasi input
         $password = $_POST['password'];
         
         try {
             $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :login OR username = :login");
-            $stmt->execute(['login' => $login]);
+            $stmt->bindParam(':login', $login);
+            $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            error_log("Login attempt with: " . $login);
-            error_log("User found: " . ($user ? 'Yes' : 'No'));
-            
+
             if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
+                // Set session data
+                $_SESSION['id'] = $user['id'];
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
-                
-                error_log("Successful login for user: " . $user['email']);
-                error_log("User role: " . $user['role']);
-                
+
+                // Remember me
+                if (isset($_POST['remember'])) {
+                    $token = bin2hex(random_bytes(32));
+                    $hashed_token = password_hash($token, PASSWORD_DEFAULT); // Token di-hash untuk keamanan
+                    $expiry = time() + (30 * 24 * 60 * 60); // 30 hari
+
+                    // Simpan token di database
+                    $stmt = $pdo->prepare("UPDATE users SET remember_token = :token WHERE id_user = :id_user");
+                    $stmt->execute(['token' => $hashed_token, 'id_user' => $user['id_user']]);
+
+                    // Simpan token ke cookie
+                    setcookie('remember_token', $token, $expiry, "/", "", false, true);
+                }
+
+                // Redirect berdasarkan role
                 if ($user['role'] === 'admin') {
                     header("Location: dashboard/index.php");
-                    exit();
                 } elseif ($user['role'] === 'user') {
                     header("Location: index.php");
-                    exit();
                 }
+                exit();
             } else {
                 $error = "Email, username, atau password salah.";
-                error_log("Failed login attempt for: " . $login);
             }
         } catch (PDOException $e) {
             error_log("Database error: " . $e->getMessage());
@@ -45,6 +55,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     } else {
         $error = "Harap isi semua kolom.";
+    }
+}
+
+// Remember Me Check
+if (isset($_COOKIE['remember_token'])) {
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM users");
+        $stmt->execute();
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($users as $user) {
+            if (password_verify($_COOKIE['remember_token'], $user['remember_token'])) {
+                $_SESSION['id_user'] = $user['id_user'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+
+                // Redirect
+                if ($user['role'] === 'admin') {
+                    header("Location: dashboard/index.php");
+                } elseif ($user['role'] === 'user') {
+                    header("Location: index.php");
+                }
+                exit();
+            }
+        }
+    } catch (PDOException $e) {
+        error_log("Database error: " . $e->getMessage());
     }
 }
 ?>
@@ -106,6 +144,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <label for="password" class="input-group__label">Password</label>
             <span class="show-password-icon" id="toggle-password">&#x1F512;</span>
         </div>
+        <div>
+            <input type="checkbox" name="remember" id="remember">
+            <label for="remember-me">Ingat Saya</label>
+        </div>
+        <p><a href="forgot_password.php">Lupa Password?</a></p>
         <button type="submit" name="submit" id="login-btn">Login</button>
         <p>Don't have an account? <a href="register.html">Register</a></p>
     </form>

@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     switchTab("about.php");
   });
   document.getElementById("login")?.addEventListener("click", function () {
-    switchTab("login.html");
+    switchTab("login.php");
   });
   document.getElementById("regist")?.addEventListener("click", function () {
     switchTab("register.html");

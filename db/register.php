@@ -31,7 +31,7 @@ if (isset($_POST['submit'])) {
 
     // Eksekusi query
     if ($stmt->execute()) {
-        header('Location: ../index.php');
+        header('Location: ../login.php');
     } else {
         echo "Error: " . $stmt->errorInfo()[2];
     }
