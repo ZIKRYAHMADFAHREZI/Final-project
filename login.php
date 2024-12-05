@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $password = $_POST['password'];
         
         try {
+            // Cek apakah login menggunakan email atau username
             $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :login OR username = :login");
             $stmt->bindParam(':login', $login);
             $stmt->execute();
@@ -20,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($user && password_verify($password, $user['password'])) {
                 // Set session data
-                $_SESSION['id'] = $user['id'];
+                $_SESSION['id_user'] = $user['id_user']; // Menyimpan id_user di session
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
@@ -61,13 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 // Remember Me Check
 if (isset($_COOKIE['remember_token'])) {
     try {
-        $stmt = $pdo->prepare("SELECT * FROM users");
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE remember_token IS NOT NULL");
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($users as $user) {
             if (password_verify($_COOKIE['remember_token'], $user['remember_token'])) {
-                $_SESSION['id_user'] = $user['id_user'];
+                $_SESSION['id_user'] = $user['id_user']; // Menyimpan id_user ke session
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
@@ -86,6 +87,7 @@ if (isset($_COOKIE['remember_token'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -180,6 +182,6 @@ if (isset($_COOKIE['remember_token'])) {
             input.classList.add('has-value');
         }
     });
-  </script>
+</script>
 </body>
 </html>

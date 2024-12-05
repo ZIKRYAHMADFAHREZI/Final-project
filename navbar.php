@@ -17,7 +17,7 @@ session_start();
             </li>
             <?php if (isset($_SESSION['email']) || isset($_SESSION['username'])) : ?>
                 <li class="nav-item">
-                    <a class="nav-link" id="profile" style="color: white; margin-left: 20px; margin-right:20px;">Profile</a>
+                    <a href="user_profile.php" class="nav-link" id="profil" style="color: white; margin-left: 20px; margin-right:20px;">Profile</a>
                 </li>
             <?php else: ?>
                 <li class="nav-item">

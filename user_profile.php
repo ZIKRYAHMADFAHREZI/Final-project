@@ -1,13 +1,6 @@
 <?php
 session_start();
-include 'db/connection.php';
-
-// Validasi login pengguna
-if (!isset($_SESSION['id_user'])) {
-    header("Location: login.php");
-    exit();
-}
-
+require 'db/connection.php';
 // Ambil data pengguna berdasarkan ID yang login
 $id_user = $_SESSION['id_user'];
 try {
@@ -22,40 +15,38 @@ try {
             'username' => '',
             'first_name' => '',
             'last_name' => '',
-            'email' => '',
             'phone_number' => '',
-            'date_of_birth' => ''
+            'email' => '',
+            'date_of_birth' => '',
+            'password' => '' // Pastikan password tetap kosong
         ];
     }
-} catch (PDOException $e) {
-    die("Kesalahan: " . $e->getMessage());
-}
 
-// Jika formulir disubmit
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $email = $_POST['email'];
-    $phone_number = $_POST['phone_number'];
-    $date_of_birth = $_POST['date_of_birth'];
+    // Jika formulir disubmit
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $username = $_POST['username'];
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $phone_number = $_POST['phone_number'];
+        $email = $_POST['email'];
+        $date_of_birth = $_POST['date_of_birth'];
 
-    try {
+        // Jika data pengguna sudah ada (untuk update)
         if (!empty($user['username']) && !empty($user['email'])) {
-            // Update data jika username dan email sudah ada
-            $stmt = $pdo->prepare("UPDATE users SET 
+            // Update data tanpa password
+            $stmt = $pdo->prepare("UPDATE user_profile SET 
                 username = :username, 
                 first_name = :first_name, 
                 last_name = :last_name, 
-                email = :email, 
                 phone_number = :phone_number, 
-                date_of_birth = :date_of_birth 
+                email = :email, 
+                date_of_birth = :date_of_birth
                 WHERE id_user = :id_user");
         } else {
-            // Tambah data baru jika belum ada
-            $stmt = $pdo->prepare("INSERT INTO users 
-                (id_user, username, first_name, last_name, email, phone_number, date_of_birth) 
-                VALUES (:id_user, :username, :first_name, :last_name, :email, :phone_number, :date_of_birth)");
+            // Tambah data baru tanpa password
+            $stmt = $pdo->prepare("INSERT INTO user_profile 
+                (id_profile, id_user, username, first_name, last_name, phone_number, email, date_of_birth) 
+                VALUES ('', :id_user, :username, :first_name, :last_name, :phone_number, :email, :date_of_birth)");
         }
 
         // Bind parameter
@@ -66,18 +57,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':phone_number', $phone_number);
         $stmt->bindParam(':date_of_birth', $date_of_birth);
-        $stmt->execute();
 
-        // Redirect ke halaman yang sama untuk memuat data terbaru
-        header("Location: user.php");
-        exit();
-    } catch (PDOException $e) {
-        die("Kesalahan saat menyimpan data: " . $e->getMessage());
+        // Eksekusi query
+        if ($stmt->execute()) {
+            echo "Data berhasil disimpan!";
+        } else {
+            echo "Gagal menyimpan data.";
+        }
     }
+
+} catch (PDOException $e) {
+    die("Kesalahan: " . $e->getMessage());
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,11 +139,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="form-group">
             <label for="first_name">Nama Depan:</label>
-            <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($user['first_name']); ?>" required>
+            <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($user['first_name'] ?? ''); ?>" required>
         </div>
         <div class="form-group">
             <label for="last_name">Nama Belakang:</label>
-            <input type="text" id="last_name" name="last_name" value="<?= htmlspecialchars($user['last_name']); ?>" required>
+            <input type="text" id="last_name" name="last_name" value="<?= htmlspecialchars($user['last_name'] ?? ''); ?>" required>
         </div>
         <div class="form-group">
             <label for="email">Email:</label>
@@ -159,11 +151,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="form-group">
             <label for="phone_number">Nomor Telepon:</label>
-            <input type="text" id="phone_number" name="phone_number" value="<?= htmlspecialchars($user['phone_number']); ?>" required>
+            <input type="number" id="phone_number" name="phone_number" value="<?= htmlspecialchars($user['phone_number'] ?? ''); ?>" required>
         </div>
         <div class="form-group">
             <label for="date_of_birth">Tanggal Lahir:</label>
-            <input type="date" id="date_of_birth" name="date_of_birth" value="<?= htmlspecialchars($user['date_of_birth']); ?>" required>
+            <input type="date" id="date_of_birth" name="date_of_birth" value="<?= htmlspecialchars($user['date_of_birth'] ?? ''); ?>" required>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Simpan</button>
@@ -171,12 +163,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 </div>
 
-
 <a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script src="js/trans.js"></script>
-    <!-- Sweet Alert -->
+<!-- Sweet Alert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function confirmLogout() {
