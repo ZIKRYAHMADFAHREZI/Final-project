@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin</title>
+<title>Ganti Email & Password</title>
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -16,8 +16,10 @@
 />
 <link rel="icon" type="png" href="../img/icon.png">
 <link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="icon" type="png" href="../img/icon.png">
 <style>
-    .toggle-btn {
+.toggle-btn {
     position: fixed;
     top: 15px;
     left: 15px;
@@ -32,33 +34,6 @@
 }
 .toggle-btn.closed {
     left: 15px;
-}
-.card-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-.card {
-    flex: 1;
-    max-width: 30%;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    padding: 15px;
-}
-.card.green-bg {
-    background-color: green;
-    color: white;
-}
-.card.red-bg {
-    background-color: red;
-    color: white;
-}
-.card.yellow-bg {
-    background-color: yellow;
-    color: black;
 }
 </style>
 </head>
@@ -77,8 +52,8 @@
             </a>
             <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
                 <li><a href="rooms.php" class="dropdown-item">Status kamar Kamar</a></li>
-                <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
-                <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
+                <li><a href="add_update.php" class="dropdown-item">Tambah Kamar</a></li>
+                <li><a href="update_type.php" class="dropdown-item">Update Tipw</a></li>
             </ul>
         </li>
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
@@ -90,47 +65,42 @@
 <button class="toggle-btn" id="toggle-btn">☰</button>
 
 <!-- Main Content -->
-<div class="content" id="content">
-    <header>
-        <h1 class="text-center mb-5">Admin Portal</h1>
-    </header>
 
-    <!-- Box Elements -->
-    <div class="card-container mb-4">
-        <div class="card green-bg">
-            <p>Total Kamar Tersedia: <?= $room; ?></p>
-        </div>
-        <div class="card red-bg">
-            <p>Total Kamar Terpakai: <?= $room; ?></p>
-        </div>
-        <div class="card yellow-bg">
-            <p>Total Kamar Terpending: <?= $room; ?></p>
-        </div>
-    </div>
+            <div class="d-flex justify-content-between">
+                <button type="reset" class="btn btn-secondary">Cancel</button>
+                <button type="button" id="submitButton" class="btn btn-primary">Ubah Data!</button>
+            </div>
 
-    <!-- Cari -->
-    <div class="form-container text-center mt-5">
-        <form action="" method="post" class="d-inline-block">
-            <input 
-                type="text" 
-                name="keyword" 
-                size="150%" 
-                autofocus 
-                placeholder="Masukkan keyword pencarian" 
-                autocomplete="off"
-                class="form-control d-inline-block w-50 mb-2"
-            >
-            <button type="submit" name="cari" class="btn btn-primary">Cari!</button>
-        </form>
-    </div>
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Sweet Alert -->
+<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// SweetAlert2 untuk tombol submit
+document.getElementById('submitButton').addEventListener('click', function (e) {
+    Swal.fire({
+        title: 'Konfirmasi Ubah Data',
+        text: "Apakah Anda yakin ingin mengubah email dan password?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Ubah!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('updateForm').submit(); // Submit form
+        }
+    });
+});
+
+// Sidebar Toggle
+document.getElementById("toggle-btn").addEventListener("click", function () {
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+    sidebar.classList.toggle("closed");
+    content.classList.toggle("expanded");
+});
+
 function confirmLogout() {
     Swal.fire({
         title: "Apakah Anda yakin ingin logout?",
@@ -143,18 +113,10 @@ function confirmLogout() {
         cancelButtonText: "Batal"
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = '../logout.php'; // Ganti URL sesuai dengan rute logout Anda
+            window.location.href = '../logout.php';
         }
     });
 }
-
-// Sidebar Toggle
-document.getElementById("toggle-btn").addEventListener("click", function () {
-    const sidebar = document.getElementById("sidebar");
-    const content = document.getElementById("content");
-    sidebar.classList.toggle("closed");
-    content.classList.toggle("expanded");
-});
 </script>
 </body>
 </html>

@@ -61,50 +61,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
     crossorigin="anonymous"
 />
+<link 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
+    rel="stylesheet"
+/>
+<link rel="icon" type="png" href="../img/icon.png">
+<link rel="stylesheet" href="../css/admin.css">
 <link rel="stylesheet" href="../css/admin.css">
 <link rel="icon" type="png" href="../img/icon.png">
 <style>
-body {
-    display: flex;
-    min-height: 100vh;
-    margin: 0;
-    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
-    overflow-x: hidden;
-}
-.sidebar {
-    width: 250px;
-    background-color: #343a40;
-    color: white;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: translateX(0);
-    transition: transform 0.3s ease-in-out;
-    z-index: 999;
-    padding-top: 20px;
-}
-.sidebar.closed {
-    transform: translateX(-100%);
-}
-.sidebar a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    display: block;
-}
-.sidebar a:hover {
-    background-color: #495057;
-}
-.content {
-    margin-left: 250px;
-    padding: 20px;
-    flex: 1;
-    transition: margin-left 0.3s ease-in-out;
-}
-.content.expanded {
-    margin-left: 0;
-}
 .toggle-btn {
     position: fixed;
     top: 15px;
@@ -132,7 +97,16 @@ body {
     </div>
     <ul class="list-unstyled">
         <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
-        <li><a href="rooms.php"><i class="fa fa-lock me-2"></i> Cek Kamar</a></li>
+        <li>
+            <a href="#" data-bs-toggle="collapse" data-bs-target="#dropdownMenu" aria-expanded="false" aria-controls="dropdownMenu">
+                <i class="fa fa-list me-2"></i> Kamar <i class="fas fa-chevron-down float-end"></i>
+            </a>
+            <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
+                <li><a href="rooms.php" class="dropdown-item">Status kamar Kamar</a></li>
+                <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
+                <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
+            </ul>
+        </li>
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
     </ul>
@@ -196,6 +170,8 @@ body {
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
