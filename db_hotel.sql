@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 05, 2024 at 02:03 AM
+-- Generation Time: Dec 06, 2024 at 01:07 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -89,7 +89,7 @@ CREATE TABLE `rooms` (
   `id_room` int NOT NULL,
   `id_type` int NOT NULL,
   `number_room` int NOT NULL,
-  `status` enum('available','unvailable','pending') NOT NULL DEFAULT 'available'
+  `status` varchar(20) DEFAULT 'available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -97,8 +97,8 @@ CREATE TABLE `rooms` (
 --
 
 INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
-(1, 1, 66, 'available'),
-(2, 1, 104, 'available'),
+(1, 1, 66, 'unavailable'),
+(2, 1, 104, 'pending'),
 (3, 2, 58, 'available'),
 (4, 2, 60, 'available'),
 (5, 3, 54, 'available'),
@@ -271,6 +271,14 @@ CREATE TABLE `user_profile` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Dumping data for table `user_profile`
+--
+
+INSERT INTO `user_profile` (`id_profile`, `id_user`, `username`, `first_name`, `last_name`, `phone_number`, `email`, `date_of_birth`, `create_at`) VALUES
+(1, 2, 'yuda69', 'kiki', 'jmt', '9007644', 'yuda@gmail.com', '2024-12-06', '2024-12-06 02:46:37'),
+(3, 3, 'yuda666', 'kikil', 'kuuoo', '090076440088', 'yuda666@yahaha.com', '2024-12-06', '2024-12-06 03:18:58');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -402,7 +410,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_profile`
 --
 ALTER TABLE `user_profile`
-  MODIFY `id_profile` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_profile` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

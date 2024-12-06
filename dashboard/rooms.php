@@ -1,57 +1,16 @@
-<?php 
+<?php
 require '../db/connection.php';
 
-// Fetch room types
-$typeQuery = "SELECT * FROM types";
-$typeResult = $pdo->query($typeQuery);
-$roomTypes = $typeResult->fetchAll(PDO::FETCH_KEY_PAIR);
+// Menetapkan id_type untuk setiap tipe kamar
+$room_types = [1 => 'Deluxe Ac', 2 => 'Family Room', 3 => 'Superior Ac', 4 => 'Stadard Ac', 5 => 'Superior Fan', 6 => 'Standar Fan'];
+$rooms = [];
 
-// Fetch rooms grouped by type
-$roomQuery = "SELECT * FROM rooms ORDER BY id_type, number_room ASC";
-$roomResult = $pdo->query($roomQuery);
-$roomsByType = [];
-
-while ($row = $roomResult->fetch(PDO::FETCH_ASSOC)) {
-    $roomsByType[$row['id_type']][] = $row;
-}
-
-// Handle room status update
-if (isset($_GET['id_room'])) {
-    $roomId = filter_var($_GET['id_room'], FILTER_VALIDATE_INT);
-    
-    if ($roomId !== false) {
-        $statusMap = [
-            'available' => 'unavailable',
-            'unavailable' => 'pending',
-            'pending' => 'available'
-        ];
-        
-        try {
-            $pdo->beginTransaction();
-            
-            $stmt = $pdo->prepare("SELECT status FROM rooms WHERE id_room = ?");
-            $stmt->execute([$roomId]);
-            $currentStatus = $stmt->fetchColumn();
-            
-            $newStatus = $statusMap[$currentStatus] ?? 'available';
-            
-            $updateStmt = $pdo->prepare("UPDATE rooms SET status = ? WHERE id_room = ?");
-            $success = $updateStmt->execute([$newStatus, $roomId]);
-            
-            $pdo->commit();
-            echo json_encode(["success" => $success, "newStatus" => $newStatus]);
-            exit;
-            
-        } catch (PDOException $e) {
-            $pdo->rollBack();
-            error_log($e->getMessage());
-            echo json_encode(["success" => false, "message" => "Database error"]);
-            exit;
-        }
-    }
+foreach ($room_types as $id_type => $type_name) {
+    $stmt = $pdo->prepare("SELECT id_room, number_room, status FROM rooms WHERE id_type = ?");
+    $stmt->execute([$id_type]);
+    $rooms[$id_type] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,96 +20,54 @@ if (isset($_GET['id_room'])) {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../css/admin.css">
 <link rel="icon" type="png" href="img/icon.png">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-    body {
-        display: flex;
-        min-height: 100vh;
-        margin: 0;
-        font-family: "Open Sans", sans-serif;
-        overflow-x: hidden;
-    }
-    .sidebar {
-        width: 250px;
-        background-color: #343a40;
-        color: white;
-        height: 100vh;
-        position: fixed;
-        top: 0;
-        left: 0;
-        transform: translateX(0);
-        transition: transform 0.3s ease-in-out;
-        z-index: 999;
-        padding-top: 20px;
-    }
-    .sidebar.closed {
-        transform: translateX(-100%);
-    }
-    .sidebar a {
-        color: white;
-        text-decoration: none;
-        padding: 10px 20px;
+    .room-list {
         display: block;
-    }
-    .sidebar a:hover {
-        background-color: #495057;
-    }
-    .container {
-        margin-left: 250px;
-        padding: 20px;
-        flex: 1;
-        transition: margin-left 0.3s ease-in-out;
-    }
-    .container.expanded {
-        margin-left: 0;
-    }
-    .toggle-btn {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        background-color: #343a40;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 1000;
-    }
-    .room {
-        display: inline-block;
-        width: 60px;
-        height: 60px;
-        line-height: 60px;
-        margin: 8px;
         text-align: center;
-        border-radius: 8px;
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: bold;
+        margin-bottom: 30px;
     }
-    .room:hover {
-        transform: scale(1.1);
-    }
-    .room.available { background-color: #28a745; }
-    .room.unavailable { background-color: #dc3545; }
-    .room.pending { background-color: #ffc107; color: #000; }
-    .status-legend {
-        margin: 20px 0;
-        padding: 10px;
-        background: #f8f9fa;
-        border-radius: 8px;
-    }
-    .status-legend span {
-        margin-right: 20px;
-        display: inline-flex;
-        align-items: center;
-    }
-    .status-indicator {
-        width: 20px;
-        height: 20px;
+
+    .room {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-align: center;
+        width: 80px;
+        height: 80px;
         display: inline-block;
-        margin-right: 5px;
-        border-radius: 4px;
+        margin: 5px;
+        font-size: 18px;
+        color: #333;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .room:hover {
+        transform: translateY(-3px);
+    }
+
+    .available {
+        background-color: green;
+        color: white;
+    }
+
+    .unavailable {
+        background-color: red;
+        color: white;
+    }
+
+    .pending {
+        background-color: yellow;
+        color: black;
+    }
+
+    .number {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: 16px;
     }
 </style>
 </head>
@@ -173,96 +90,77 @@ if (isset($_GET['id_room'])) {
     <button class="toggle-btn" id="toggle-btn">☰</button>
 
     <!-- Main Content -->
-    <div class="container" id="content">
+    <div class="container text-center" id="content">
         <h1 class="mb-4">Manajemen Kamar</h1>
-        
-        <div class="status-legend">
-            <span><div class="status-indicator available"></div> Tersedia</span>
-            <span><div class="status-indicator unavailable"></div> Terisi</span>
-            <span><div class="status-indicator pending"></div> Pending</span>
-        </div>
 
-        <?php foreach ($roomTypes as $typeId => $typeName): ?>
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h3 class="m-0"><?= htmlspecialchars($typeName) ?></h3>
-                </div>
-                <div class="card-body">
-                    <?php if (!empty($roomsByType[$typeId])): ?>
-                        <?php foreach ($roomsByType[$typeId] as $room): ?>
-                            <span id="room-<?= $room['id_room'] ?>" 
-                                  class="room <?= htmlspecialchars($room['status']) ?>"
-                                  onclick="toggleRoomStatus(<?= $room['id_room'] ?>)">
-                                <?= htmlspecialchars($room['number_room']) ?>
-                            </span>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p class="text-muted">Tidak ada kamar tersedia untuk tipe ini.</p>
-                    <?php endif; ?>
+        <?php foreach ($room_types as $id_type => $type_name): ?>
+            <div class="room-list">
+                <h3><?= htmlspecialchars($type_name) ?></h3>
+                <div class="room-container">
+                    <?php foreach ($rooms[$id_type] as $room): ?>
+                        <div class="room <?= htmlspecialchars($room['status']) ?>" data-room-id="<?= $room['id_room'] ?>" onclick="changeStatus(<?= $room['id_room'] ?>, '<?= $room['status'] ?>')">
+                            <p class='number'><?= htmlspecialchars($room['number_room']) ?></p>
+                        </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
         <?php endforeach; ?>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Include the JavaScript function -->
     <script>
-        document.getElementById("toggle-btn").addEventListener("click", function () {
-            const sidebar = document.getElementById("sidebar");
-            const content = document.getElementById("content");
-            sidebar.classList.toggle("closed");
-            content.classList.toggle("expanded");
-        });
+function changeStatus(roomId, currentStatus) {
+    // Tentukan status baru berdasarkan status saat ini
+    let newStatus;
+    let statusText;
+    let colorClass;
 
-        async function toggleRoomStatus(roomId) {
-            try {
-                const result = await Swal.fire({
-                    title: 'Konfirmasi',
-                    text: 'Apakah Anda yakin ingin mengubah status kamar ini?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya',
-                    cancelButtonText: 'Batal'
-                });
+    if (currentStatus === 'available') {
+        newStatus = 'unavailable';
+        statusText = 'Tidak Tersedia';
+        colorClass = 'unavailable';
+    } else if (currentStatus === 'unavailable') {
+        newStatus = 'available';
+        statusText = 'Tersedia';
+        colorClass = 'available';
+    } else {
+        // Jika statusnya tidak valid, keluar dari fungsi
+        Swal.fire('Gagal', 'Status tidak valid', 'error');
+        return;
+    }
 
-                if (result.isConfirmed) {
-                    const response = await fetch(`?id_room=${roomId}`);
-                    const data = await response.json();
-
+    // Konfirmasi dengan pengguna apakah ingin mengubah status
+    Swal.fire({
+        title: `Ubah status ke ${statusText}?`,
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Ubah',
+        cancelButtonText: 'Batal',
+        icon: 'question',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Mengupdate status kamar di database melalui AJAX
+            fetch(`update_status.php?id_room=${roomId}&status=${newStatus}`)
+                .then(response => response.json())
+                .then(data => {
                     if (data.success) {
-                        const roomElement = document.getElementById(`room-${roomId}`);
+                        // Perbarui status secara visual di halaman
+                        const roomElement = document.querySelector(`.room[data-room-id='${roomId}']`);
                         roomElement.classList.remove('available', 'unavailable', 'pending');
-                        roomElement.classList.add(data.newStatus);
+                        roomElement.classList.add(colorClass);
 
-                        await Swal.fire('Berhasil', 'Status kamar berhasil diperbarui', 'success');
+                        // Perbarui atribut data-status agar status bisa diubah kembali
+                        roomElement.setAttribute('onclick', `changeStatus(${roomId}, '${newStatus}')`);
                     } else {
-                        throw new Error(data.message || 'Gagal mengubah status kamar');
+                        Swal.fire('Gagal', data.message || 'Terjadi kesalahan saat memperbarui status.', 'error');
                     }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                await Swal.fire('Error', 'Terjadi kesalahan saat mengubah status kamar', 'error');
-            }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Gagal', 'Terjadi kesalahan saat memperbarui status.', 'error');
+                });
         }
+    });
+}
 
-        function confirmLogout() {
-            Swal.fire({
-                title: 'Konfirmasi Logout',
-                text: 'Apakah Anda yakin ingin keluar?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = '../logout.php';
-                }
-            });
-        }
     </script>
 </body>
 </html>
-
