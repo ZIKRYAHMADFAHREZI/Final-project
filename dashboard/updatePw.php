@@ -62,10 +62,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     crossorigin="anonymous"
 />
 <link rel="stylesheet" href="../css/admin.css">
-<link rel="icon" type="png" href="img/icon.png">
+<link rel="icon" type="png" href="../img/icon.png">
+<style>
+body {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow-x: hidden;
+}
+.sidebar {
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+    z-index: 999;
+    padding-top: 20px;
+}
+.sidebar.closed {
+    transform: translateX(-100%);
+}
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: block;
+}
+.sidebar a:hover {
+    background-color: #495057;
+}
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    flex: 1;
+    transition: margin-left 0.3s ease-in-out;
+}
+.content.expanded {
+    margin-left: 0;
+}
+.toggle-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: #343a40;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: left 0.3s ease-in-out;
+}
+.toggle-btn.closed {
+    left: 15px;
+}
+</style>
 </head>
 <body>
-<div class="sidebar">
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
     <div class="user-panel text-center mb-4">
         <img src="../img/person.svg" alt="admin" width="20%">
         <p class="mt-2"><i class="fa fa-circle text-success"></i> logged in</p>
@@ -77,9 +137,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
     </ul>
 </div>
-<div class="content">
+
+<!-- Toggle Button -->
+<button class="toggle-btn" id="toggle-btn">☰</button>
+
+<!-- Main Content -->
+<div class="content" id="content">
     <header>
-        <h1>Ganti Email & Password</h1>
+        <h1 class="text-center">Ganti Email & Password</h1>
     </header>
     <div class="form-container">
         <form id="updateForm" action="" method="post" enctype="multipart/form-data">
@@ -125,13 +190,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="d-flex justify-content-between">
                 <button type="reset" class="btn btn-secondary">Cancel</button>
-                <!-- Tombol ini akan memicu SweetAlert2 -->
                 <button type="button" id="submitButton" class="btn btn-primary">Ubah Data!</button>
             </div>
         </form>
     </div>
 </div>
-<!-- sweet alert2 -->
+
+<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 // SweetAlert2 untuk tombol submit
@@ -152,6 +217,14 @@ document.getElementById('submitButton').addEventListener('click', function (e) {
     });
 });
 
+// Sidebar Toggle
+document.getElementById("toggle-btn").addEventListener("click", function () {
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+    sidebar.classList.toggle("closed");
+    content.classList.toggle("expanded");
+});
+
 function confirmLogout() {
     Swal.fire({
         title: "Apakah Anda yakin ingin logout?",
@@ -164,7 +237,7 @@ function confirmLogout() {
         cancelButtonText: "Batal"
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = '../logout.php'; // Ganti URL sesuai dengan rute logout Anda
+            window.location.href = '../logout.php';
         }
     });
 }

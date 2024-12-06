@@ -62,6 +62,59 @@ if (isset($_GET['id_room'])) {
 <link rel="stylesheet" href="../css/admin.css">
 <link rel="icon" type="png" href="img/icon.png">
 <style>
+    body {
+        display: flex;
+        min-height: 100vh;
+        margin: 0;
+        font-family: "Open Sans", sans-serif;
+        overflow-x: hidden;
+    }
+    .sidebar {
+        width: 250px;
+        background-color: #343a40;
+        color: white;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(0);
+        transition: transform 0.3s ease-in-out;
+        z-index: 999;
+        padding-top: 20px;
+    }
+    .sidebar.closed {
+        transform: translateX(-100%);
+    }
+    .sidebar a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        display: block;
+    }
+    .sidebar a:hover {
+        background-color: #495057;
+    }
+    .container {
+        margin-left: 250px;
+        padding: 20px;
+        flex: 1;
+        transition: margin-left 0.3s ease-in-out;
+    }
+    .container.expanded {
+        margin-left: 0;
+    }
+    .toggle-btn {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        background-color: #343a40;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 1000;
+    }
     .room {
         display: inline-block;
         width: 60px;
@@ -81,7 +134,6 @@ if (isset($_GET['id_room'])) {
     .room.available { background-color: #28a745; }
     .room.unavailable { background-color: #dc3545; }
     .room.pending { background-color: #ffc107; color: #000; }
-    
     .status-legend {
         margin: 20px 0;
         padding: 10px;
@@ -103,7 +155,8 @@ if (isset($_GET['id_room'])) {
 </style>
 </head>
 <body>
-    <div class="sidebar">
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
         <div class="user-panel text-center mb-4">
             <img src="../img/person.svg" alt="admin" width="20%">
             <p class="mt-2"><i class="fa fa-circle text-success"></i> logged in</p>
@@ -116,7 +169,11 @@ if (isset($_GET['id_room'])) {
         </ul>
     </div>
 
-    <div class="container mt-5">
+    <!-- Toggle Button -->
+    <button class="toggle-btn" id="toggle-btn">☰</button>
+
+    <!-- Main Content -->
+    <div class="container" id="content">
         <h1 class="mb-4">Manajemen Kamar</h1>
         
         <div class="status-legend">
@@ -149,6 +206,13 @@ if (isset($_GET['id_room'])) {
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        document.getElementById("toggle-btn").addEventListener("click", function () {
+            const sidebar = document.getElementById("sidebar");
+            const content = document.getElementById("content");
+            sidebar.classList.toggle("closed");
+            content.classList.toggle("expanded");
+        });
+
         async function toggleRoomStatus(roomId) {
             try {
                 const result = await Swal.fire({
@@ -201,3 +265,4 @@ if (isset($_GET['id_room'])) {
     </script>
 </body>
 </html>
+

@@ -1,13 +1,22 @@
 <?php
 session_start();
 require 'db/connection.php';
+include 'navbar.php';
+
 // Ambil data pengguna berdasarkan ID yang login
 $id_user = $_SESSION['id_user'];
+
 try {
+    // Ambil data user dan user_profile
     $stmt = $pdo->prepare("SELECT * FROM users WHERE id_user = :id_user");
     $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $stmt = $pdo->prepare("SELECT * FROM user_profile WHERE id_user = :id_user");
+    $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+    $stmt->execute();
+    $user_profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Jika data pengguna tidak ditemukan, inisialisasi dengan nilai kosong
     if (!$user) {
@@ -31,22 +40,31 @@ try {
         $email = $_POST['email'];
         $date_of_birth = $_POST['date_of_birth'];
 
+        // Cek apakah email sudah digunakan oleh pengguna lain
+        $stmt = $pdo->prepare("SELECT id_user FROM user_profile WHERE email = :email AND id_user != :id_user");
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            die("Kesalahan: Email sudah digunakan oleh pengguna lain.");
+        }
+
         // Jika data pengguna sudah ada (untuk update)
-        if (!empty($user['username']) && !empty($user['email'])) {
-            // Update data tanpa password
-            $stmt = $pdo->prepare("UPDATE user_profile SET 
-                username = :username, 
-                first_name = :first_name, 
-                last_name = :last_name, 
-                phone_number = :phone_number, 
-                email = :email, 
+        if ($user_profile) {
+            $stmt = $pdo->prepare("UPDATE user_profile SET
+                username = :username,
+                first_name = :first_name,
+                last_name = :last_name,
+                phone_number = :phone_number,
+                email = :email,
                 date_of_birth = :date_of_birth
                 WHERE id_user = :id_user");
         } else {
             // Tambah data baru tanpa password
             $stmt = $pdo->prepare("INSERT INTO user_profile 
                 (id_profile, id_user, username, first_name, last_name, phone_number, email, date_of_birth) 
-                VALUES ('', :id_user, :username, :first_name, :last_name, :phone_number, :email, :date_of_birth)");
+                VALUES (NULL, :id_user, :username, :first_name, :last_name, :phone_number, :email, :date_of_birth)");
         }
 
         // Bind parameter
@@ -54,8 +72,8 @@ try {
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':first_name', $first_name);
         $stmt->bindParam(':last_name', $last_name);
-        $stmt->bindParam(':email', $email);
         $stmt->bindParam(':phone_number', $phone_number);
+        $stmt->bindParam(':email', $email);
         $stmt->bindParam(':date_of_birth', $date_of_birth);
 
         // Eksekusi query
@@ -65,9 +83,12 @@ try {
             echo "Gagal menyimpan data.";
         }
     }
-
 } catch (PDOException $e) {
-    die("Kesalahan: " . $e->getMessage());
+    if ($e->getCode() == 23000) {
+        die("Kesalahan: Data yang dimasukkan sudah ada di sistem.");
+    } else {
+        die("Kesalahan: " . $e->getMessage());
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -139,11 +160,11 @@ try {
         </div>
         <div class="form-group">
             <label for="first_name">Nama Depan:</label>
-            <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($user['first_name'] ?? ''); ?>" required>
+            <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($user_profile['first_name'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="last_name">Nama Belakang:</label>
-            <input type="text" id="last_name" name="last_name" value="<?= htmlspecialchars($user['last_name'] ?? ''); ?>" required>
+            <input type="text" id="last_name" name="last_name" value="<?= htmlspecialchars($user_profile['last_name'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="email">Email:</label>
@@ -151,11 +172,11 @@ try {
         </div>
         <div class="form-group">
             <label for="phone_number">Nomor Telepon:</label>
-            <input type="number" id="phone_number" name="phone_number" value="<?= htmlspecialchars($user['phone_number'] ?? ''); ?>" required>
+            <input type="number" id="phone_number" name="phone_number" value="<?= htmlspecialchars($user_profile['phone_number'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="date_of_birth">Tanggal Lahir:</label>
-            <input type="date" id="date_of_birth" name="date_of_birth" value="<?= htmlspecialchars($user['date_of_birth'] ?? ''); ?>" required>
+            <input type="date" id="date_of_birth" name="date_of_birth" value="<?= htmlspecialchars($user_profile['date_of_birth'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary">Simpan</button>
@@ -167,7 +188,7 @@ try {
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <script src="js/trans.js"></script>
-<!-- Sweet Alert -->
+<!-- Sweet Alert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function confirmLogout() {
