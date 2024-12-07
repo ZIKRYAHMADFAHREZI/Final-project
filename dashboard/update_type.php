@@ -47,15 +47,21 @@
     <ul class="list-unstyled">
         <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
         <li>
-            <a href="#" data-bs-toggle="collapse" data-bs-target="#dropdownMenu" aria-expanded="false" aria-controls="dropdownMenu">
-                <i class="fa fa-list me-2"></i> Kamar <i class="fas fa-chevron-down float-end"></i>
+            <a href="#" 
+            class="dropdown-toggle" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#dropdownMenu" 
+            aria-expanded="false" 
+            aria-controls="dropdownMenu">
+                <i class="fa fa-list me-2"></i> Kamar
             </a>
             <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
-                <li><a href="rooms.php" class="dropdown-item">Status kamar Kamar</a></li>
+                <li><a href="rooms.php" class="dropdown-item">Status Kamar</a></li>
                 <li><a href="add_update.php" class="dropdown-item">Tambah Kamar</a></li>
-                <li><a href="update_type.php" class="dropdown-item">Update Tipw</a></li>
+                <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
             </ul>
         </li>
+
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
     </ul>

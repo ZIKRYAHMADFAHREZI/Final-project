@@ -76,7 +76,7 @@
                 <i class="fa fa-list me-2"></i> Kamar <i class="fas fa-chevron-down float-end"></i>
             </a>
             <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
-                <li><a href="rooms.php" class="dropdown-item">Status kamar Kamar</a></li>
+                <li><a href="rooms.php" class="dropdown-item">Status kamar</a></li>
                 <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
                 <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
             </ul>

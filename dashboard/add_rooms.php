@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ganti Email & Password</title>
+<title>Tambah Kamar</title>
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -71,7 +71,10 @@
 <button class="toggle-btn" id="toggle-btn">☰</button>
 
 <!-- Main Content -->
-
+<div class="d-flex justify-content-between">
+    <button type="reset" class="btn btn-secondary">Cancel</button>
+    <button type="button" id="submitButton" class="btn btn-primary">Ubah Data!</button>
+</div>
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -94,30 +97,13 @@ document.getElementById('submitButton').addEventListener('click', function (e) {
     });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    // Inisialisasi Bootstrap Collapse untuk dropdown
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    const bsCollapse = new bootstrap.Collapse(dropdownMenu, { toggle: false });
-    bsCollapse.hide(); // Pastikan dropdown tertutup saat halaman dimuat
-    
-    // Toggle Sidebar
-    document.getElementById("toggle-btn").addEventListener("click", function () {
-        const sidebar = document.getElementById("sidebar");
-        sidebar.classList.toggle("closed");
-    });
-    
-    // Highlight menu aktif
-    document.querySelectorAll(".sidebar a").forEach(link => {
-        link.addEventListener("click", function () {
-            document.querySelectorAll(".sidebar a").forEach(item => {
-                item.classList.remove("active");
-            });
-            this.classList.add("active");
-        });
-    });
+// Sidebar Toggle
+document.getElementById("toggle-btn").addEventListener("click", function () {
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+    sidebar.classList.toggle("closed");
+    content.classList.toggle("expanded");
 });
-
-
 
 function confirmLogout() {
     Swal.fire({
