@@ -29,37 +29,37 @@
     cursor: pointer;
     z-index: 1000;
     transition: left 0.3s ease-in-out;
-}
-.toggle-btn.closed {
-    left: 15px;
-}
-.card-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-.card {
-    flex: 1;
-    max-width: 30%;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    padding: 15px;
-}
-.card.green-bg {
-    background-color: green;
-    color: white;
-}
-.card.red-bg {
-    background-color: red;
-    color: white;
-}
-.card.yellow-bg {
-    background-color: yellow;
-    color: black;
-}
+    }
+    .toggle-btn.closed {
+        left: 15px;
+    }
+    .card-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .card {
+        flex: 1;
+        max-width: 30%;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        padding: 15px;
+    }
+    .card.green-bg {
+        background-color: green;
+        color: white;
+    }
+    .card.red-bg {
+        background-color: red;
+        color: white;
+    }
+    .card.yellow-bg {
+        background-color: yellow;
+        color: black;
+    }
 </style>
 </head>
 <body>

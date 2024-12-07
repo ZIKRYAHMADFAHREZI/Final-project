@@ -18,16 +18,35 @@ foreach ($room_types as $id_type => $type_name) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Manajemen Kamar</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
+    rel="stylesheet"
+/>
 <link rel="stylesheet" href="../css/admin.css">
 <link rel="icon" type="png" href="img/icon.png">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
+    .toggle-btn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background-color: #343a40;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1000;
+    transition: left 0.3s ease-in-out;
+    }
+    .toggle-btn.closed {
+        left: 15px;
+    }
     .room-list {
         display: block;
         text-align: center;
         margin-bottom: 30px;
     }
-
     .room {
         background-color: #f0f0f0;
         border: 1px solid #ccc;
@@ -43,26 +62,21 @@ foreach ($room_types as $id_type => $type_name) {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
     }
-
     .room:hover {
         transform: translateY(-3px);
     }
-
     .available {
         background-color: green;
         color: white;
     }
-
     .unavailable {
         background-color: red;
         color: white;
     }
-
     .pending {
         background-color: yellow;
         color: black;
     }
-
     .number {
         margin: 0;
         padding: 0;
@@ -73,18 +87,27 @@ foreach ($room_types as $id_type => $type_name) {
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-        <div class="user-panel text-center mb-4">
-            <img src="../img/person.svg" alt="admin" width="20%">
-            <p class="mt-2"><i class="fa fa-circle text-success"></i> logged in</p>
-        </div>
-        <ul class="list-unstyled">
-            <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
-            <li><a href="rooms.php" class="active"><i class="fa fa-bed me-2"></i> Cek Kamar</a></li>
-            <li><a href="updatePw.php"><i class="fa fa-key me-2"></i> Ganti Email & Password</a></li>
-            <li><a href="#" onclick="confirmLogout()"><i class="fa fa-sign-out me-2"></i> Logout</a></li>
-        </ul>
+<div class="sidebar" id="sidebar">
+    <div class="user-panel text-center mb-4">
+        <img src="../img/person.svg" alt="admin" width="20%">
+        <p class="mt-2"><i class="fa fa-circle text-success"></i> logged in</p>
     </div>
+    <ul class="list-unstyled">
+        <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
+        <li>
+            <a href="#" data-bs-toggle="collapse" data-bs-target="#dropdownMenu" aria-expanded="false" aria-controls="dropdownMenu">
+                <i class="fa fa-list me-2"></i> Kamar <i class="fas fa-chevron-down float-end"></i>
+            </a>
+            <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
+                <li><a href="rooms.php" class="dropdown-item">Status kamar Kamar</a></li>
+                <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
+                <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
+            </ul>
+        </li>
+        <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
+        <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
+    </ul>
+</div>
 
     <!-- Toggle Button -->
     <button class="toggle-btn" id="toggle-btn">☰</button>
