@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 06, 2024 at 01:07 PM
+-- Generation Time: Dec 07, 2024 at 02:17 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -89,7 +89,7 @@ CREATE TABLE `rooms` (
   `id_room` int NOT NULL,
   `id_type` int NOT NULL,
   `number_room` int NOT NULL,
-  `status` varchar(20) DEFAULT 'available'
+  `status` enum('available','unavailable','pending') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'available'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -98,7 +98,7 @@ CREATE TABLE `rooms` (
 
 INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
 (1, 1, 66, 'unavailable'),
-(2, 1, 104, 'pending'),
+(2, 1, 104, 'available'),
 (3, 2, 58, 'available'),
 (4, 2, 60, 'available'),
 (5, 3, 54, 'available'),
