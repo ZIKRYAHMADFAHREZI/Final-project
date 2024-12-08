@@ -5,14 +5,14 @@ include 'navbar.php';
 <!doctype html>
 <html lang="en">
 <head>
-<title>Done</title>
 <!-- Required meta tags -->
 <meta charset="utf-8" />
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+name="viewport"
+content="width=device-width, initial-scale=1, shrink-to-fit=no"
 />
-
+<title>Done</title>
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <!-- Bootstrap CSS v5.2.1 -->
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"

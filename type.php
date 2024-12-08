@@ -33,8 +33,8 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tipe</title>
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="icon" type="png" href="img/icon.png">
 <link rel="stylesheet" href="css/trans.css">
 <style>
     body {

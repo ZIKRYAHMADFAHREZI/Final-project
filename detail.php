@@ -1,5 +1,4 @@
 <?php
-include 'navbar.php';
 require 'db/connection.php';
 
 // Periksa apakah 'id_type' ada dan merupakan angka
@@ -29,6 +28,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Detail</title>
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <!-- Bootstrap CSS v5.2.1 -->
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -36,18 +36,33 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
     crossorigin="anonymous"
 />
+
 </head>
 <body>
-    <h1>Detail </h1>
-    <img height="500px;" src="img/<?= $type['img'] ?>_1.jpg" alt="Logo">
-    <div style="display:flex;">
-        <img height="100px;" src="img/<?= $type['img'] ?>_2.jpg" alt="Logo">
-        <img height="100px;" src="img/<?= $type['img'] ?>_3.jpg" alt="Logo">
-        <img height="100px;" src="img/<?= $type['img'] ?>_4.jpg" alt="Logo">
-    </div>
-    <p>Nama Ruangan: <?= htmlspecialchars($type['name_type']); ?></p>
-    <p>Deksripsi Ruangan: <?= htmlspecialchars($type['long_description']); ?></p> <!-- Misalkan ada kolom 'name' di tabel 'types' -->
-    
+<h1>Detail </h1>
+<img src="img/<?= $type['img'] ?>_1.jpg" alt="Logo" class="d-block w-100" style="aspect-ratio: 19/8;">
+<div style="display:flex;">
+    <img height="100px;" src="img/<?= $type['img'] ?>_2.jpg" alt="Logo">
+    <img height="100px;" src="img/<?= $type['img'] ?>_3.jpg" alt="Logo">
+    <img height="100px;" src="img/<?= $type['img'] ?>_4.jpg" alt="Logo">
+</div>
+<div>
+    <p>THE GRAND MUTIARA HOTEL: <b><?= htmlspecialchars($type['name_type']); ?></b></p>
+    <p><?= htmlspecialchars($type['long_description']); ?></p> <!-- Misalkan ada kolom 'name' di tabel 'types' -->
+</div>
+        <!-- Gambar Auto Slide -->
+<div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="img/<?= $type['img'] ?>_2.jpg" class="d-block w-100" alt="img" style="aspect-ratio: 19 / 8; text-decoration: none;">
+        </div>
+        <div class="carousel-item">
+            <img src="img/<?= $type['img'] ?>_3.jpg" class="d-block w-100" alt="img" style="aspect-ratio: 19 / 8; text-decoration: none;">
+        </div>
+        <div class="carousel-item">
+        <img src="img/<?= $type['img'] ?>_4.jpg" class="d-block w-100" alt="img" style="aspect-ratio: 19 / 8; text-decoration: none;">
+        </div>
+</div>
     <!-- Link untuk kembali ke halaman tipe dengan id_type yang sama -->
     <a href="type.php?id_type=<?= $type['id_type']; ?>" class="btn btn-primary">pesan</a>
 <!-- Bootstrap JavaScript Libraries -->
@@ -64,3 +79,4 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 ></script>
 </body>
 </html>
+<?php include 'navbar.php'; ?>
