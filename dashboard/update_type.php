@@ -169,9 +169,14 @@ try {
             </a>
             <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <li><a href="delete_rooms.php" class="dropdown-item">Hapus kamar</a></li>
                 <li><a href="rooms.php" class="dropdown-item">Status kamar</a></li>
                 <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
+=======
+                <li><a href="rooms.php" class="dropdown-item">Status Kamar</a></li>
+                <li><a href="add_update.php" class="dropdown-item">Tambah Kamar</a></li>
+>>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
 =======
                 <li><a href="rooms.php" class="dropdown-item">Status Kamar</a></li>
                 <li><a href="add_update.php" class="dropdown-item">Tambah Kamar</a></li>

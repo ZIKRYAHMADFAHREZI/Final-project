@@ -205,6 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!-- Main Content -->
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div class="content" id="content">
     <header>
         <h1 class="text-center mb-5">Tambah Kamar</h1>
@@ -225,10 +226,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="nomor" class="number form-label">Masukkan Nomor Kamar</label>
         <input type="number" name="nomor" id="nomor" class="number_room form-control" required>
 =======
+=======
+>>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
 <div class="d-flex justify-content-between">
     <button type="reset" class="btn btn-secondary">Cancel</button>
     <button type="button" id="submitButton" class="btn btn-primary">Ubah Data!</button>
 </div>
+<<<<<<< HEAD
+>>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
+=======
 >>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
 
         <button type="submit" class="mt-3 btn btn-primary" id="submit">Simpan</button>
