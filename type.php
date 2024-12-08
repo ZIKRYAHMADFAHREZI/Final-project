@@ -95,7 +95,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 
 <div class="container">
     <h2 class="text-center mb-4 mt-5">Pilih Tanggal dan Nomor Kamar</h2>
-    <form action="paynt/payment.php" method="post" class="border p-4 rounded shadow">
+    <form action="paynt/p_method.php" method="post" class="border p-4 rounded shadow">
         <!-- Tanggal -->
         <div class="form-group">
             <label for="startDate">Tanggal:</label>

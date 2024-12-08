@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 08, 2024 at 12:26 PM
+-- Generation Time: Dec 08, 2024 at 04:54 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -31,11 +31,10 @@ CREATE TABLE `payments` (
   `id_payment` int NOT NULL,
   `id_user` int NOT NULL,
   `id_pay_method` int NOT NULL,
-  `id_reservation` int NOT NULL,
   `img` tinytext NOT NULL,
-  `name_send` varchar(50) NOT NULL,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` enum('pending','confirmed') NOT NULL
+  `transaction_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('pending','finished') DEFAULT 'pending',
+  `amount` decimal(10,3) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -48,17 +47,18 @@ CREATE TABLE `pay_methods` (
   `id_pay_method` int NOT NULL,
   `method` varchar(50) DEFAULT NULL,
   `no_pay` varchar(50) DEFAULT NULL,
-  `name_acc` varchar(50) DEFAULT NULL
+  `name_acc` varchar(50) DEFAULT NULL,
+  `active` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `pay_methods`
 --
 
-INSERT INTO `pay_methods` (`id_pay_method`, `method`, `no_pay`, `name_acc`) VALUES
-(1, 'Dana', '0878-7888-4000', 'Bagus Subandar'),
-(2, 'Gopay', '0878-7888-4000', 'Bagus Subandar'),
-(3, 'BNI', '12313223', 'Bagus Subandar');
+INSERT INTO `pay_methods` (`id_pay_method`, `method`, `no_pay`, `name_acc`, `active`) VALUES
+(1, 'Dana', '0878-7888-4000', 'Bagus Subandar', 1),
+(2, 'Gopay', '0878-7888-4000', 'Bagus Subandar', 1),
+(3, 'BNI', '12313223', 'Bagus Subandar', 1);
 
 -- --------------------------------------------------------
 
@@ -134,8 +134,8 @@ CREATE TABLE `room_rates` (
   `id_room_rate` int NOT NULL,
   `id_room` int NOT NULL,
   `id_type` int NOT NULL,
-  `12hour` decimal(10,3) NOT NULL,
-  `24hour` decimal(10,3) NOT NULL
+  `12hour` decimal(10,2) NOT NULL,
+  `24hour` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -143,31 +143,31 @@ CREATE TABLE `room_rates` (
 --
 
 INSERT INTO `room_rates` (`id_room_rate`, `id_room`, `id_type`, `12hour`, `24hour`) VALUES
-(1, 1, 1, '250.000', '350.000'),
-(2, 2, 1, '250.000', '350.000'),
-(3, 3, 2, '250.000', '350.000'),
-(4, 4, 2, '250.000', '350.000'),
-(5, 5, 3, '200.000', '300.000'),
-(6, 6, 3, '200.000', '300.000'),
-(7, 7, 4, '175.000', '275.000'),
-(8, 8, 4, '175.000', '275.000'),
-(9, 9, 4, '175.000', '275.000'),
-(10, 10, 4, '175.000', '275.000'),
-(11, 11, 4, '175.000', '275.000'),
-(12, 12, 5, '150.000', '200.000'),
-(13, 13, 5, '150.000', '200.000'),
-(14, 14, 5, '150.000', '200.000'),
-(15, 15, 5, '150.000', '200.000'),
-(16, 16, 5, '150.000', '200.000'),
-(17, 17, 5, '150.000', '200.000'),
-(18, 18, 5, '150.000', '200.000'),
-(19, 19, 6, '120.000', '150.000'),
-(20, 20, 6, '120.000', '150.000'),
-(21, 21, 6, '120.000', '150.000'),
-(22, 22, 6, '120.000', '150.000'),
-(23, 23, 6, '120.000', '150.000'),
-(24, 24, 6, '120.000', '150.000'),
-(25, 25, 6, '120.000', '150.000');
+(1, 1, 1, '250000.00', '350000.00'),
+(2, 2, 1, '250000.00', '350000.00'),
+(3, 3, 2, '250000.00', '350000.00'),
+(4, 4, 2, '250000.00', '350000.00'),
+(5, 5, 3, '200000.00', '300000.00'),
+(6, 6, 3, '200000.00', '300000.00'),
+(7, 7, 4, '175000.00', '275000.00'),
+(8, 8, 4, '175000.00', '275000.00'),
+(9, 9, 4, '175000.00', '275000.00'),
+(10, 10, 4, '175000.00', '275000.00'),
+(11, 11, 4, '175000.00', '275000.00'),
+(12, 12, 5, '150000.00', '200000.00'),
+(13, 13, 5, '150000.00', '200000.00'),
+(14, 14, 5, '150000.00', '200000.00'),
+(15, 15, 5, '150000.00', '200000.00'),
+(16, 16, 5, '150000.00', '200000.00'),
+(17, 17, 5, '150000.00', '200000.00'),
+(18, 18, 5, '150000.00', '200.00'),
+(19, 19, 6, '120000.00', '150000.00'),
+(20, 20, 6, '120000.00', '150000.00'),
+(21, 21, 6, '120000.00', '150000.00'),
+(22, 22, 6, '120000.00', '150000.00'),
+(23, 23, 6, '120000.00', '150000.00'),
+(24, 24, 6, '120000.00', '150000.00'),
+(25, 25, 6, '120000.00', '150000.00');
 
 -- --------------------------------------------------------
 
@@ -179,7 +179,7 @@ CREATE TABLE `transits` (
   `id_transit` int NOT NULL,
   `id_room` int NOT NULL,
   `id_type` int NOT NULL,
-  `price` decimal(10,3) NOT NULL
+  `price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -187,18 +187,18 @@ CREATE TABLE `transits` (
 --
 
 INSERT INTO `transits` (`id_transit`, `id_room`, `id_type`, `price`) VALUES
-(1, 7, 4, '150.000'),
-(2, 8, 4, '150.000'),
-(3, 9, 4, '150.000'),
-(4, 10, 4, '150.000'),
-(5, 11, 4, '150.000'),
-(6, 19, 6, '100.000'),
-(7, 20, 6, '100.000'),
-(8, 21, 6, '100.000'),
-(9, 22, 6, '100.000'),
-(10, 23, 6, '100.000'),
-(11, 24, 6, '100.000'),
-(12, 25, 6, '100.000');
+(1, 7, 4, '150000.00'),
+(2, 8, 4, '150000.00'),
+(3, 9, 4, '150000.00'),
+(4, 10, 4, '150000.00'),
+(5, 11, 4, '150000.00'),
+(6, 19, 6, '100000.00'),
+(7, 20, 6, '100000.00'),
+(8, 21, 6, '100000.00'),
+(9, 22, 6, '100000.00'),
+(10, 23, 6, '100000.00'),
+(11, 24, 6, '100000.00'),
+(12, 25, 6, '100000.00');
 
 -- --------------------------------------------------------
 
@@ -289,8 +289,7 @@ INSERT INTO `user_profile` (`id_profile`, `id_user`, `username`, `first_name`, `
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`id_payment`),
   ADD KEY `id_user` (`id_user`),
-  ADD KEY `id_pay_method` (`id_pay_method`),
-  ADD KEY `id_reservation` (`id_reservation`);
+  ADD KEY `id_pay_method` (`id_pay_method`);
 
 --
 -- Indexes for table `pay_methods`
@@ -422,8 +421,7 @@ ALTER TABLE `user_profile`
 --
 ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`),
-  ADD CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`id_pay_method`) REFERENCES `pay_methods` (`id_pay_method`),
-  ADD CONSTRAINT `payments_ibfk_3` FOREIGN KEY (`id_reservation`) REFERENCES `resevations` (`id_reservation`);
+  ADD CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`id_pay_method`) REFERENCES `pay_methods` (`id_pay_method`);
 
 --
 -- Constraints for table `resevations`

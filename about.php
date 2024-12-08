@@ -1,4 +1,5 @@
 <?php 
+session_start();
 include 'navbar.php';
 ?>
 <!DOCTYPE html>
@@ -84,6 +85,6 @@ include 'navbar.php';
     integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
     crossorigin="anonymous"
 ></script>
-<script src="js/trans.js"></script>
+<!-- <script src="js/trans.js"></script> -->
 </body>
 </html>

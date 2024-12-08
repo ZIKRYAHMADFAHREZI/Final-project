@@ -1,6 +1,6 @@
 <?php 
+session_start();
 require 'db/index.php';
-$animations = ['fade-right', 'fade-left'];
 ?>
 
 <!DOCTYPE html>
@@ -78,9 +78,8 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
     <!-- Card -->
 <div class="container">
     <div class="row">
-    <?php foreach ($types as $index => $type) : ?>
-        <?php $animIndex = $index % count($animations); ?>
-        <div class="col-md-4" data-aos="<?= $animations[$animIndex]; ?>" data-aos-duration="1000">
+    <?php foreach ($types as $type) : ?>
+        <div class="col-md-4" data-aos="zoom-in-up" data-aos-duration="1000">
             <div class="card mb-4">
                 <img src="img/<?= $type["img"]; ?>_1.jpg" class="card-img-top" alt="type" style="object-fit: cover; aspect-ratio: 4 / 3;">
                 <div class="card-body">
