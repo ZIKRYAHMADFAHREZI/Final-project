@@ -102,7 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <i class="fa fa-list me-2"></i> Kamar <i class="fas fa-chevron-down float-end"></i>
             </a>
             <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
-                <li><a href="rooms.php" class="dropdown-item">Status kamar Kamar</a></li>
+                <li><a href="delete_rooms.php" class="dropdown-item">Hapus kamar</a></li>
+                <li><a href="rooms.php" class="dropdown-item">Status kamar</a></li>
                 <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
                 <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
             </ul>
@@ -111,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
     </ul>
 </div>
+
 
 <!-- Toggle Button -->
 <button class="toggle-btn" id="toggle-btn">☰</button>
@@ -192,31 +194,7 @@ document.getElementById('submitButton').addEventListener('click', function (e) {
         }
     });
 });
-
-// Sidebar Toggle
-document.getElementById("toggle-btn").addEventListener("click", function () {
-    const sidebar = document.getElementById("sidebar");
-    const content = document.getElementById("content");
-    sidebar.classList.toggle("closed");
-    content.classList.toggle("expanded");
-});
-
-function confirmLogout() {
-    Swal.fire({
-        title: "Apakah Anda yakin ingin logout?",
-        text: "Anda akan keluar dari akun ini.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Ya, logout!",
-        cancelButtonText: "Batal"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = '../logout.php';
-        }
-    });
-}
 </script>
+<script src="../js/admin.js"></script>
 </body>
 </html>

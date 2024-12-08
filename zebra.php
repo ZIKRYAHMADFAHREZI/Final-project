@@ -166,3 +166,5 @@
 
 </body>
 </html>
+<label for="phone">Enter your phone number:</label>
+<input type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">

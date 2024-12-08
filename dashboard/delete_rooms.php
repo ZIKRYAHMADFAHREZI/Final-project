@@ -1,6 +1,8 @@
 <?php
+// index.php or room_management.php
 require '../db/connection.php';
 
+// Fetch all room types with their rooms using JOIN
 $stmt = $pdo->query("
     SELECT 
         t.id_type,
@@ -32,12 +34,9 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Status Kamar</title>
+<title>Hapus Kamar</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link 
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
-    rel="stylesheet"
-/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 <link rel="stylesheet" href="../css/admin.css">
 <link rel="icon" type="png" href="../img/icon.png">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -45,17 +44,17 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <style>
     .toggle-btn {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    background-color: #343a40;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 1000;
-    transition: left 0.3s ease-in-out;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        background-color: #343a40;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 1000;
+        transition: left 0.3s ease-in-out;
     }
     .toggle-btn.closed {
         left: 15px;
@@ -79,6 +78,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         color: #333;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        cursor: pointer;
     }
     .room:hover {
         transform: translateY(-3px);
@@ -104,7 +104,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 </style>
 </head>
 <body>
-<!-- Sidebar -->
+    <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <div class="user-panel text-center mb-4">
         <img src="../img/person.svg" alt="admin" width="20%">
@@ -126,16 +126,13 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
     </ul>
-</div>
+    </div>
 
-
-<!-- Toggle Button -->
 <button class="toggle-btn" id="toggle-btn">☰</button>
 
-<!-- Main Content -->
 <div class="content" id="content">
     <header>
-        <h1 class="text-center mb-5">Status Kamar</h1>
+        <h1 class="text-center mb-5">Hapus Kamar</h1>
     </header>
 
     <?php foreach ($rooms_by_type as $type => $rooms): ?>
@@ -143,68 +140,68 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             <h2 class="text-center mb-3"><?php echo htmlspecialchars($type); ?></h2>
             <div class="room-list">
                 <?php foreach ($rooms as $room): ?>
-                    <div class="room <?= htmlspecialchars($room['status']) ?>" data-room-id="<?= $room['id_room'] ?>" onclick="changeStatus(<?= $room['id_room'] ?>, '<?= $room['status'] ?>')">
-                        <p class='number'><?= htmlspecialchars($room['number_room']) ?></p>
+                    <?php
+                    $statusClass = '';
+                    switch ($room['status']) {
+                        case 'available':
+                            $statusClass = 'available';
+                            break;
+                        case 'unavailable':
+                            $statusClass = 'unavailable';
+                            break;
+                        case 'pending':
+                            $statusClass = 'pending';
+                            break;
+                    }
+                    ?>
+                    <div class="room <?php echo $statusClass; ?>" 
+                            data-room-id="<?php echo $room['id_room']; ?>"
+                            onclick="deleteRoom(<?php echo $room['id_room']; ?>)">
+                        <div class="number">
+                            <?php echo htmlspecialchars($room['number_room']); ?>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
     <?php endforeach; ?>
-    <!-- Include the JavaScript function -->
+</div>
+
 <script>
-    function changeStatus(roomId, currentStatus) {
-        // Tentukan status baru berdasarkan status saat ini
-        let newStatus;
-        let statusText;
-        let colorClass;
-
-        if (currentStatus === 'available') {
-            newStatus = 'unavailable';
-            statusText = 'Tidak Tersedia';
-            colorClass = 'unavailable';
-        } else if (currentStatus === 'unavailable') {
-            newStatus = 'available';
-            statusText = 'Tersedia';
-            colorClass = 'available';
-        } else {
-            // Jika statusnya tidak valid, keluar dari fungsi
-            Swal.fire('Gagal', 'Status tidak valid', 'error');
-            return;
-        }
-
-        // Konfirmasi dengan pengguna apakah ingin mengubah status
-        Swal.fire({
-            title: `Ubah status ke ${statusText}?`,
-            showCancelButton: true,
-            confirmButtonText: 'Ya, Ubah',
-            cancelButtonText: 'Batal',
-            icon: 'question',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Mengupdate status kamar di database melalui AJAX
-                fetch(`update_status.php?id_room=${roomId}&status=${newStatus}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Perbarui status secara visual di halaman
-                            const roomElement = document.querySelector(`.room[data-room-id='${roomId}']`);
-                            roomElement.classList.remove('available', 'unavailable', 'pending');
-                            roomElement.classList.add(colorClass);
-
-                            // Perbarui atribut data-status agar status bisa diubah kembali
-                            roomElement.setAttribute('onclick', `changeStatus(${roomId}, '${newStatus}')`);
-                        } else {
-                            Swal.fire('Gagal', data.message || 'Terjadi kesalahan saat memperbarui status.', 'error');
+function deleteRoom(roomId) {
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Kamar ini akan dihapus secara permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`delete_room.php?id_room=${roomId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Dihapus!', data.message, 'success');
+                        const roomElement = document.querySelector(`.room[data-room-id='${roomId}']`);
+                        if (roomElement) {
+                            roomElement.remove();
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire('Gagal', 'Terjadi kesalahan saat memperbarui status.', 'error');
-                    });
-            }
-        });
-    }
+                    } else {
+                        Swal.fire('Gagal!', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus kamar.', 'error');
+                });
+        }
+    });
+}
 </script>
+
 <script src="../js/admin.js"></script>
 </body>
 </html>
