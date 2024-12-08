@@ -1,33 +1,35 @@
 <?php 
 require 'db/index.php';
-
+$animations = ['fade-right', 'fade-left'];
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Grand Mutiara</title>
-        <link rel="icon" type="image/x-icon" href="img/icon.ico">
-        <meta charset="utf-8" />
-        <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, shrink-to-fit=no"
-        />
+<head>
+<title>Grand Mutiara</title>
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<meta charset="utf-8" />
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
 
-    <!-- Bootstrap CSS v5.2.1 -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-        crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="css/trans.css">
-    <style>
-        body {
-            background-color: #DCDCDC;
-        }
-    </style>
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+/>
+<!-- Aos -->
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="css/trans.css">
+<style>
+    body {
+        background-color: #DCDCDC;
+    }
+</style>
 </head>
 <body>
 <div id="loading" class="loading">
@@ -38,19 +40,19 @@ require 'db/index.php';
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="img/hotel.jpg" class="d-block w-100" alt="G1" style="aspect-ratio: 19 / 7; text-decoration: none;">
+            <img src="img/hotel.jpg" class="d-block w-100" alt="G1" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/hotel3.jpg" class="d-block w-100" alt="G3" style="aspect-ratio: 19 / 7; text-decoration: none;">
+            <img src="img/hotel3.jpg" class="d-block w-100" alt="G3" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-        <img src="img/hotel4.jpg" class="d-block w-100" alt="G4" style="aspect-ratio: 19 / 7; text-decoration: none;">
+        <img src="img/hotel4.jpg" class="d-block w-100" alt="G4" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/hotel5.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 7; text-decoration: none;">
+            <img src="img/hotel5.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/hotel6.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 7; text-decoration: none;">
+            <img src="img/hotel6.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
 </div>
 <!-- <p class="carousel-control-prev fw-medium text-black fs-2 font-monospace">hallo</p> -->
@@ -76,10 +78,11 @@ require 'db/index.php';
     <!-- Card -->
 <div class="container">
     <div class="row">
-        <?php foreach ($types as $type) : ?>
-        <div class="col-md-4">
+    <?php foreach ($types as $index => $type) : ?>
+        <?php $animIndex = $index % count($animations); ?>
+        <div class="col-md-4" data-aos="<?= $animations[$animIndex]; ?>" data-aos-duration="1000">
             <div class="card mb-4">
-                <img src="img/<?= $type["img"]; ?>_1.jpg" class="card-img-top" alt="type" style="width: 100%; height: 200px; object-fit: cover;">
+                <img src="img/<?= $type["img"]; ?>_1.jpg" class="card-img-top" alt="type" style="object-fit: cover; aspect-ratio: 4 / 3;">
                 <div class="card-body">
                     <h5 class="card-title"><?= $type["name_type"]; ?></h5> 
                     <p class="card-text"><?= $type["description"]; ?></p>
@@ -100,7 +103,7 @@ require 'db/index.php';
         <a href="#" class="text-decoration-none">Twitter</a>
 </div>
 </footer>
-<script src="js/trans.js" defer></script>
+<!-- <script src="js/trans.js" defer></script> -->
 <script src="js/writeEF.js"></script>  
 <!-- Bootstrap JavaScript Libraries -->
 <script
@@ -114,6 +117,11 @@ require 'db/index.php';
     integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
     crossorigin="anonymous"
 ></script>
+<!-- Aos -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
 </body>
 </html>
 

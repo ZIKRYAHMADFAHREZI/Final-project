@@ -182,7 +182,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     document.getElementById('endDate').addEventListener('change', updatePrice);
     document.getElementById('id_duration').addEventListener('change', updatePrice);
 </script>
-<script scr="../js/trans.js"></script>
+<!-- <script scr="../js/trans.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

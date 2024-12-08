@@ -187,7 +187,7 @@ try {
 <a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<script src="js/trans.js"></script>
+<!-- <script src="js/trans.js"></script> -->
 <!-- Sweet Alert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
