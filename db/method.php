@@ -1,6 +1,5 @@
 <?php 
 require 'connection.php';
-
 // Pastikan parameter id_pay ada di URL
 if (isset($_GET['id_pay_method']) && is_numeric($_GET['id_pay_method'])) {
     $id_pay_method = intval($_GET['id_pay_method']);

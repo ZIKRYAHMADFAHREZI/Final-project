@@ -1,6 +1,7 @@
 <?php 
-session_start(); 
+ 
 ?>
+
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-light fixed-top" style="background-color: #a1a0a5 !important; width: 100%; z-index: 1000;">
     <a class="navbar-brand" id="name" style="color: white; margin-left: 20px; cursor: pointer;">Grand Mutiara</a>

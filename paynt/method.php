@@ -20,7 +20,7 @@ require '../db/method.php';
                 <p><strong>Metode:</strong> <?= htmlspecialchars($payment_details['method']); ?></p>
                 <p><strong>No. Tujuan:</strong> <?= htmlspecialchars($payment_details['no_pay']); ?></p>
                 <p><strong>Atas Nama:</strong> <?= htmlspecialchars($payment_details['name_acc']); ?></p>
-                <p><strong>Bayar Senjumlah:</strong> <?= htmlspecialchars($payment_details['name_acc']); ?></p>
+                <p><strong>Bayar Sejumlah:</strong> <?= htmlspecialchars($payment_details['name_acc']); ?></p>
                 <form action="../done.php" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="sender_name"></label>

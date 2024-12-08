@@ -1,4 +1,5 @@
 <?php 
+
 require 'connection.php';
 try {
     $result = $pdo->query("SELECT * FROM types");

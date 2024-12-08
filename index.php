@@ -1,33 +1,33 @@
 <?php 
 require 'db/index.php';
-include 'navbar.php';
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<title>Grand Mutiara</title>
-<meta charset="utf-8" />
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, shrink-to-fit=no"
-/>
+    <head>
+        <title>Grand Mutiara</title>
+        <link rel="icon" type="image/x-icon" href="img/icon.ico">
+        <meta charset="utf-8" />
+        <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
 
-<!-- Bootstrap CSS v5.2.1 -->
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-    crossorigin="anonymous"
-/>
-<link rel="stylesheet" href="css/index.css">
-<link rel="stylesheet" href="css/trans.css">
-<link rel="icon" type="png" href="img/icon.png">
-<style>
-    body {
-        background-color: #DCDCDC;
-    }
-</style>
+    <!-- Bootstrap CSS v5.2.1 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+        crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/trans.css">
+    <style>
+        body {
+            background-color: #DCDCDC;
+        }
+    </style>
 </head>
 <body>
 <div id="loading" class="loading">
@@ -68,7 +68,7 @@ include 'navbar.php';
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-center mb-4">Welcome to Hotel <span id="typing-text" class="typing-effect"></span></h2>
-            <p class="text-center mb-5">Jika kamu check ini disini kamu akan dapat hotel ini juga</p>
+            <p class="text-center mb-5">Mendepankan Kenyamanan Tamu</p>
 
         </div>
     </div>
@@ -79,12 +79,12 @@ include 'navbar.php';
         <?php foreach ($types as $type) : ?>
         <div class="col-md-4">
             <div class="card mb-4">
-                <img src="img/<?= $type["img"]; ?>" class="card-img-top" alt="type" style="width: 100%; height: 200px; object-fit: cover;">
+                <img src="img/<?= $type["img"]; ?>_1.jpg" class="card-img-top" alt="type" style="width: 100%; height: 200px; object-fit: cover;">
                 <div class="card-body">
-                    <h5 class="card-title"><?= $type["type"]; ?></h5> 
+                    <h5 class="card-title"><?= $type["name_type"]; ?></h5> 
                     <p class="card-text"><?= $type["description"]; ?></p>
                     <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai dari Rp<?= $type["start"]; ?></p>
-                    <a href="type.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Pesan</a>
+                    <a href="detail.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Luhut</a>
                 </div>
             </div>
         </div>
@@ -116,3 +116,5 @@ include 'navbar.php';
 ></script>
 </body>
 </html>
+
+<?php include 'navbar.php';?>

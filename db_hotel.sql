@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 07, 2024 at 02:17 AM
+-- Generation Time: Dec 08, 2024 at 12:26 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -208,8 +208,9 @@ INSERT INTO `transits` (`id_transit`, `id_room`, `id_type`, `price`) VALUES
 
 CREATE TABLE `types` (
   `id_type` int NOT NULL,
-  `type` varchar(255) NOT NULL,
+  `name_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `description` text NOT NULL,
+  `long_description` text NOT NULL,
   `start` varchar(50) NOT NULL,
   `img` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -218,13 +219,13 @@ CREATE TABLE `types` (
 -- Dumping data for table `types`
 --
 
-INSERT INTO `types` (`id_type`, `type`, `description`, `start`, `img`) VALUES
-(1, 'Deluxe Ac', 'Kamar mewah dengan desain elegan, dilengkapi AC, tempat tidur king size, TV, meja, kamar mandi yang dilengkapi dengan shower, dan area duduk. Ideal untuk tamu yang menginginkan kenyamanan premium.', '250.000', 'deluxe.jpg'),
-(2, 'Familly Room', 'Kamar luas untuk 3-5 orang, dilengkapi AC, tempat tidur besar, kamar mandi, dan fasilitas tambahan seperti area duduk dan meja.', '250.000', 'familly.jpg'),
-(3, 'Superior Ac', 'Kamar luas dan nyaman dengan AC, tempat tidurvking size,dan kamar mandi. Cocok untuk tamu yang mengutamakan kenyamanan lebih.', '200.000', 'superAc.jpg'),
-(4, 'Standar Ac', 'Kamar nyaman dengan AC, tempat tidur double, kamar mandi pribadi, fasilitas dasar.', '150.000', 'StandAc.jpg'),
-(5, 'Superior Fan', 'Kamar Superior Fan menawarkan kenyamanan dengan kasur besar, kipas angin, dan kamar mandi.', '150.000', 'SuperFan.jpg'),
-(6, 'Standar Fan', 'Kamar sederhana dengan kipas angin, tempat tidur double, kamar mandi, dan fasilitas dasar.', '100.000', 'StandFan.jpg');
+INSERT INTO `types` (`id_type`, `name_type`, `description`, `long_description`, `start`, `img`) VALUES
+(1, 'Deluxe Ac', 'Kamar mewah dengan desain elegan, dilengkapi AC, tempat tidur king size, TV, meja, kamar mandi yang dilengkapi dengan shower, dan area duduk. Ideal untuk tamu yang menginginkan kenyamanan premium.', '', '250.000', 'deluxe'),
+(2, 'Familly Room', 'Kamar luas untuk 3-5 orang, dilengkapi AC, tempat tidur besar, kamar mandi, dan fasilitas tambahan seperti area duduk dan meja.', '', '250.000', 'familly'),
+(3, 'Superior Ac', 'Kamar luas dan nyaman dengan AC, tempat tidurvking size,dan kamar mandi. Cocok untuk tamu yang mengutamakan kenyamanan lebih.', '', '200.000', 'superAc'),
+(4, 'Standar Ac', 'Kamar nyaman dengan AC, tempat tidur double, kamar mandi pribadi, fasilitas dasar.', '', '150.000', 'StandAc'),
+(5, 'Superior Fan', 'Kamar Superior Fan menawarkan kenyamanan dengan kasur besar, kipas angin, dan kamar mandi.', '', '150.000', 'SuperFan'),
+(6, 'Standar Fan', 'Kamar sederhana dengan kipas angin, tempat tidur double, kamar mandi, dan fasilitas dasar.', '', '100.000', 'StandFan');
 
 -- --------------------------------------------------------
 

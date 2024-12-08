@@ -1,5 +1,5 @@
 <?php
-include 'navbar.php';
+session_start();
 require 'db/connection.php';
 
 $today = new DateTime();
@@ -186,3 +186,5 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+<?php include 'navbar.php'; ?>
