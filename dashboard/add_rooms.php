@@ -204,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <button class="toggle-btn" id="toggle-btn">☰</button>
 
 <!-- Main Content -->
+<<<<<<< HEAD
 <div class="content" id="content">
     <header>
         <h1 class="text-center mb-5">Tambah Kamar</h1>
@@ -223,6 +224,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="nomor" class="number form-label">Masukkan Nomor Kamar</label>
         <input type="number" name="nomor" id="nomor" class="number_room form-control" required>
+=======
+<div class="d-flex justify-content-between">
+    <button type="reset" class="btn btn-secondary">Cancel</button>
+    <button type="button" id="submitButton" class="btn btn-primary">Ubah Data!</button>
+</div>
+>>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
 
         <button type="submit" class="mt-3 btn btn-primary" id="submit">Simpan</button>
     </section>
@@ -232,6 +239,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../js/admin.js"></script>
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<<<<<<< HEAD
+=======
+<script>
+// SweetAlert2 untuk tombol submit
+document.getElementById('submitButton').addEventListener('click', function (e) {
+    Swal.fire({
+        title: 'Konfirmasi Ubah Data',
+        text: "Apakah Anda yakin ingin mengubah email dan password?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Ubah!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('updateForm').submit(); // Submit form
+        }
+    });
+});
+
+// Sidebar Toggle
+document.getElementById("toggle-btn").addEventListener("click", function () {
+    const sidebar = document.getElementById("sidebar");
+    const content = document.getElementById("content");
+    sidebar.classList.toggle("closed");
+    content.classList.toggle("expanded");
+});
+
+function confirmLogout() {
+    Swal.fire({
+        title: "Apakah Anda yakin ingin logout?",
+        text: "Anda akan keluar dari akun ini.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, logout!",
+        cancelButtonText: "Batal"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = '../logout.php';
+        }
+    });
+}
+>>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
 </script>
 </body>
 </html>

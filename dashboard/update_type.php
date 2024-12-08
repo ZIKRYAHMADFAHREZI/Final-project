@@ -159,16 +159,27 @@ try {
     <ul class="list-unstyled">
         <li><a href="index.php"><i class="fa fa-home me-2"></i> Beranda</a></li>
         <li>
-            <a href="#" data-bs-toggle="collapse" data-bs-target="#dropdownMenu" aria-expanded="false" aria-controls="dropdownMenu">
-                <i class="fa fa-list me-2"></i> Kamar <i class="fas fa-chevron-down float-end"></i>
+            <a href="#" 
+            class="dropdown-toggle" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#dropdownMenu" 
+            aria-expanded="false" 
+            aria-controls="dropdownMenu">
+                <i class="fa fa-list me-2"></i> Kamar
             </a>
             <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
+<<<<<<< HEAD
                 <li><a href="delete_rooms.php" class="dropdown-item">Hapus kamar</a></li>
                 <li><a href="rooms.php" class="dropdown-item">Status kamar</a></li>
                 <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
+=======
+                <li><a href="rooms.php" class="dropdown-item">Status Kamar</a></li>
+                <li><a href="add_update.php" class="dropdown-item">Tambah Kamar</a></li>
+>>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
                 <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
             </ul>
         </li>
+
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
     </ul>
