@@ -202,8 +202,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <button class="toggle-btn" id="toggle-btn">☰</button>
 
 <!-- Main Content -->
-<<<<<<< HEAD
-<<<<<<< HEAD
 <div class="content" id="content">
     <header>
         <h1 class="text-center mb-5">Tambah Kamar</h1>
@@ -214,27 +212,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <select name="tipe" id="tipe" class="form-select" required>
             <option value="" disabled selected>Pilih Tipe</option>
             <?php
-            $stmt = $pdo->query("SELECT id_type, type FROM types");
+            $stmt = $pdo->query("SELECT id_type, name_type FROM types");
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                echo "<option value='{$row['id_type']}'>{$row['type']}</option>";
+                echo "<option value='{$row['id_type']}'>{$row['name_type']}</option>";
             }
             ?>
         </select>
 
         <label for="nomor" class="number form-label">Masukkan Nomor Kamar</label>
         <input type="number" name="nomor" id="nomor" class="number_room form-control" required>
-=======
-=======
->>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
-<div class="d-flex justify-content-between">
-    <button type="reset" class="btn btn-secondary">Cancel</button>
-    <button type="button" id="submitButton" class="btn btn-primary">Ubah Data!</button>
-</div>
-<<<<<<< HEAD
->>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
-=======
->>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
-
         <button type="submit" class="mt-3 btn btn-primary" id="submit">Simpan</button>
     </section>
     </form>
@@ -243,8 +229,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../js/admin.js"></script>
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<<<<<<< HEAD
-=======
 <script>
 // SweetAlert2 untuk tombol submit
 document.getElementById('submitButton').addEventListener('click', function (e) {
@@ -288,7 +272,6 @@ function confirmLogout() {
         }
     });
 }
->>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
 </script>
 </body>
 </html>

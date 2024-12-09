@@ -6,7 +6,7 @@ require '../db/connection.php';
 $stmt = $pdo->query("
     SELECT 
         t.id_type,
-        t.type,
+        t.name_type,
         r.id_room,
         r.number_room,
         r.status
@@ -17,11 +17,11 @@ $stmt = $pdo->query("
 
 $rooms_by_type = [];
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    if (!isset($rooms_by_type[$row['type']])) {
-        $rooms_by_type[$row['type']] = [];
+    if (!isset($rooms_by_type[$row['name_type']])) {
+        $rooms_by_type[$row['name_type']] = [];
     }
     if ($row['id_room']) {  // Only add if room exists
-        $rooms_by_type[$row['type']][] = [
+        $rooms_by_type[$row['name_type']][] = [
             'id_room' => $row['id_room'],
             'number_room' => $row['number_room'],
             'status' => $row['status']
