@@ -41,11 +41,6 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 <body>
 <h1>Detail </h1>
 <img src="img/<?= $type['img'] ?>_1.jpg" alt="Logo" class="d-block w-100" style="aspect-ratio: 19/8;">
-<div style="display:flex;">
-    <img height="100px;" src="img/<?= $type['img'] ?>_2.jpg" alt="Logo">
-    <img height="100px;" src="img/<?= $type['img'] ?>_3.jpg" alt="Logo">
-    <img height="100px;" src="img/<?= $type['img'] ?>_4.jpg" alt="Logo">
-</div>
 <div>
     <p>THE GRAND MUTIARA HOTEL: <b><?= htmlspecialchars($type['name_type']); ?></b></p>
     <p><?= htmlspecialchars($type['long_description']); ?></p> <!-- Misalkan ada kolom 'name' di tabel 'types' -->
