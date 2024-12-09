@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'db/connection.php';
 
 // Periksa apakah 'id_type' ada dan merupakan angka

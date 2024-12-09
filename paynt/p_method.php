@@ -1,5 +1,8 @@
 <?php 
-require '../db/payment.php';
+require '../db/connection.php';
+$query = $pdo->prepare("SELECT * FROM pay_methods WHERE active = 1");
+$query->execute();
+$methods = $query->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -18,8 +21,8 @@ require '../db/payment.php';
     <div class="row">
         <div class="col-md-12">
             <ul class="list-group mt-5">
-                <?php if (!empty($pay_methods)) : ?>
-                    <?php foreach ($pay_methods as $pm) : ?>
+                <?php if (!empty($methods)) : ?> <!-- Mengecek apakah ada metode pembayaran -->
+                    <?php foreach ($methods as $pm) : ?> <!-- Iterasi setiap metode pembayaran -->
                         <li class="list-group-item">
                             <a href="payment.php?id_pay_method=<?= htmlspecialchars($pm['id_pay_method']); ?>" class="btn btn-primary btn-block">
                                 <?= htmlspecialchars($pm['method']); ?>
