@@ -70,7 +70,7 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-center mb-4">Welcome to Hotel <span id="typing-text" class="typing-effect"></span></h2>
-            <p class="text-center mb-5">Mendepankan Kenyamanan Tamu</p>
+            <p class="text-center mb-5">Kami Akan Mengabulkan Permintaan Pelanggan Walau Permintaannya Aneh-Aneh</p>
 
         </div>
     </div>
@@ -79,14 +79,14 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
 <div class="container">
     <div class="row">
     <?php foreach ($types as $type) : ?>
-        <div class="col-md-4" data-aos="zoom-in-up" data-aos-duration="1000">
+        <div class="col-md-4" data-aos="zoom-in-up" data-aos-duration="500">
             <div class="card mb-4">
                 <img src="img/<?= $type["img"]; ?>_1.jpg" class="card-img-top" alt="type" style="object-fit: cover; aspect-ratio: 4 / 3;">
                 <div class="card-body">
                     <h5 class="card-title"><?= $type["name_type"]; ?></h5> 
                     <p class="card-text"><?= $type["description"]; ?></p>
                     <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai dari Rp<?= $type["start"]; ?></p>
-                    <a href="detail.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Luhut</a>
+                    <a href="detail.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Lihat Details</a>
                 </div>
             </div>
         </div>
