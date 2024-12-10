@@ -1,16 +1,26 @@
 <?php
 session_start();
 require '../db/connection.php'; // Pastikan file koneksi Anda benar
-
+$start_date = $_POST['start_date'];
+$end_date = $_POST['end_date'];
+$id_duration = $_POST['id_duration'];
+$method = $_POST["id_pay_method"];
+$total_price = $_POST['total-price'];
 // Mengambil id_pay_method dari parameter URL
-if (isset($_GET['id_pay_method'])) {
-    $id_pay_method = $_GET['id_pay_method'];
+
+if (isset($_POST['id_duration'])) {
+    $id_duration = $_POST['id_duration'];
+}
+if (isset($_POST['id_pay_method'])) {
+    $id_pay_method = $_POST['id_pay_method'];
 
     try {
         // Query untuk mendapatkan detail metode pembayaran berdasarkan id_pay_method
         $query = $pdo->prepare("SELECT * FROM pay_methods WHERE id_pay_method = :id_pay_method AND active = 1");
         $query->bindParam(':id_pay_method', $id_pay_method, PDO::PARAM_INT);
         $query->execute();
+
+        
         
         $payment_details = $query->fetch(PDO::FETCH_ASSOC); // Mengambil hasil query
 
@@ -57,7 +67,7 @@ function uploadPaymentProof($file) {
 }
 
 // Proses pengiriman bukti pembayaran
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (isset($_POST['submit-pembayaran'])) {
     if (isset($_FILES['payment_proof'])) {
         $payment_proof = $_FILES['payment_proof'];
 
@@ -68,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             // Data berhasil di-upload, sekarang simpan ke database
             try {
-                // Menyimpan data pembayaran dan bukti ke tabel reservations
-                $stmt = $pdo->prepare("INSERT INTO resevations (id_user, id_pay_method, payment_proof, created_at) VALUES (:id_user, :id_pay_method, :payment_proof, NOW())");
+                // Menyimpan data pembayaran dan bukti ke tabel reservations   id_reservation	id_user	total_price	destroy_at	id_type	id_room_rate	id_payment	id_pay_method	payment_proof	created_at
+                $stmt = $pdo->prepare("INSERT INTO resevations (id_user, id_pay_method, payment_proof, created_at, destroy_at, id_type, id_room_rate, id_payment, total_price) VALUES ( :id_user, :id_pay_method, :payment_proof, :created_at, :destroy_at, :id_type, :id_room_rate, :id_payment, :total_price NOW())");
                 $stmt->bindParam(':id_user', $_SESSION['id_user'], PDO::PARAM_INT);
                 $stmt->bindParam(':id_pay_method', $id_pay_method, PDO::PARAM_INT);
                 $stmt->bindParam(':payment_proof', $uploadedFile, PDO::PARAM_STR);
@@ -110,16 +120,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <p class="text-success"><?= htmlspecialchars($success_message); ?></p>
             <?php elseif (isset($payment_details)): ?>
                 <!-- Menampilkan detail metode pembayaran jika data ditemukan -->
-                <p><strong>Metode Pembayaran:</strong> <?= htmlspecialchars($payment_details['method']); ?></p>
+                <p><strong>Metode Pembayaran:</strong> <?= $payment_details['method']; ?></p>
                 <p><strong>No. Pembayaran:</strong> <?= htmlspecialchars($payment_details['payment_number']); ?></p>
                 <p><strong>Atas Nama:</strong> <?= htmlspecialchars($payment_details['account_name']); ?></p>
-                <p><strong>Total Bayar:</strong> <?= htmlspecialchars($payment_details['account_name']); ?></p>
-                <form action="" method="POST" enctype="multipart/form-data">
+                <p><strong>Total Bayar:</strong> <?= $total_price ?></p>
+                <form action="../invoices.php" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="file">Bukti Pembayaran</label>
                         <input type="file" class="form-control-file" name="payment_proof" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Kirim</button>
+                    <button type="submit" name="submit-payment" class="btn btn-primary">Kirim</button>
                 </form>
             <?php endif; ?>
         </div>
@@ -132,3 +142,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+ 

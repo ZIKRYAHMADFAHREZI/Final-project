@@ -1,7 +1,9 @@
 <?php
 session_start();
 require 'db/connection.php';
-
+$query = $pdo->prepare("SELECT * FROM pay_methods WHERE active = 1");
+$query->execute();
+$methods = $query->fetchAll(PDO::FETCH_ASSOC);
 $today = new DateTime();
 $formattedDate = $today->format('Y-m-d'); // Format tanggal menjadi YYYY-MM-DD
 
@@ -53,38 +55,50 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 <body>
 <div class="container">
     <h2 class="text-center mb-4 mt-5">Pilih Tanggal dan Nomor Kamar</h2>
-    <form action="paynt/p_method.php" method="post" class="border p-4 rounded shadow">
-        <!-- Tanggal -->
-        <div class="form-group">
-            <label for="startDate">Tanggal:</label>
-            <div class="date-picker-container">
-                <input type="date" class="form-control" id="startDate" name="start_date" min="<?= $formattedDate; ?>" required>
-                <input type="date" class="form-control" id="endDate" name="end_date" min="<?= $formattedDate; ?>" required>
-            </div>
-        </div>
+<form action="paynt/payment.php" method="post" class="border p-4 rounded shadow">
+    <!-- Input metode pembayaran tersembunyi -->
+    <input type="hidden" id="id_pay_method" name="id_pay_method" value="">
 
-        <!-- Durasi Menginap -->
-        <div class="form-group mt-2">
-            <label for="id_duration">Pilih Lama Menginap:</label>
-            <select class="form-control" id="id_duration" name="id_duration" required onchange="updatePrice()">
-                <!-- Opsi transit jika ada harga transit -->
-                <?php if ($transit_price): ?>
-                    <option value="transit" data-price="<?= $transit_price['price'] ?>">Transit (3 jam) - Rp <?= number_format($transit_price['price'], 0, ',', '.') ?></option>
-                <?php endif; ?>
-                
-                <!-- Opsi tarif kamar harian -->
-                <option value="daily" data-price="<?= $room_rate['12hour'] ?>">12 Jam - Rp <?= number_format($room_rate['12hour'], 0, ',', '.') ?></option>
-                <option value="daily" data-price="<?= $room_rate['24hour'] ?>">24 Jam - Rp <?= number_format($room_rate['24hour'], 0, ',', '.') ?></option>
-            </select>
+    <!-- Tanggal -->
+    <div class="form-group">
+        <label for="startDate">Tanggal:</label>
+        <div class="date-picker-container">
+            <input type="date" class="form-control" id="startDate" name="start_date" min="<?= $formattedDate; ?>" required>
+            <input type="date" class="form-control" id="endDate" name="end_date" min="<?= $formattedDate; ?>" required>
         </div>
+    </div>
 
-        <!-- Total Harga -->
-        <div id="totalPrice" class="mt-3">
-            <strong>Total Harga: Rp 0</strong>
-        </div>
+    <!-- Durasi Menginap -->
+    <div class="form-group mt-2">
+        <label for="id_duration">Pilih Lama Menginap:</label>
+        <select class="form-control" id="id_duration" name="id_duration" required onchange="updatePrice()">
+            <!-- Opsi transit jika ada harga transit -->
+            <?php if ($transit_price): ?>
+                <option value="transit" data-price="<?= $transit_price['price'] ?>">Transit (3 jam) - Rp <?= number_format($transit_price['price'], 0, ',', '.') ?></option>
+            <?php endif; ?>
+            
+            <!-- Opsi tarif kamar harian -->
+            <option value="daily" data-price="<?= $room_rate['12hour'] ?>">12 Jam - Rp <?= number_format($room_rate['12hour'], 0, ',', '.') ?></option>
+            <option value="daily" data-price="<?= $room_rate['24hour'] ?>">24 Jam - Rp <?= number_format($room_rate['24hour'], 0, ',', '.') ?></option>
+        </select>
+    </div>
 
-        <button type="submit" class="btn btn-primary mt-4">Pesan</button>
-    </form>
+    <!-- Pilihan metode pembayaran -->
+    <div>
+        <?php foreach ($methods as $index => $pm) : ?> <!-- Iterasi setiap metode pembayaran -->
+            <input type="radio" id="method_<?= $index ?>" name="id_pay_method" value="<?= htmlspecialchars($pm['id_pay_method']); ?>">
+            <label for="method_<?= $index ?>"><?= htmlspecialchars($pm['method']); ?></label>
+        <?php endforeach; ?>
+    </div>
+
+    <!-- Total Harga -->
+    <strong>Total Harga: </strong>
+    <input type="number" name="total-price" id="totalPrice" readonly>
+    <br>
+
+    <button type="submit" name="submit-type" class="btn btn-primary mt-4">Pesan</button>
+</form>
+
 </div>
 
 <script>
@@ -102,7 +116,7 @@ function updatePrice() {
         let totalPrice = pricePerUnit * diffDays; // Total harga berdasarkan durasi
         
         // Update harga total di layar
-        document.getElementById('totalPrice').innerHTML = `Total Harga: Rp ${totalPrice.toLocaleString()}`;
+        document.getElementById('totalPrice').value = totalPrice;
     }
 }
 </script>

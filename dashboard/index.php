@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Cek apakah pengguna sudah login
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    // Jika belum login, arahkan ke halaman login
+    header('Location: ../login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
