@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../db/connection.php'; // Pastikan file koneksi Anda benar
 
 // Mengambil id_pay_method dari parameter URL
@@ -68,7 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Data berhasil di-upload, sekarang simpan ke database
             try {
                 // Menyimpan data pembayaran dan bukti ke tabel reservations
-                $stmt = $pdo->prepare("INSERT INTO resevations (id_pay_method, payment_proof, created_at) VALUES (:id_pay_method, :payment_proof, NOW())");
+                $stmt = $pdo->prepare("INSERT INTO resevations (id_user, id_pay_method, payment_proof, created_at) VALUES (:id_user, :id_pay_method, :payment_proof, NOW())");
+                $stmt->bindParam(':id_user', $_SESSION['id_user'], PDO::PARAM_INT);
                 $stmt->bindParam(':id_pay_method', $id_pay_method, PDO::PARAM_INT);
                 $stmt->bindParam(':payment_proof', $uploadedFile, PDO::PARAM_STR);
                 $stmt->execute();
@@ -111,6 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <p><strong>Metode Pembayaran:</strong> <?= htmlspecialchars($payment_details['method']); ?></p>
                 <p><strong>No. Pembayaran:</strong> <?= htmlspecialchars($payment_details['payment_number']); ?></p>
                 <p><strong>Atas Nama:</strong> <?= htmlspecialchars($payment_details['account_name']); ?></p>
+                <p><strong>Total Bayar:</strong> <?= htmlspecialchars($payment_details['account_name']); ?></p>
                 <form action="" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="file">Bukti Pembayaran</label>
