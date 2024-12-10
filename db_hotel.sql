@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 09, 2024 at 12:38 AM
+-- Generation Time: Dec 10, 2024 at 03:34 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -46,8 +46,8 @@ CREATE TABLE `payments` (
 CREATE TABLE `pay_methods` (
   `id_pay_method` int NOT NULL,
   `method` varchar(50) DEFAULT NULL,
-  `no_pay` varchar(50) DEFAULT NULL,
-  `name_acc` varchar(50) DEFAULT NULL,
+  `payment_number` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `account_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -55,7 +55,7 @@ CREATE TABLE `pay_methods` (
 -- Dumping data for table `pay_methods`
 --
 
-INSERT INTO `pay_methods` (`id_pay_method`, `method`, `no_pay`, `name_acc`, `active`) VALUES
+INSERT INTO `pay_methods` (`id_pay_method`, `method`, `payment_number`, `account_name`, `active`) VALUES
 (1, 'Dana', '0878-7888-4000', 'Bagus Subandar', 1),
 (2, 'Gopay', '0878-7888-4000', 'Bagus Subandar', 1),
 (3, 'BNI', '12313223', 'Bagus Subandar', 1);
@@ -71,11 +71,13 @@ CREATE TABLE `resevations` (
   `id_user` int NOT NULL,
   `date` date NOT NULL,
   `total_price` decimal(10,2) NOT NULL,
-  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `destroy_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `id_type` int DEFAULT NULL,
   `id_room_rate` int DEFAULT NULL,
-  `id_payment` int DEFAULT NULL
+  `id_payment` int DEFAULT NULL,
+  `id_pay_method` int DEFAULT NULL,
+  `payment_proof` varchar(255) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -274,7 +276,8 @@ ALTER TABLE `resevations`
   ADD KEY `id_user` (`id_user`),
   ADD KEY `fk_id_type` (`id_type`),
   ADD KEY `fk_id_room_rate` (`id_room_rate`),
-  ADD KEY `fk_id_payment` (`id_payment`);
+  ADD KEY `fk_id_payment` (`id_payment`),
+  ADD KEY `fk_id_pay_method` (`id_pay_method`);
 
 --
 -- Indexes for table `rooms`
@@ -393,6 +396,7 @@ ALTER TABLE `payments`
 -- Constraints for table `resevations`
 --
 ALTER TABLE `resevations`
+  ADD CONSTRAINT `fk_id_pay_method` FOREIGN KEY (`id_pay_method`) REFERENCES `pay_methods` (`id_pay_method`),
   ADD CONSTRAINT `fk_id_payment` FOREIGN KEY (`id_payment`) REFERENCES `payments` (`id_payment`),
   ADD CONSTRAINT `fk_id_room_rate` FOREIGN KEY (`id_room_rate`) REFERENCES `room_rates` (`id_room_rate`),
   ADD CONSTRAINT `fk_id_type` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`),
