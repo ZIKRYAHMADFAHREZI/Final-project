@@ -25,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
+                $_SESSION['is_logged_in'] = true; // Tambahkan untuk cek login
+            
+            
 
                 // Remember me
                 if (isset($_POST['remember'])) {
@@ -152,7 +155,7 @@ if (isset($_COOKIE['remember_token'])) {
         </div>
         <p><a href="forgot_password.php">Lupa Password?</a></p>
         <button type="submit" name="submit" id="login-btn">Login</button>
-        <p>Don't have an account? <a href="register.html">Register</a></p>
+        <p>Don't have an account? <a href="register.php">Register</a></p>
     </form>
 </div>
 <script>

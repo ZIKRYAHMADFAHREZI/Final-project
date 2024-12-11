@@ -2,6 +2,9 @@
 session_start();
 require 'db/connection.php';
 
+// Ambil data pengguna
+$id_user = $_SESSION['id_user'];
+
 // Periksa apakah 'id_type' ada dan merupakan angka
 if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     $id_type = intval($_GET['id_type']);
@@ -23,6 +26,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,11 +44,13 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 
 </head>
 <body>
+<?php include 'navbar.php'; ?>
 <h1>Detail </h1>
 <img src="img/<?= $type['img'] ?>_1.jpg" alt="Logo" class="d-block w-100" style="aspect-ratio: 19/8;">
 <div>
     <p>THE GRAND MUTIARA HOTEL: <b><?= htmlspecialchars($type['name_type']); ?></b></p>
-    <p><?= htmlspecialchars($type['long_description']); ?></p> <!-- Misalkan ada kolom 'name' di tabel 'types' -->
+    <p><?= htmlspecialchars($type['long_description']); ?></p> <!-- Misalkan ada kolom 'long desk' di tabel 'types' -->
+    <p><?= htmlspecialchars($type['fasility']); ?></p> <!-- Misalkan ada kolom 'fasility' di tabel 'types' -->
 </div>
         <!-- Gambar Auto Slide -->
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
@@ -58,9 +64,18 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
         <div class="carousel-item">
         <img src="img/<?= $type['img'] ?>_4.jpg" class="d-block w-100" alt="img" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
 </div>
-    <!-- Link untuk kembali ke halaman tipe dengan id_type yang sama -->
+    <!-- Link untuk masuk ke halaman pemesanan -->
     <a href="type.php?id_type=<?= $type['id_type']; ?>" class="btn btn-primary">pesan</a>
+<?php include 'footer.html'; ?>
 <!-- Bootstrap JavaScript Libraries -->
 <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -75,4 +90,3 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 ></script>
 </body>
 </html>
-<?php include 'navbar.php'; ?>

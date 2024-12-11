@@ -1,6 +1,13 @@
 <?php
 session_start();
 require 'db/connection.php';
+// Ambil data pengguna
+$id_user = $_SESSION['id_user'];
+// Periksa apakah pengguna sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: login.php");
+    exit;
+}
 $query = $pdo->prepare("SELECT * FROM pay_methods WHERE active = 1");
 $query->execute();
 $methods = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -53,6 +60,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 </style>
 </head>
 <body>
+<?php include 'navbar.php';?>
 <div class="container">
     <h2 class="text-center mb-4 mt-5">Pilih Tanggal dan Nomor Kamar</h2>
 <form action="paynt/payment.php" method="post" class="border p-4 rounded shadow">
@@ -122,4 +130,3 @@ function updatePrice() {
 </script>
 </body>
 </html>
-<?php include 'navbar.php'; ?>

@@ -32,6 +32,7 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
 </style>
 </head>
 <body>
+<?php include 'navbar.php';?>
 <div id="loading" class="loading">
     <div class="spinner"></div>
     <h2 class="loading-text">GRAND MUTIARA</h2>
@@ -93,15 +94,7 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
         <?php endforeach; ?>
     </div>
 </div>
-<footer>
-<div class="text-center py-4">
-    <p class="mb-0">&copy; 2024 Grand Mutiara. All right reserved.</p>
-    <p>Follow us on:
-        <a href="#" class="text-decoration-none">Facebook</a>,
-        <a href="#" class="text-decoration-none">Instagram</a>,
-        <a href="#" class="text-decoration-none">Twitter</a>
-</div>
-</footer>
+<?php include 'footer.html'; ?>
 <!-- <script src="js/trans.js" defer></script> -->
 <script src="js/writeEF.js"></script>  
 <!-- Bootstrap JavaScript Libraries -->
@@ -123,5 +116,3 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
 </script>
 </body>
 </html>
-
-<?php include 'navbar.php';?>

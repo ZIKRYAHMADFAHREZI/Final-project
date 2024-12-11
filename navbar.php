@@ -11,7 +11,7 @@
             <li class="nav-item">
                 <a href="about.php" class="nav-link" id="about" style="color: white; margin-left: 20px;">About</a>
             </li>
-            <?php if (isset($_SESSION['email']) || isset($_SESSION['username'])) : ?>
+            <?php if (isset($_SESSION['id_user'])) : ?>
                 <li class="nav-item">
                     <a href="user_profile.php" class="nav-link" id="profil" style="color: white; margin-left: 20px; margin-right:20px;">Profile</a>
                 </li>
@@ -20,7 +20,7 @@
                     <a href="login.php" class="nav-link" id="login" style="color: white; margin-left: 20px;">Log in</a>
                 </li>
                 <li class="nav-item">
-                    <a href="register.html" class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign in</a>
+                    <a href="register.php" class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign in</a>
                 </li>
             <?php endif; ?>
         </ul>

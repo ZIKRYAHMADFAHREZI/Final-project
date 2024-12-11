@@ -1,10 +1,16 @@
 <?php
 session_start();
 require 'db/connection.php';
-include 'navbar.php';
+
+$id_user = $_SESSION['id_user'];
+// Cek apakah pengguna sudah login
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    // Jika belum login, arahkan ke halaman login
+    header('Location: login.php');
+    exit;
+}
 
 // Ambil data pengguna berdasarkan ID yang login
-$id_user = $_SESSION['id_user'];
 
 try {
     // Ambil data user dan user_profile
@@ -97,8 +103,8 @@ try {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>User Profile</title>
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<link rel="icon website" type="png" href="img/icon.png">
 <link rel="stylesheet" href="css/trans.css">
 <style>
         body {
@@ -146,12 +152,13 @@ try {
     </style>
 </head>
 <body>
+<?php include 'navbar.php';?>
 <div id="loading" class="loading">
     <div class="spinner"></div>
     <h2 class="loading-text">GRAND MUTIARA</h2>
 </div>
 
-<div class="form-container">
+<div class="form-container" style="margin-top: 60px;">
     <h1>Profil Pengguna</h1>
     <form action="" method="POST">
         <div class="form-group">
