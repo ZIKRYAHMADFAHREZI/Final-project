@@ -2,9 +2,6 @@
 session_start();
 require 'db/connection.php';
 
-// Ambil data pengguna
-$id_user = $_SESSION['id_user'];
-
 // Periksa apakah 'id_type' ada dan merupakan angka
 if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     $id_type = intval($_GET['id_type']);
@@ -41,30 +38,52 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
     crossorigin="anonymous"
 />
-
+<style>
+    body {
+        background-color: #DCDCDC;
+    }
+</style>
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<h1>Detail </h1>
+<h1 class="text-center" style="padding-top: 100px;">Detail </h1>
 <img src="img/<?= $type['img'] ?>_1.jpg" alt="Logo" class="d-block w-100" style="aspect-ratio: 19/8;">
 <div>
     <p>THE GRAND MUTIARA HOTEL: <b><?= htmlspecialchars($type['name_type']); ?></b></p>
-    <p><?= htmlspecialchars($type['long_description']); ?></p> <!-- Misalkan ada kolom 'long desk' di tabel 'types' -->
-    <p><?= htmlspecialchars($type['fasility']); ?></p> <!-- Misalkan ada kolom 'fasility' di tabel 'types' -->
+    <p><?= htmlspecialchars($type['long_description']); ?></p> <!-- Menampilkan long_description sebagai paragraf -->
+    
+    <h3>Fasilitas</h3>
+    <ul>
+        <?php
+            // Memecah fasilitas berdasarkan newline (\n) atau kombinasi \r\n dan \n
+            $facilities = preg_split('/\r?\n/', $type['fasility']);
+            
+            foreach ($facilities as $facility) {
+                // Menghapus spasi ekstra dan menampilkan tiap fasilitas dalam <li>
+                $facility = trim($facility);
+                if (!empty($facility)) {
+                    echo '<li>' . htmlspecialchars($facility) . '</li>';
+                }
+            }
+        ?>
+    </ul>
 </div>
+
         <!-- Gambar Auto Slide -->
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="img/<?= $type['img'] ?>_2.jpg" class="d-block w-100" alt="img" style="aspect-ratio: 19 / 8; text-decoration: none;">
+            <img src="img/<?= $type['img'] ?>_2.jpg" class="d-block mx-auto" alt="img" style="max-width: 90px; aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/<?= $type['img'] ?>_3.jpg" class="d-block w-100" alt="img" style="aspect-ratio: 19 / 8; text-decoration: none;">
+            <img src="img/<?= $type['img'] ?>_3.jpg" class="d-block mx-auto" alt="img" style="max-width: 90px; aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-        <img src="img/<?= $type['img'] ?>_4.jpg" class="d-block w-100" alt="img" style="aspect-ratio: 19 / 8; text-decoration: none;">
+            <img src="img/<?= $type['img'] ?>_4.jpg" class="d-block mx-auto" alt="img" style="max-width: 90px; aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+    </div>
+    <!-- Controls (Optional) -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
     </button>
@@ -73,6 +92,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+
     <!-- Link untuk masuk ke halaman pemesanan -->
     <a href="type.php?id_type=<?= $type['id_type']; ?>" class="btn btn-primary">pesan</a>
 <?php include 'footer.html'; ?>
