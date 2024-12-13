@@ -100,12 +100,18 @@ if (isset($_POST['submit-pembayaran'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Metode Pembayaran</title>
-    <!-- Link ke CSS Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detail Metode Pembayaran</title>
+<link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+<!-- Link ke CSS Bootstrap -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+<style>
+    body {
+    background-color: #DCDCDC;
+    }
+</style>
 <body>
 <div class="container mt-5">
     <h1 class="text-center">Detail Metode Pembayaran</h1>
