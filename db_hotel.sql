@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 12, 2024 at 07:58 AM
+-- Generation Time: Dec 13, 2024 at 05:43 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -63,20 +63,25 @@ INSERT INTO `pay_methods` (`id_pay_method`, `method`, `payment_number`, `account
 -- --------------------------------------------------------
 
 --
--- Table structure for table `resevations`
+-- Table structure for table `reservations`
 --
 
-CREATE TABLE `resevations` (
+CREATE TABLE `reservations` (
   `id_reservation` int NOT NULL,
   `id_user` int NOT NULL,
-  `total_price` decimal(10,2) NOT NULL,
-  `destroy_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `id_type` int DEFAULT NULL,
-  `id_room_rate` int DEFAULT NULL,
-  `id_payment` int DEFAULT NULL,
-  `id_pay_method` int DEFAULT NULL,
-  `payment_proof` varchar(255) NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
+  `id_room` int NOT NULL,
+  `id_type` int NOT NULL,
+  `reservation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `check_in_date` date NOT NULL,
+  `check_out_date` date NOT NULL,
+  `number_of_guests` int NOT NULL,
+  `special_requests` text,
+  `status` enum('pending','confirmed','cancelled','completed') DEFAULT 'pending',
+  `payment_status` enum('paid','unpaid','refunded') DEFAULT 'unpaid',
+  `total_amount` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `payment_proof` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -269,15 +274,13 @@ ALTER TABLE `pay_methods`
   ADD PRIMARY KEY (`id_pay_method`);
 
 --
--- Indexes for table `resevations`
+-- Indexes for table `reservations`
 --
-ALTER TABLE `resevations`
+ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id_reservation`),
   ADD KEY `id_user` (`id_user`),
-  ADD KEY `fk_id_type` (`id_type`),
-  ADD KEY `fk_id_room_rate` (`id_room_rate`),
-  ADD KEY `fk_id_payment` (`id_payment`),
-  ADD KEY `fk_id_pay_method` (`id_pay_method`);
+  ADD KEY `id_type` (`id_type`),
+  ADD KEY `id_room` (`id_room`);
 
 --
 -- Indexes for table `rooms`
@@ -340,9 +343,9 @@ ALTER TABLE `pay_methods`
   MODIFY `id_pay_method` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `resevations`
+-- AUTO_INCREMENT for table `reservations`
 --
-ALTER TABLE `resevations`
+ALTER TABLE `reservations`
   MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT;
 
 --
@@ -393,14 +396,12 @@ ALTER TABLE `payments`
   ADD CONSTRAINT `payments_ibfk_2` FOREIGN KEY (`id_pay_method`) REFERENCES `pay_methods` (`id_pay_method`);
 
 --
--- Constraints for table `resevations`
+-- Constraints for table `reservations`
 --
-ALTER TABLE `resevations`
-  ADD CONSTRAINT `fk_id_pay_method` FOREIGN KEY (`id_pay_method`) REFERENCES `pay_methods` (`id_pay_method`),
-  ADD CONSTRAINT `fk_id_payment` FOREIGN KEY (`id_payment`) REFERENCES `payments` (`id_payment`),
-  ADD CONSTRAINT `fk_id_room_rate` FOREIGN KEY (`id_room_rate`) REFERENCES `room_rates` (`id_room_rate`),
-  ADD CONSTRAINT `fk_id_type` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`),
-  ADD CONSTRAINT `resevations_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`);
+ALTER TABLE `reservations`
+  ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reservations_ibfk_3` FOREIGN KEY (`id_room`) REFERENCES `rooms` (`id_room`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `rooms`
