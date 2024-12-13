@@ -1,11 +1,52 @@
 <?php
 session_start();
-
+require '../db/connection.php';
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
     // Jika belum login, arahkan ke halaman login
     header('Location: ../login.php');
     exit;
+}
+
+// Cek apakah pengguna memiliki role 'admin'
+if ($_SESSION['role'] !== 'admin') {
+    // Jika bukan admin, arahkan ke halaman lain (misalnya halaman beranda atau halaman akses terbatas)
+    header('Location: ../index.php');
+    exit;
+}
+function cari($keyword) {
+    // Memastikan koneksi PDO
+    global $pdo;
+    
+    // Query dengan prepared statement untuk mencegah SQL Injection
+    $sql = "SELECT * FROM reservations WHERE
+                id_user LIKE :keyword OR
+                total_price LIKE :keyword OR
+                id_type LIKE :keyword OR
+                id_rooms LIKE :keyword OR
+                id_room_rate LIKE :keyword OR
+                id_transit LIKE :keyword OR
+                id_payment LIKE :keyword OR
+                payment_proof LIKE :keyword";
+
+    // Menyiapkan query
+    $stmt = $pdo->prepare($sql);
+
+    // Mengikat parameter :keyword dengan nilai yang dimasukkan
+    $keyword = "%" . $keyword . "%";
+    $stmt->bindParam(':keyword', $keyword, PDO::PARAM_STR);
+
+    // Menjalankan query
+    $stmt->execute();
+
+    // Mengembalikan hasil pencarian
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+// Menangani form pencarian
+if (isset($_POST['cari']) && isset($_POST['keyword'])) {
+    $keyword = $_POST['keyword'];
+    $results = cari($keyword);
 }
 ?>
 <!DOCTYPE html>
@@ -28,17 +69,17 @@ if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
 <link rel="stylesheet" href="../css/admin.css">
 <style>
     .toggle-btn {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    background-color: #343a40;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 1000;
-    transition: left 0.3s ease-in-out;
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        background-color: #343a40;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 1000;
+        transition: left 0.3s ease-in-out;
     }
     .toggle-btn.closed {
         left: 15px;

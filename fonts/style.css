@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Lito';
+    src: local('Lito PRINT Italic'), local('Lito-PRINT-Italic'),
+        url('LITOPRINT-Italic.woff2') format('woff2'),
+        url('LITOPRINT-Italic.woff') format('woff'),
+        url('LITOPRINT-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+  }

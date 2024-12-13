@@ -13,7 +13,8 @@ require 'db/index.php';
 name="viewport"
 content="width=device-width, initial-scale=1, shrink-to-fit=no"
 />
-
+<link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="css/trans.css">
 <!-- Bootstrap CSS v5.2.1 -->
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -23,11 +24,21 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
 />
 <!-- Aos -->
 <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
-<link rel="stylesheet" href="css/index.css">
-<link rel="stylesheet" href="css/trans.css">
+<!-- goole font -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
 <style>
     body {
         background-color: #DCDCDC;
+    }
+    h2 {
+        font-family: 'Playfair Display', serif;
+    }
+    p {
+        font-family: 'Lora', serif;
+    }
+    h5 {
+        font-family: 'Cinzel', serif;
     }
 </style>
 </head>
@@ -38,7 +49,7 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
     <h2 class="loading-text">GRAND MUTIARA</h2>
 </div>
     <!-- Gambar Auto Slide -->
-<div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+<div id="carouselExample" class="carousel slide mt-4" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-inner">
         <div class="carousel-item active">
             <img src="img/hotel.jpg" class="d-block w-100" alt="G1" style="aspect-ratio: 19 / 8; text-decoration: none;">
@@ -71,7 +82,7 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-center mb-4">Welcome to Hotel <span id="typing-text" class="typing-effect"></span></h2>
-            <p class="text-center mb-5">Kami Akan Mengabulkan Permintaan Pelanggan Walau Permintaannya Aneh-Aneh</p>
+            <p class="text-center mb-4">Kami Tidak Pernah Meragukan Tamu Meski Permintaannya Aneh-Aneh</p>
 
         </div>
     </div>
@@ -84,7 +95,7 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
             <div class="card mb-4">
                 <img src="img/<?= $type["img"]; ?>_1.jpg" class="card-img-top" alt="type" style="object-fit: cover; aspect-ratio: 4 / 3;">
                 <div class="card-body">
-                    <h5 class="card-title"><?= $type["name_type"]; ?></h5> 
+                    <h5 class="card-title"><b><?= $type["name_type"]; ?></b></h5> 
                     <p class="card-text"><?= $type["description"]; ?></p>
                     <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai dari Rp<?= $type["start"]; ?></p>
                     <a href="detail.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Lihat Details</a>

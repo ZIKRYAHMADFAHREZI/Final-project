@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Lito';
+    src: local('Lito PRINT Italic'), local('Lito-PRINT-Italic'),
+        url('../fonts/LITOPRINT-Italic.woff2') format('woff2'),
+        url('../fonts/LITOPRINT-Italic.woff') format('woff'),
+        url('../fonts/LITOPRINT-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
 .typing-effect {
     display: inline-block;
     overflow: hidden;
@@ -6,8 +15,8 @@
     padding-right: 0.15em; /* Adjust padding to match the border */
     vertical-align: bottom; /* Align with the text */
     animation: blink-caret 0.7s step-end infinite;
+    font-family: 'Lito', sans-serif; /* Make sure the correct font is here */
 }
-
 /* Blinking cursor effect */
 @keyframes blink-caret {
     from, to { border-color: transparent; }

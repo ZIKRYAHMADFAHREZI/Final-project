@@ -1,5 +1,43 @@
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    @font-face {
+        font-family: 'Lito';
+        src: local('Lito PRINT Italic'), local('Lito-PRINT-Italic'),
+            url('fonts/LITOPRINT-Italic.woff2') format('woff2'),
+            url('fonts/LITOPRINT-Italic.woff') format('woff'),
+            url('fonts/LITOPRINT-Italic.ttf') format('truetype');
+        font-weight: normal;
+        font-style: italic;
+    }
+    #brand {
+    font-size: 30px;
+    color: white;
+    font-family: 'Lito', sans-serif;
+    font-style: italic;
+    margin-left: 0vw;
+    }
+    /* Responsif untuk layar lebih kecil (misalnya tablet) */
+    @media (max-width: 768px) {
+        #brand {
+            font-size: 24px; /* Ukuran font lebih kecil untuk layar kecil */
+            margin-left: 8vw; /* Menyesuaikan margin untuk layar lebih kecil */
+        }
+    }
+    /* Responsif untuk layar ponsel */
+    @media (max-width: 480px) {
+        #brand {
+            font-size: 20px; /* Ukuran font lebih kecil lagi untuk layar ponsel */
+            margin-left: 10vw; /* Menyesuaikan margin untuk ponsel */
+        }
+    }
+    .navbar-nav {
+        font-size: 20px;
+        font-family: 'Merriweather', serif;
+    }
+</style>
 <nav class="navbar navbar-expand-lg navbar-dark bg-light fixed-top" style="background-color: #a1a0a5 !important; width: 100%; z-index: 1000;">
-    <a href="index.php" class="navbar-brand" id="name" style="color: white; margin-left: 20px; cursor: pointer;">Grand Mutiara</a>
+    <a href="index.php" class="navbar-brand"><img src="img/favicon.ico" alt="navbr" style="width: 50px; margin-left: 20px;"></a>
+    <a href="index.php" class="navbar-brand" id="brand">GRAND MUTIARA</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>

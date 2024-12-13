@@ -9,6 +9,7 @@ include 'navbar.php';
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="stylesheet" href="css/trans.css">
 <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
         rel="stylesheet"
@@ -17,37 +18,54 @@ include 'navbar.php';
     />
 <!-- <link rel="stylesheet" href="node_modules/bootstrap-icons/font/bootstrap-icons.css"> -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-<link rel="stylesheet" href="css/trans.css">
-    <style>
-        body {
-            background-color: #DCDCDC;
-        }
+<!-- goole font -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Neuton&display=swap" rel="stylesheet">
+<style>
+/* Menata elemen menggunakan Flexbox */
+.isi {
+    display: flex;
+    align-items: center; /* Agar gambar dan teks sejajar secara vertikal */
+    justify-content: space-between; /* Atur ruang di antara gambar dan teks */
+}
+
+/* Styling gambar */
+.logo {
+    border-radius: 50%;
+    margin-right: 70px;
+    margin-left: 40px;
+    width: 20%; /* Ukuran logo */
+}
+/* Styling teks */
+.container {
+    flex-grow: 1; /* Membiarkan teks mengambil ruang lebih banyak jika diperlukan */
+    font-family: 'Cinzel', serif;
+}
+/* Media Query untuk layar kecil (misalnya, ponsel) */
+@media (max-width: 768px) {
     .isi {
-        display: flex;
-        align-items: center;
+        flex-direction: column; /* Gambar dan teks berubah menjadi kolom (gambar pindah ke bawah) */
+        align-items: center; /* Pusatkan gambar dan teks */
     }
+
     .logo {
-        border-radius: 50%;
-        margin-right: 70px;
-        margin-left: 40px;
-        width: 20%; /*Ubah ukuran logo*/
-        
+        margin-right: 0;
+        margin-left: 0;
+        margin-bottom: 20px; /* Beri jarak antara gambar dan teks */
+        width: 50%; /* Gambar lebih besar pada layar kecil, sesuaikan dengan keinginan */
     }
-    .title {
-        text-align: center;
-        padding-top: 70px;
-    }
-    </style>
+}
+</style>
 </head>
 <body>
 <div id="loading" class="loading">
     <div class="spinner"></div>
     <h2 class="loading-text">GRAND MUTIARA</h2>
 </div>
-    <h2 class="title">About</h2>
+    <h1 class="title text-center" style="padding-top: 80px; font-family: 'Neuton', serif;"><b>About</b></h1>
     <div class="isi">
         <img src="./img/GRAND MUTIARA.png" alt="grandmutiara" class="logo">
-        <div class="text">
+        <div class="container">
             <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error asperiores vero blanditiis non deserunt ducimus reiciendis. Doloremque porro assumenda odit adipisci dicta nobis. Dicta deleniti ipsam rerum vero consequatur fugiat.</p>
             <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque quam earum dignissimos quis accusamus. Sunt molestias doloremque, consequuntur, a aperiam nobis ea quod voluptatum delectus doloribus odit alias dignissimos magnam!</p>
             <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis dolor maiores voluptas magnam corrupti. Rerum, sed. Quae officiis, veritatis sunt minima accusamus quisquam, iure autem, explicabo eaque necessitatibus nostrum ullam.</p>
@@ -65,15 +83,7 @@ include 'navbar.php';
         <p class="bi bi-whatsapp fs-5">  0838-7362-5307</p>
         <p class="bi bi-whatsapp fs-5">  0831-2867-0469</p>
 </div>
-<footer>
-    <div class="text-center py-4">
-        <p class="mb-0">&copy; 2024 Grand Mutiara. All right reserved.</p>
-        <p>Follow us on:
-            <a href="#" class="text-decoration-none">Facebook</a>,
-            <a href="#" class="text-decoration-none">Instagram</a>,
-            <a href="#" class="text-decoration-none">Twitter</a>
-</div>
-</footer>
+<?php include 'footer.html'; ?>
 <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
