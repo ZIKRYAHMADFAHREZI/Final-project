@@ -5,7 +5,8 @@ include 'navbar.php';
 <!doctype html>
 <html lang="en">
 <head>
-<title>Done</title>
+<title>Pembayaran</title>
+<link rel="icon" type="image/x-icon" href="../img/favicon.ico">
 <!-- Required meta tags -->
 <meta charset="utf-8" />
 <meta
@@ -22,15 +23,21 @@ include 'navbar.php';
 />
 <link rel="stylesheet" href="css/trans.css">
 <link rel="icon" type="png" href="img/icon.png">
+<style>
+    body {
+    background-color: #DCDCDC;
+    }
+</style>
 </head>
 <body>
 <div id="loading" class="loading">
     <div class="spinner"></div>
     <h2 class="loading-text">GRAND MUTIARA</h2>
 </div>
+<div class="container" style="padding-top: 75px;">
+    <h1 class="text-center">Invoices</h1>
 
-<h1 class="text-center" style="padding-top: 50px;">Donee</h1>
-
+</div>
 
 
 
