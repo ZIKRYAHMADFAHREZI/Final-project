@@ -15,6 +15,11 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     $id_type = intval($_GET['id_type']);
 }
 
+// Mengambil nomor kamar berdasarkan id_type
+$roomQuery = $pdo->prepare("SELECT number_room FROM rooms WHERE id_type = ?");
+$roomQuery->execute([$id_type]);
+$rooms = $roomQuery->fetchAll(PDO::FETCH_ASSOC);
+
 function generateBookingOptions($id_type, $pdo) {
     $stmt = $pdo->prepare("SELECT 12hour, 24hour FROM room_rates WHERE id_type = ?");
     $stmt->execute([$id_type]);
@@ -25,21 +30,20 @@ function generateBookingOptions($id_type, $pdo) {
     $transit_price = $stmt->fetch(PDO::FETCH_ASSOC);
 
     echo '<div class="form-group mt-3">';
-    echo '<label>Pilih Jenis Menginap:</label><br>';
-    echo '<input type="radio" name="booking_type" value="perhari" onchange="updateDateFields()"> Perhari<br>';
-    echo '<input type="radio" name="booking_type" value="lebih_perhari" onchange="updateDateFields()"> Lebih Perhari<br>';
-    echo '</div>';
-
-    echo '<div class="form-group mt-3" id="duration-options" style="display:none">';
-    echo '<label for="id_duration">Pilih Durasi Menginap:</label>';
+    echo '<label>Pilih Durasi Menginap:</label>';
     echo '<select class="form-control" id="id_duration" name="id_duration" onchange="updatePrice()">';
-
+    
+    // Menambahkan harga transit jika ada
     if ($transit_price) {
         echo '<option value="transit" data-price="' . htmlspecialchars($transit_price['price']) . '">Transit (3 jam) - Rp ' . number_format($transit_price['price'], 0, ',', '.') . '</option>';
     }
 
+    // Menambahkan harga 12 jam
     echo '<option value="12jam" data-price="' . htmlspecialchars($room_rate['12hour']) . '">12 Jam - Rp ' . number_format($room_rate['12hour'], 0, ',', '.') . '</option>';
+
+    // Menambahkan harga 24 jam
     echo '<option value="24jam" data-price="' . htmlspecialchars($room_rate['24hour']) . '">24 Jam - Rp ' . number_format($room_rate['24hour'], 0, ',', '.') . '</option>';
+
     echo '</select>';
     echo '</div>';
 }
@@ -50,16 +54,35 @@ function generateBookingOptions($id_type, $pdo) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pilih Tipe Kamar</title>
+<title>Pilih Nomor Kamar</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link rel="icon" type="png" href="img/favicon.ico">
 <link rel="stylesheet" href="css/trans.css">
 <style>
-    body { background-color: #DCDCDC; }
-    .container { padding-top: 70px; }
-    .date-picker-container { display: flex; gap: 15px; }
+    body {
+        background-color: #DCDCDC;
+    }
+    .container {
+        padding-top: 70px;
+    }
+    .date-picker-container {
+        display: flex;
+        gap: 15px;
+        flex-direction: column;
+    }
+    /* Responsif pada layar kecil */
+    @media (max-width: 768px) {
+        .date-picker-container {
+            flex-direction: column;
+            width: 100%;
+        }
+        .form-group {
+            width: 100%;
+        }
+    }
 </style>
+
 </head>
 <body>
 <?php include 'navbar.php';?>
@@ -87,18 +110,20 @@ if (!isset($_SESSION['id_user'])) {
 
 <div class="container">
 <h2 class="text-center mb-4 mt-5">Pilih Tanggal dan Nomor Kamar</h2>
-<form action="paynt/payment.php" method="post" class="border p-4 rounded shadow">
+<form action="paynt/payment.php" method="POST" class="border p-4 rounded shadow" id="bookingForm">
     <input type="hidden" id="id_pay_method" name="id_pay_method" value="">
 
+    <?php generateBookingOptions($id_type, $pdo); ?>
+
     <div class="form-group">
-        <label for="startDate">Tanggal:</label>
-        <div class="date-picker-container">
-            <input type="date" class="form-control" id="startDate" name="start_date" min="<?= $formattedDate; ?>" required>
-            <input type="date" class="form-control" id="endDate" name="end_date" min="<?= $formattedDate; ?>" required>
-        </div>
+        <label for="startDate">Tanggal Mulai:</label>
+        <input type="date" class="form-control" id="startDate" name="start_date" min="<?= $formattedDate; ?>" required onchange="checkDate()">
     </div>
 
-    <?php generateBookingOptions($id_type, $pdo); ?>
+    <div class="form-group" id="endDateContainer" style="display:none;">
+        <label for="endDate">Tanggal Selesai:</label>
+        <input type="date" class="form-control" id="endDate" name="end_date" min="<?= $formattedDate; ?>" required onchange="updatePrice()">
+    </div>
 
     <div>
         <?php foreach ($methods as $index => $pm) : ?>
@@ -109,39 +134,82 @@ if (!isset($_SESSION['id_user'])) {
 
     <strong>Total Harga: </strong>
     <input type="number" name="total-price" id="totalPrice" readonly>
-    <br>
+
+    <div>
+        <p>Pilih Nomor Kamar:</p>
+        <?php foreach ($rooms as $room) : ?>
+            <input type="radio" id="room_<?= $room['number_room'] ?>" name="number_room" value="<?= htmlspecialchars($room['number_room']); ?>">
+            <label for="room_<?= $room['number_room'] ?>"><?= htmlspecialchars($room['number_room']); ?></label><br>
+        <?php endforeach; ?>
+    </div>
 
     <button type="submit" name="submit-type" class="btn btn-primary mt-4">Pesan</button>
 </form>
+
 </div>
 
 <script>
-function updateDateFields() {
-    const bookingType = document.querySelector('input[name="booking_type"]:checked').value;
-    const endDateField = document.getElementById('endDate');
+    document.addEventListener('DOMContentLoaded', function () {
+        // Mengatur perubahan pada input tanggal
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        const endDateContainer = document.getElementById('endDateContainer');
+        const durationSelect = document.getElementById('id_duration');
 
-    if (bookingType === 'perhari') {
-        endDateField.style.display = 'none';
-        document.getElementById('duration-options').style.display = 'block';
-    } else {
-        endDateField.style.display = 'inline-block';
-        document.getElementById('duration-options').style.display = 'block';
-    }
-}
+        // Mengatur agar tanggal selesai tidak lebih awal dari tanggal mulai
+        startDateInput.addEventListener('change', function () {
+            const startDateValue = startDateInput.value;
+            if (endDateInput.value && new Date(endDateInput.value) < new Date(startDateValue)) {
+                alert("Tanggal selesai tidak boleh lebih awal dari tanggal mulai.");
+                endDateInput.value = startDateValue;
+            }
+        });
 
-function updatePrice() {
-    const selectedOption = document.getElementById('id_duration').selectedOptions[0];
-    const pricePerUnit = parseFloat(selectedOption.getAttribute('data-price'));
+        endDateInput.addEventListener('change', function () {
+            const startDateValue = startDateInput.value;
+            const endDateValue = endDateInput.value;
+            if (new Date(endDateValue) < new Date(startDateValue)) {
+                alert("Tanggal selesai tidak boleh lebih awal dari tanggal mulai.");
+                endDateInput.value = startDateValue;
+            }
+        });
 
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value || startDate;
+        // Fungsi untuk update harga berdasarkan durasi dan tanggal
+        function updatePrice() {
+            const selectedOption = durationSelect.selectedOptions[0];
+            const pricePerUnit = parseFloat(selectedOption.getAttribute('data-price'));
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value || startDate;
 
-    if (startDate && endDate) {
-        const diffTime = new Date(endDate) - new Date(startDate);
-        const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 3600 * 24)));
-        document.getElementById('totalPrice').value = pricePerUnit * diffDays;
-    }
-}
+            if (startDate && endDate) {
+                const diffTime = new Date(endDate) - new Date(startDate);
+                const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 3600 * 24))); // Menghitung jumlah hari
+                document.getElementById('totalPrice').value = pricePerUnit * diffDays;
+            }
+        }
+
+        // Reset input dan tampilan ketika memilih durasi menginap
+        durationSelect.addEventListener('change', function () {
+            const selectedDuration = this.value;
+            const startDate = startDateInput;
+            const endDate = endDateInput;
+
+            // Jika memilih 3 jam atau 12 jam, reset dan sembunyikan tanggal selesai
+            if (selectedDuration === 'transit' || selectedDuration === '12jam') {
+                endDateContainer.style.display = 'none';
+                endDate.value = startDate.value; // Sesuaikan end date dengan start date
+                startDate.disabled = false;
+                endDate.disabled = true;
+            } else if (selectedDuration === '24jam') {
+                endDateContainer.style.display = 'block';
+                endDate.disabled = false;
+            }
+        });
+
+        // Cek ulang harga jika memilih durasi atau tanggal berubah
+        startDateInput.addEventListener('change', updatePrice);
+        endDateInput.addEventListener('change', updatePrice);
+    });
 </script>
+
 </body>
-</html>
