@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 13, 2024 at 05:43 AM
+-- Generation Time: Dec 13, 2024 at 08:08 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -74,14 +74,14 @@ CREATE TABLE `reservations` (
   `reservation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `check_in_date` date NOT NULL,
   `check_out_date` date NOT NULL,
-  `number_of_guests` int NOT NULL,
-  `special_requests` text,
   `status` enum('pending','confirmed','cancelled','completed') DEFAULT 'pending',
   `payment_status` enum('paid','unpaid','refunded') DEFAULT 'unpaid',
   `total_amount` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `payment_proof` varchar(255) NOT NULL
+  `payment_proof` varchar(255) NOT NULL,
+  `to_date` date DEFAULT NULL,
+  `start_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------

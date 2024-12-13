@@ -22,8 +22,6 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     die("ID jenis tidak valid.");
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
