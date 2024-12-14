@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 14, 2024 at 02:07 AM
+-- Generation Time: Dec 14, 2024 at 08:03 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -70,20 +70,35 @@ CREATE TABLE `reservations` (
   `id_reservation` int NOT NULL,
   `id_user` int NOT NULL,
   `id_room` int NOT NULL,
-  `id_type` int NOT NULL,
   `reservation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `check_in_date` date NOT NULL,
-  `check_out_date` date NOT NULL,
+  `check_in_date` date DEFAULT NULL,
+  `check_out_date` date DEFAULT NULL,
   `status` enum('pending','confirmed','cancelled','completed') DEFAULT 'pending',
   `payment_status` enum('paid','unpaid','refunded') DEFAULT 'unpaid',
   `total_amount` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `payment_proof` varchar(255) NOT NULL,
+  `payment_proof` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `to_date` date DEFAULT NULL,
   `start_date` date NOT NULL,
   `id_pay_method` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `reservations`
+--
+
+INSERT INTO `reservations` (`id_reservation`, `id_user`, `id_room`, `reservation_date`, `check_in_date`, `check_out_date`, `status`, `payment_status`, `total_amount`, `created_at`, `updated_at`, `payment_proof`, `to_date`, `start_date`, `id_pay_method`) VALUES
+(4, 3, 19, '2024-12-14 06:43:21', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 06:43:21', '2024-12-14 06:43:21', NULL, NULL, '2024-12-14', 2),
+(5, 3, 19, '2024-12-14 06:46:22', NULL, NULL, 'pending', 'unpaid', '0.00', '2024-12-14 06:46:22', '2024-12-14 06:46:22', NULL, NULL, '2024-12-14', 2),
+(6, 3, 19, '2024-12-14 06:47:49', NULL, NULL, 'pending', 'unpaid', '0.00', '2024-12-14 06:47:49', '2024-12-14 06:47:49', NULL, NULL, '2024-12-14', 2),
+(7, 3, 28, '2024-12-14 06:48:26', NULL, NULL, 'pending', 'unpaid', '300000.00', '2024-12-14 06:48:26', '2024-12-14 06:48:26', NULL, '2024-12-16', '2024-12-14', 2),
+(8, 3, 24, '2024-12-14 06:48:56', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-14 06:48:56', '2024-12-14 06:48:56', NULL, '2024-12-21', '2024-12-21', 1),
+(9, 3, 28, '2024-12-14 06:50:53', NULL, NULL, 'pending', 'unpaid', '1050000.00', '2024-12-14 06:50:53', '2024-12-14 06:50:53', NULL, '2024-12-21', '2024-12-14', 2),
+(10, 3, 28, '2024-12-14 07:04:25', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 07:04:25', '2024-12-14 07:04:25', NULL, NULL, '2024-12-21', 1),
+(11, 3, 19, '2024-12-14 07:23:41', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 07:23:41', '2024-12-14 07:23:41', NULL, NULL, '2024-12-18', 1),
+(12, 3, 28, '2024-12-14 07:26:34', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 07:26:34', '2024-12-14 07:26:34', NULL, NULL, '2025-01-01', 2),
+(13, 3, 28, '2024-12-14 07:28:38', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 07:28:38', '2024-12-14 07:28:38', NULL, NULL, '2024-12-20', 2);
 
 -- --------------------------------------------------------
 
@@ -281,7 +296,6 @@ ALTER TABLE `pay_methods`
 ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id_reservation`),
   ADD KEY `id_user` (`id_user`),
-  ADD KEY `id_type` (`id_type`),
   ADD KEY `id_room` (`id_room`),
   ADD KEY `fk_pay_methods` (`id_pay_method`);
 
@@ -349,7 +363,7 @@ ALTER TABLE `pay_methods`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `rooms`
@@ -404,7 +418,6 @@ ALTER TABLE `payments`
 ALTER TABLE `reservations`
   ADD CONSTRAINT `fk_pay_methods` FOREIGN KEY (`id_pay_method`) REFERENCES `pay_methods` (`id_pay_method`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE,
-  ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_3` FOREIGN KEY (`id_room`) REFERENCES `rooms` (`id_room`) ON DELETE CASCADE;
 
 --
