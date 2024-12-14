@@ -122,11 +122,11 @@ if (!isset($_SESSION['id_user'])) {
 
     <div class="form-group" id="endDateContainer" style="display:none;">
         <label for="endDate">Tanggal Selesai:</label>
-        <input type="date" class="form-control" id="endDate" name="end_date" min="<?= $formattedDate; ?>" required onchange="updatePrice()">
+        <input type="date" class="form-control" id="endDate" name="to_date" min="<?= $formattedDate; ?>" required onchange="updatePrice()">
     </div>
 
     <strong>Total Harga: </strong>
-    <input type="number" name="total-price" id="totalPrice" readonly>
+    <input type="number" name="total-amount" id="totalAmount" readonly>
 
     <div>
         <p>Pilih Nomor Kamar:</p>

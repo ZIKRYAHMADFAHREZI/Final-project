@@ -4,10 +4,10 @@ require '../db/connection.php'; // Pastikan file koneksi Anda benar
 
 // Mendapatkan data dari form yang dikirimkan
 $start_date = $_POST['start_date'];
-$end_date = $_POST['end_date'];
+$to_date = $_POST['to_date'];
 $id_duration = $_POST['id_duration'];
-$method = $_POST['id_pay_method'];
-$total_price = $_POST['total-price'];
+$id_pay_method = $_POST['id_pay_method'];
+$total_amount = $_POST['total_amount'];
 $id_room = $_POST['number_room'];  // Mendapatkan nomor kamar yang dipilih
 
 // Ambil data id_pay_method dari POST
@@ -29,9 +29,6 @@ if (!isset($error_message)) {
 
         if (!$payment_details) {
             $error_message = "Metode pembayaran tidak ditemukan atau sudah tidak aktif.";
-        } else {
-            // Data metode pembayaran berhasil ditemukan
-            // Bisa digunakan untuk ditampilkan atau diproses lebih lanjut
         }
 
     } catch (PDOException $e) {
@@ -40,38 +37,25 @@ if (!isset($error_message)) {
 }
 
 // Validasi apakah data yang diperlukan ada
-if (isset($start_date, $end_date, $id_duration, $method, $total_price, $id_room)) {
+if (!isset($error_message) && isset($start_date, $to_date, $id_duration, $id_pay_method, $total_amount, $id_room)) {
     try {
-        // Validasi metode pembayaran
-        $query = $pdo->prepare("SELECT * FROM pay_methods WHERE id_pay_method = :id_pay_method AND active = 1");
-        $query->bindParam(':id_pay_method', $method, PDO::PARAM_INT);
-        $query->execute();
+        // Proses pemesanan atau penyimpanan data ke database
+        // Pastikan data pemesanan dapat disimpan dengan benar
 
-        $payment_details = $query->fetch(PDO::FETCH_ASSOC); // Mengambil hasil query
+        $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, to_date, id_room, total_amount) 
+                               VALUES (:id_user, :id_pay_method, :start_date, :to_date, :id_room, :total_amount)");
 
-        // Jika data metode pembayaran tidak ditemukan
-        if (!$payment_details) {
-            $error_message = "Metode pembayaran tidak ditemukan atau sudah tidak aktif.";
-        } else {
-            // Data metode pembayaran valid
-            // Proses pemesanan atau penyimpanan data ke database
-            // Pastikan data pemesanan dapat disimpan dengan benar
+        $stmt->bindParam(':id_user', $_SESSION['id_user']);
+        $stmt->bindParam(':id_pay_method', $id_pay_method);
+        $stmt->bindParam(':start_date', $start_date);
+        $stmt->bindParam(':to_date', $to_date);
+        $stmt->bindParam(':id_room', $id_room);
+        $stmt->bindParam(':total_amount', $total_amount);
 
-            $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, end_date, id_room, total_price) 
-                                   VALUES (:id_user, :id_pay_method, :start_date, :end_date, :id_room, :total_price)");
+        $stmt->execute();
 
-            $stmt->bindParam(':id_user', $_SESSION['id_user']);
-            $stmt->bindParam(':id_pay_method', $method);
-            $stmt->bindParam(':start_date', $start_date);
-            $stmt->bindParam(':end_date', $end_date);
-            $stmt->bindParam(':id_room', $id_room);
-            $stmt->bindParam(':total_price', $total_price);
-
-            $stmt->execute();
-
-            // Setelah data berhasil disimpan, tampilkan pesan sukses
-            $success_message = "Pemesanan berhasil. Silakan lanjutkan pembayaran.";
-        }
+        // Setelah data berhasil disimpan, tampilkan pesan sukses
+        $success_message = "Pemesanan berhasil. Silakan lanjutkan pembayaran.";
 
     } catch (PDOException $e) {
         // Menangani kesalahan jika ada masalah dengan query SQL
@@ -105,7 +89,7 @@ if (isset($start_date, $end_date, $id_duration, $method, $total_price, $id_room)
         <div class="card mt-3">
             <div class="card-body">
                 <h5><strong>Metode Pembayaran:</strong> <?= htmlspecialchars($payment_details['method']); ?></h5>
-                <h6><strong>Total Pembayaran:</strong> Rp <?= number_format($total_price, 0, ',', '.'); ?></h6>
+                <h6><strong>Total Pembayaran:</strong> Rp <?= number_format($total_amount, 0, ',', '.'); ?></h6>
                 <form action="invoices.php" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="payment_proof">Bukti Pembayaran</label>

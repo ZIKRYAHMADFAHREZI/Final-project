@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 14, 2024 at 01:41 AM
+-- Generation Time: Dec 14, 2024 at 02:07 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -81,7 +81,8 @@ CREATE TABLE `reservations` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `payment_proof` varchar(255) NOT NULL,
   `to_date` date DEFAULT NULL,
-  `start_date` date NOT NULL
+  `start_date` date NOT NULL,
+  `id_pay_method` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -227,7 +228,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`, `remember_token`, `password_reset_token`) VALUES
 (1, 'admin', 'admin@admin.com', '$2y$10$R1eJRC2U4Y8YWs5PuswEJOErrPiQk56rZ6s7hOCPBn6k5H.PqFX5a', '2024-11-26 11:23:58', 'admin', NULL, NULL),
 (2, 'yuda69', 'yuda@gmail.com', '$2y$10$Tyb9VAQgjHFp4ZufrWT1FuqIbKpd64ryxy6hx/RmoeDRfdGCG5AAi', '2024-11-30 09:48:28', 'user', NULL, NULL),
-(3, 'yuda666', 'yuda666@yahaha.com', '$2y$10$ooaZUV4B75cQG6L7xZPU2uqZ2mEEIOOviEVvFlExTZtgiV9OsG6MW', '2024-12-03 01:16:46', 'user', NULL, NULL);
+(3, 'yuda666', 'yuda666@yahaha.com', '$2y$10$ooaZUV4B75cQG6L7xZPU2uqZ2mEEIOOviEVvFlExTZtgiV9OsG6MW', '2024-12-03 01:16:46', 'user', NULL, NULL),
+(4, 'arif', 'ariftot@gmail.com', '$2y$10$.JKJ.HhlhibNiUyTnWXKtemMJoFXR62l4vGQRIxDx72Evsbp7pLNy', '2024-12-14 02:03:00', 'user', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -280,7 +282,8 @@ ALTER TABLE `reservations`
   ADD PRIMARY KEY (`id_reservation`),
   ADD KEY `id_user` (`id_user`),
   ADD KEY `id_type` (`id_type`),
-  ADD KEY `id_room` (`id_room`);
+  ADD KEY `id_room` (`id_room`),
+  ADD KEY `fk_pay_methods` (`id_pay_method`);
 
 --
 -- Indexes for table `rooms`
@@ -376,7 +379,7 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user_profile`
@@ -399,6 +402,7 @@ ALTER TABLE `payments`
 -- Constraints for table `reservations`
 --
 ALTER TABLE `reservations`
+  ADD CONSTRAINT `fk_pay_methods` FOREIGN KEY (`id_pay_method`) REFERENCES `pay_methods` (`id_pay_method`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_2` FOREIGN KEY (`id_type`) REFERENCES `types` (`id_type`) ON DELETE CASCADE,
   ADD CONSTRAINT `reservations_ibfk_3` FOREIGN KEY (`id_room`) REFERENCES `rooms` (`id_room`) ON DELETE CASCADE;
