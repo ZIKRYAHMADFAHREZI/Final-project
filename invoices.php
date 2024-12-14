@@ -1,5 +1,9 @@
 <?php 
 include 'navbar.php';
+session_start();
+if (isset($_GET['id_payment']) && is_numeric($_GET['id_payment'])) {
+    $id_payment = intval($_GET['id_payment']);
+}
 ?>
 
 <!doctype html>
