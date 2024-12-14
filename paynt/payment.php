@@ -2,25 +2,18 @@
 session_start();
 require '../db/connection.php'; // Pastikan file koneksi Anda benar
 
-// Mendapatkan data dari form yang dikirimkan
-$start_date = $_POST['start_date'];
-$to_date = $_POST['to_date'];
-$id_duration = $_POST['id_duration'];
-$id_pay_method = $_POST['id_pay_method'];
-$total_amount = $_POST['total_amount'];
-$id_room = $_POST['number_room'];  // Mendapatkan nomor kamar yang dipilih
-
-// Ambil data id_pay_method dari POST
-if (isset($_POST['id_pay_method'])) {
+// Cek apakah data yang diperlukan ada
+if (isset($_POST['start_date'], $_POST['to_date'], $_POST['id_duration'], $_POST['id_pay_method'], $_POST['total_amount'], $_POST['number_room'])) {
+    // Mendapatkan data dari form yang dikirimkan
+    $start_date = $_POST['start_date'];
+    $to_date = $_POST['to_date'];
+    $id_duration = $_POST['id_duration'];
     $id_pay_method = $_POST['id_pay_method'];
-} else {
-    $error_message = "ID metode pembayaran tidak ditemukan.";
-}
+    $total_amount = $_POST['total_amount'];
+    $id_room = $_POST['number_room'];  // Mendapatkan nomor kamar yang dipilih
 
-// Lanjutkan proses jika id_pay_method tersedia
-if (!isset($error_message)) {
+    // Validasi apakah metode pembayaran ada
     try {
-        // Query untuk mendapatkan detail metode pembayaran berdasarkan id_pay_method
         $query = $pdo->prepare("SELECT * FROM pay_methods WHERE id_pay_method = :id_pay_method AND active = 1");
         $query->bindParam(':id_pay_method', $id_pay_method, PDO::PARAM_INT);
         $query->execute();
@@ -28,41 +21,70 @@ if (!isset($error_message)) {
         $payment_details = $query->fetch(PDO::FETCH_ASSOC); // Ambil hasil query
 
         if (!$payment_details) {
-            $error_message = "Metode pembayaran tidak ditemukan atau sudah tidak aktif.";
+            throw new Exception("Metode pembayaran tidak ditemukan atau sudah tidak aktif.");
         }
 
     } catch (PDOException $e) {
         $error_message = "Terjadi kesalahan saat mengambil data: " . $e->getMessage();
     }
-}
 
-// Validasi apakah data yang diperlukan ada
-if (!isset($error_message) && isset($start_date, $to_date, $id_duration, $id_pay_method, $total_amount, $id_room)) {
-    try {
-        // Proses pemesanan atau penyimpanan data ke database
-        // Pastikan data pemesanan dapat disimpan dengan benar
+    // Jika tidak ada error, simpan data pemesanan
+    if (!isset($error_message)) {
+        try {
+            // Proses pemesanan atau penyimpanan data ke database
+            $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, to_date, id_room, total_amount) 
+                                   VALUES (:id_user, :id_pay_method, :start_date, :to_date, :id_room, :total_amount)");
 
-        $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, to_date, id_room, total_amount) 
-                               VALUES (:id_user, :id_pay_method, :start_date, :to_date, :id_room, :total_amount)");
+            $stmt->bindParam(':id_user', $_SESSION['id_user']);
+            $stmt->bindParam(':id_pay_method', $id_pay_method);
+            $stmt->bindParam(':start_date', $start_date);
+            $stmt->bindParam(':to_date', $to_date);
+            $stmt->bindParam(':id_room', $id_room);
+            $stmt->bindParam(':total_amount', $total_amount);
 
-        $stmt->bindParam(':id_user', $_SESSION['id_user']);
-        $stmt->bindParam(':id_pay_method', $id_pay_method);
-        $stmt->bindParam(':start_date', $start_date);
-        $stmt->bindParam(':to_date', $to_date);
-        $stmt->bindParam(':id_room', $id_room);
-        $stmt->bindParam(':total_amount', $total_amount);
+            $stmt->execute();
 
-        $stmt->execute();
+            // Ambil id_reservation untuk pemesanan yang baru
+            $id_reservation = $pdo->lastInsertId();
 
-        // Setelah data berhasil disimpan, tampilkan pesan sukses
-        $success_message = "Pemesanan berhasil. Silakan lanjutkan pembayaran.";
+            $success_message = "Pemesanan berhasil. Silakan lanjutkan pembayaran.";
 
-    } catch (PDOException $e) {
-        // Menangani kesalahan jika ada masalah dengan query SQL
-        $error_message = "Terjadi kesalahan saat memproses pemesanan: " . $e->getMessage();
+        } catch (PDOException $e) {
+            // Menangani kesalahan jika ada masalah dengan query SQL
+            $error_message = "Terjadi kesalahan saat memproses pemesanan: " . $e->getMessage();
+        }
     }
 } else {
     $error_message = "Data pemesanan tidak lengkap.";
+}
+
+// Menangani unggah bukti pembayaran
+if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] == 0) {
+    $file_tmp = $_FILES['payment_proof']['tmp_name'];
+    $file_name = $_FILES['payment_proof']['name'];
+    $file_size = $_FILES['payment_proof']['size'];
+    $file_type = $_FILES['payment_proof']['type'];
+
+    // Tentukan direktori tujuan untuk menyimpan file
+    $upload_dir = '../uploads/';
+    $target_file = $upload_dir . basename($file_name);
+
+    // Cek apakah file bisa dipindahkan ke direktori tujuan
+    if (move_uploaded_file($file_tmp, $target_file)) {
+        // Simpan informasi file di database, misalnya ID pemesanan dan nama file
+        try {
+            $stmt = $pdo->prepare("UPDATE reservations SET payment_proof = :payment_proof WHERE id_reservation = :id_reservation");
+            $stmt->bindParam(':payment_proof', $file_name);
+            $stmt->bindParam(':id_reservation', $id_reservation); // Pastikan $id_reservation sudah ada
+            $stmt->execute();
+
+            $payment_upload_message = "Bukti pembayaran berhasil diunggah.";
+        } catch (PDOException $e) {
+            $payment_upload_message = "Terjadi kesalahan saat mengunggah bukti pembayaran: " . $e->getMessage();
+        }
+    } else {
+        $payment_upload_message = "Terjadi kesalahan saat mengunggah file.";
+    }
 }
 ?>
 
@@ -90,13 +112,19 @@ if (!isset($error_message) && isset($start_date, $to_date, $id_duration, $id_pay
             <div class="card-body">
                 <h5><strong>Metode Pembayaran:</strong> <?= htmlspecialchars($payment_details['method']); ?></h5>
                 <h6><strong>Total Pembayaran:</strong> Rp <?= number_format($total_amount, 0, ',', '.'); ?></h6>
-                <form action="invoices.php" method="POST" enctype="multipart/form-data">
+
+                <!-- Form untuk mengirimkan bukti pembayaran -->
+                <form action="" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="payment_proof">Bukti Pembayaran</label>
                         <input type="file" class="form-control-file" name="payment_proof" required>
                     </div>
                     <button type="submit" name="submit-payment" class="btn btn-primary">Kirim</button>
                 </form>
+                
+                <?php if (isset($payment_upload_message)): ?>
+                    <div class="alert alert-info mt-3"><?= htmlspecialchars($payment_upload_message); ?></div>
+                <?php endif; ?>
             </div>
         </div>
     <?php endif; ?>

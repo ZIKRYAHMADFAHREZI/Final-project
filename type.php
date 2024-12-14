@@ -32,7 +32,7 @@ function generateBookingOptions($id_type, $pdo) {
     echo '<div class="form-group mt-3">';
     echo '<label>Pilih Durasi Menginap:</label>';
     echo '<select class="form-control" id="id_duration" name="id_duration" onchange="updatePrice()">';
-    
+
     // Menambahkan harga transit jika ada
     if ($transit_price) {
         echo '<option value="transit" data-price="' . htmlspecialchars($transit_price['price']) . '">Transit (3 jam) - Rp ' . number_format($transit_price['price'], 0, ',', '.') . '</option>';
@@ -126,7 +126,7 @@ if (!isset($_SESSION['id_user'])) {
     </div>
 
     <strong>Total Harga: </strong>
-    <input type="number" name="total-amount" id="totalAmount" readonly>
+    <input type="text" name="total-amount" id="totalAmount" readonly>
 
     <div>
         <p>Pilih Nomor Kamar:</p>
@@ -148,6 +148,24 @@ if (!isset($_SESSION['id_user'])) {
         const endDateInput = document.getElementById('endDate');
         const endDateContainer = document.getElementById('endDateContainer');
         const durationSelect = document.getElementById('id_duration');
+        const totalAmountInput = document.getElementById('totalAmount');
+
+        // Fungsi untuk update harga berdasarkan durasi dan tanggal
+        function updatePrice() {
+            const selectedOption = durationSelect.selectedOptions[0];
+            const pricePerUnit = parseFloat(selectedOption.getAttribute('data-price'));
+            const startDate = startDateInput.value;
+            const endDate = endDateInput.value || startDate;
+
+            if (startDate && endDate) {
+                const diffTime = new Date(endDate) - new Date(startDate);
+                const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 3600 * 24))); // Menghitung jumlah hari
+                const totalPrice = pricePerUnit * diffDays;
+
+                // Menampilkan total harga di input totalAmount
+                totalAmountInput.value = totalPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+            }
+        }
 
         // Mengatur agar tanggal selesai tidak lebih awal dari tanggal mulai
         startDateInput.addEventListener('change', function () {
@@ -167,20 +185,6 @@ if (!isset($_SESSION['id_user'])) {
             }
         });
 
-        // Fungsi untuk update harga berdasarkan durasi dan tanggal
-        function updatePrice() {
-            const selectedOption = durationSelect.selectedOptions[0];
-            const pricePerUnit = parseFloat(selectedOption.getAttribute('data-price'));
-            const startDate = startDateInput.value;
-            const endDate = endDateInput.value || startDate;
-
-            if (startDate && endDate) {
-                const diffTime = new Date(endDate) - new Date(startDate);
-                const diffDays = Math.max(1, Math.ceil(diffTime / (1000 * 3600 * 24))); // Menghitung jumlah hari
-                document.getElementById('totalPrice').value = pricePerUnit * diffDays;
-            }
-        }
-
         // Reset input dan tampilan ketika memilih durasi menginap
         durationSelect.addEventListener('change', function () {
             const selectedDuration = this.value;
@@ -197,19 +201,21 @@ if (!isset($_SESSION['id_user'])) {
                 endDateContainer.style.display = 'block';
                 endDate.disabled = false;
             }
+
+            // Update harga ketika memilih durasi menginap
+            updatePrice();
         });
 
         // Cek ulang harga jika memilih durasi atau tanggal berubah
         startDateInput.addEventListener('change', updatePrice);
         endDateInput.addEventListener('change', updatePrice);
     });
-    document.addEventListener('DOMContentLoaded', function () {
-    const pesanButton = document.getElementById('pesanButton');
-    const payMethods = <?= json_encode($methods); ?>; // Menyisipkan array metode pembayaran dari PHP ke dalam JS
 
     // Menambahkan event listener pada tombol "Pesan"
-    pesanButton.addEventListener('click', function () {
-        // Menampilkan SweetAlert2 untuk memilih metode pembayaran
+    document.getElementById('pesanButton').addEventListener('click', function () {
+        const payMethods = <?= json_encode($methods); ?>; // Menyisipkan data payMethods PHP ke dalam JavaScript
+
+        // Menampilkan alert jika memilih metode pembayaran
         Swal.fire({
             title: 'Pilih Metode Pembayaran',
             input: 'radio',
@@ -220,23 +226,19 @@ if (!isset($_SESSION['id_user'])) {
             inputValidator: (value) => {
                 return !value && 'Anda harus memilih metode pembayaran!';
             },
+            inputPlaceholder: 'Pilih Metode Pembayaran',
             showCancelButton: true,
-            confirmButtonText: 'Pilih',
+            confirmButtonText: 'Konfirmasi',
             cancelButtonText: 'Batal',
-            allowOutsideClick: false
         }).then((result) => {
             if (result.isConfirmed) {
-                // Menyimpan ID metode pembayaran yang dipilih ke dalam form
+                // Mengatur metode pembayaran yang dipilih
                 document.getElementById('id_pay_method').value = result.value;
-
-                // Mengupdate form untuk menyertakan metode pembayaran yang dipilih
-                // Setelah memilih, lanjutkan untuk submit form
                 document.getElementById('bookingForm').submit();
             }
         });
     });
-});
-
 </script>
 
 </body>
+</html>
