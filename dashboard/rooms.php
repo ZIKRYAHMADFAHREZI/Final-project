@@ -123,8 +123,8 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
             </ul>
         </li>
-        <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
-        <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
+        <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Password</a></li>
+        <li><a href="#" onclick="confirmLogout();"><i class="fa fa-sign-out-alt me-2"></i> Logout</a></li>
     </ul>
 </div>
 

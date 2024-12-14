@@ -113,7 +113,7 @@ try {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ganti Email & Password</title>
+<title>Update</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -166,19 +166,12 @@ try {
                 <i class="fa fa-list me-2"></i> Kamar
             </a>
             <ul class="collapse list-unstyled ms-3" id="dropdownMenu">
-<<<<<<< HEAD
-<<<<<<< HEAD
                 <li><a href="delete_rooms.php" class="dropdown-item">Hapus kamar</a></li>
                 <li><a href="rooms.php" class="dropdown-item">Status kamar</a></li>
-                <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
-=======
+                <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>                <li><a href="rooms.php" class="dropdown-item">Status Kamar</a></li>
+                <li><a href="add_update.php" class="dropdown-item">Tambah Kamar</a></li>
                 <li><a href="rooms.php" class="dropdown-item">Status Kamar</a></li>
                 <li><a href="add_update.php" class="dropdown-item">Tambah Kamar</a></li>
->>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
-=======
-                <li><a href="rooms.php" class="dropdown-item">Status Kamar</a></li>
-                <li><a href="add_update.php" class="dropdown-item">Tambah Kamar</a></li>
->>>>>>> 43c5f023c4ffb67a08ba1f1b1d4495cd758f6d06
                 <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
             </ul>
         </li>

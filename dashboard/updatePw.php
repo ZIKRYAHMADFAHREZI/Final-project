@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ganti Email & Password</title>
+<title>Ganti Password</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
@@ -105,8 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
             </ul>
         </li>
-        <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Email & Password</a></li>
-        <li><a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a></li>
+        <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Password</a></li>
+        <li><a href="#" onclick="confirmLogout();"><i class="fa fa-sign-out-alt me-2"></i> Logout</a></li>
     </ul>
 </div>
 
