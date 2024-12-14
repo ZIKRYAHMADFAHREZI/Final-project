@@ -1,4 +1,4 @@
-<?php
+<?php 
 session_start();
 require 'db/connection.php';
 
@@ -97,68 +97,94 @@ try {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Profile</title>
-<link rel="icon" type="image/x-icon" href="img/favicon.ico">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<link rel="stylesheet" href="css/trans.css">
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/trans.css">
+    <style>
         body {
-            font-family: Arial, sans-serif;
-            /* background-color: #f4f4f4; */
-            /* margin: 0; */
-            /* padding: 20px; */
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
         }
         .form-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
-        }
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    margin-top: 75px; /* Menambah jarak atas sesuai kebutuhan */
+    margin-left: auto;
+    margin-right: auto;
+}
         .form-container h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #495057;
             margin-bottom: 20px;
-            font-size: 24px;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         .form-group label {
-            display: block;
-            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6c757d;
         }
         .form-group input {
             width: 100%;
-            padding: 10px;
+            padding: 12px 15px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group input:focus {
+            border-color: #5cb85c;
+            box-shadow: 0 0 5px rgba(92, 184, 92, 0.5);
         }
         .form-group button {
-            padding: 10px 15px;
-            background-color: #5cb85c;
+            width: 100%;
+            padding: 12px;
+            /* background-color: #5cb85c; */
             border: none;
             color: white;
-            border-radius: 4px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         .form-group button:hover {
             background-color: #4cae4c;
+        }
+        .logout-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #dc3545;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .logout-link:hover {
+            text-decoration: underline;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            font-size: 20px;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 <?php include 'navbar.php';?>
-<div id="loading" class="loading">
-    <div class="spinner"></div>
-    <h2 class="loading-text">GRAND MUTIARA</h2>
-</div>
 
-<div class="form-container" style="margin-top: 60px;">
+<div class="form-container">
     <h1>Profil Pengguna</h1>
     <form action="" method="POST">
         <div class="form-group">
@@ -186,16 +212,17 @@ try {
             <input type="date" id="date_of_birth" name="date_of_birth" value="<?= htmlspecialchars($user_profile['date_of_birth'] ?? ''); ?>">
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Simpan</button>
+            <button type="submit" class="btn btn-success">Simpan</button>
+        </div>
+        <div class="form-group">
+            <button type="reset" class="btn btn-secondary">Batal</a>
         </div>
     </form>
 </div>
 
-<a href="#" onclick="confirmLogout();"><i class="fa fa-lock me-2"></i> Logout</a>
+<a href="#" onclick="confirmLogout();" class="logout-link"><i class="fa fa-lock me-2"></i> Logout</a>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<!-- <script src="js/trans.js"></script> -->
-<!-- Sweet Alert2 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 function confirmLogout() {
@@ -210,7 +237,7 @@ function confirmLogout() {
         cancelButtonText: "Batal"
     }).then((result) => {
         if (result.isConfirmed) {
-            window.location.href = 'logout.php'; // Ganti URL sesuai dengan rute logout Anda
+            window.location.href = 'logout.php'; 
         }
     });
 }

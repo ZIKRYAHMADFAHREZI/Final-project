@@ -125,13 +125,6 @@ if (!isset($_SESSION['id_user'])) {
         <input type="date" class="form-control" id="endDate" name="end_date" min="<?= $formattedDate; ?>" required onchange="updatePrice()">
     </div>
 
-    <div>
-        <?php foreach ($methods as $index => $pm) : ?>
-            <input type="radio" id="method_<?= $index ?>" name="id_pay_method" value="<?= htmlspecialchars($pm['id_pay_method']); ?>">
-            <label for="method_<?= $index ?>"><?= htmlspecialchars($pm['method']); ?></label>
-        <?php endforeach; ?>
-    </div>
-
     <strong>Total Harga: </strong>
     <input type="number" name="total-price" id="totalPrice" readonly>
 
@@ -143,7 +136,7 @@ if (!isset($_SESSION['id_user'])) {
         <?php endforeach; ?>
     </div>
 
-    <button type="submit" name="submit-type" class="btn btn-primary mt-4">Pesan</button>
+    <button type="button" id="pesanButton" class="btn btn-primary mt-4">Pesan</button>
 </form>
 
 </div>
@@ -210,6 +203,40 @@ if (!isset($_SESSION['id_user'])) {
         startDateInput.addEventListener('change', updatePrice);
         endDateInput.addEventListener('change', updatePrice);
     });
+    document.addEventListener('DOMContentLoaded', function () {
+    const pesanButton = document.getElementById('pesanButton');
+    const payMethods = <?= json_encode($methods); ?>; // Menyisipkan array metode pembayaran dari PHP ke dalam JS
+
+    // Menambahkan event listener pada tombol "Pesan"
+    pesanButton.addEventListener('click', function () {
+        // Menampilkan SweetAlert2 untuk memilih metode pembayaran
+        Swal.fire({
+            title: 'Pilih Metode Pembayaran',
+            input: 'radio',
+            inputOptions: payMethods.reduce(function (options, method) {
+                options[method.id_pay_method] = method.method;
+                return options;
+            }, {}),
+            inputValidator: (value) => {
+                return !value && 'Anda harus memilih metode pembayaran!';
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Pilih',
+            cancelButtonText: 'Batal',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Menyimpan ID metode pembayaran yang dipilih ke dalam form
+                document.getElementById('id_pay_method').value = result.value;
+
+                // Mengupdate form untuk menyertakan metode pembayaran yang dipilih
+                // Setelah memilih, lanjutkan untuk submit form
+                document.getElementById('bookingForm').submit();
+            }
+        });
+    });
+});
+
 </script>
 
 </body>

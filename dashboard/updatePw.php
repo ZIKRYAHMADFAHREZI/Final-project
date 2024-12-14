@@ -3,13 +3,12 @@ require '../db/connection.php'; // Pastikan $pdo sudah terinisialisasi di file i
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $email_baru = htmlspecialchars($_POST['email_baru']);
         $password_lama = htmlspecialchars($_POST['password_lama']);
         $password_baru = htmlspecialchars($_POST['password_baru']);
         $konfirmasi_password = htmlspecialchars($_POST['konfirmasi_password']);
 
         // Validasi input
-        if (empty($email_baru) || empty($password_lama) || empty($password_baru) || empty($konfirmasi_password)) {
+        if (empty($password_lama) || empty($password_baru) || empty($konfirmasi_password)) {
             echo "<script>Swal.fire('Error', 'Semua field harus diisi!', 'error');</script>";
             exit;
         }
@@ -28,14 +27,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && password_verify($password_lama, $user['password'])) {
             // Jika password lama cocok, lakukan update
             $hashed_password = password_hash($password_baru, PASSWORD_BCRYPT);
-            $update_stmt = $pdo->prepare("UPDATE users SET email = :email_baru, password = :password_baru WHERE email = :email_lama");
-            $update_stmt->bindParam(':email_baru', $email_baru);
+            $update_stmt = $pdo->prepare("UPDATE users SET password = :password_baru WHERE email = :email");
             $update_stmt->bindParam(':password_baru', $hashed_password);
-            $update_stmt->bindParam(':email_lama', $_POST['email']);
+            $update_stmt->bindParam(':email', $_POST['email']);
             $update_stmt->execute();
 
             if ($update_stmt->rowCount() > 0) {
-                echo "<script>Swal.fire('Berhasil', 'Data berhasil diubah!', 'success');</script>";
+                echo "<script>Swal.fire('Berhasil', 'Password berhasil diubah!', 'success');</script>";
             } else {
                 echo "<script>Swal.fire('Error', 'Tidak ada perubahan pada data!', 'error');</script>";
             }
@@ -47,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Database Error: " . $e->getMessage()); // Log error untuk debugging
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -122,16 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </header>
     <div class="form-container">
         <form id="updateForm" action="" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <input 
-                    type="email" 
-                    class="form-control" 
-                    id="email_baru" 
-                    name="email_baru"
-                    placeholder="Masukkan Email Baru"
-                    required
-                >
-            </div>
             <div class="mb-3">
                 <input 
                     type="password" 
