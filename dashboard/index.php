@@ -177,6 +177,7 @@ if (isset($_POST['cari']) && isset($_POST['keyword'])) {
         </form>
     </div>
     <div>
+        <?php $i = 0; ?>
         <?php foreach ($datas as $data): ?>
             <?= htmlspecialchars($data['id_user']); ?>
             <?= htmlspecialchars($data['id_room']); ?>
@@ -186,6 +187,7 @@ if (isset($_POST['cari']) && isset($_POST['keyword'])) {
             <?= htmlspecialchars($data['total_ammount']); ?>
             lihat<?= htmlspecialchars($data['payment_proof']); ?>
         <?php endforeach; ?>
+        <?php $i++; ?>
     </div>
 </div>
 

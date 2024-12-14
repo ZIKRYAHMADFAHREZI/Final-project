@@ -16,7 +16,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 }
 
 // Mengambil nomor kamar berdasarkan id_type
-$roomQuery = $pdo->prepare("SELECT number_room FROM rooms WHERE id_type = ?");
+$roomQuery = $pdo->prepare("SELECT id_room, number_room FROM rooms WHERE id_type = ?");
 $roomQuery->execute([$id_type]);
 $rooms = $roomQuery->fetchAll(PDO::FETCH_ASSOC);
 
@@ -126,12 +126,13 @@ if (!isset($_SESSION['id_user'])) {
     </div>
 
     <strong>Total Harga: </strong>
-    <input type="text" name="total-amount" id="totalAmount" readonly>
+    <p id="totalAmount"></p>
+    <input style="display:none;"type="number" name="total-amount" id="totalAmountReal" readonly>
 
     <div>
         <p>Pilih Nomor Kamar:</p>
         <?php foreach ($rooms as $room) : ?>
-            <input type="radio" id="room_<?= $room['number_room'] ?>" name="number_room" value="<?= htmlspecialchars($room['number_room']); ?>">
+            <input type="radio" id="room_<?= $room['number_room'] ?>" name="number_room" value="<?=$room['id_room']; ?>">
             <label for="room_<?= $room['number_room'] ?>"><?= htmlspecialchars($room['number_room']); ?></label><br>
         <?php endforeach; ?>
     </div>
@@ -148,7 +149,8 @@ if (!isset($_SESSION['id_user'])) {
         const endDateInput = document.getElementById('endDate');
         const endDateContainer = document.getElementById('endDateContainer');
         const durationSelect = document.getElementById('id_duration');
-        const totalAmountInput = document.getElementById('totalAmount');
+        const totalAmountFake = document.getElementById('totalAmount');
+        const totalAmountInput = document.getElementById('totalAmountReal');
 
         // Fungsi untuk update harga berdasarkan durasi dan tanggal
         function updatePrice() {
@@ -163,7 +165,8 @@ if (!isset($_SESSION['id_user'])) {
                 const totalPrice = pricePerUnit * diffDays;
 
                 // Menampilkan total harga di input totalAmount
-                totalAmountInput.value = totalPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+                totalAmountFake.innerText = totalPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+                totalAmountInput.value = totalPrice;
             }
         }
 
