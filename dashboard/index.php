@@ -14,10 +14,11 @@ if ($_SESSION['role'] !== 'admin') {
     header('Location: ../index.php');
     exit;
 }
+
+$datas = "SELECT * FROM reservations";
 function cari($keyword) {
     // Memastikan koneksi PDO
     global $pdo;
-    
     // Query dengan prepared statement untuk mencegah SQL Injection
     $sql = "SELECT * FROM reservations WHERE
                 id_user LIKE :keyword OR
@@ -174,6 +175,17 @@ if (isset($_POST['cari']) && isset($_POST['keyword'])) {
             >
             <button type="submit" name="cari" class="btn btn-primary">Cari!</button>
         </form>
+    </div>
+    <div>
+        <?php foreach ($datas as $data): ?>
+            <?= htmlspecialchars($data['id_user']); ?>
+            <?= htmlspecialchars($data['id_room']); ?>
+            <?= htmlspecialchars($data['id_type']); ?>
+            <?= htmlspecialchars($data['check_in_date']); ?>
+            <?= htmlspecialchars($data['id_pay_method']); ?>
+            <?= htmlspecialchars($data['total_ammount']); ?>
+            lihat<?= htmlspecialchars($data['payment_proof']); ?>
+        <?php endforeach; ?>
     </div>
 </div>
 
