@@ -34,18 +34,12 @@ if (isset($_GET['id_payment']) && is_numeric($_GET['id_payment'])) {
 </style>
 </head>
 <body>
-<div id="loading" class="loading">
-    <div class="spinner"></div>
-    <h2 class="loading-text">GRAND MUTIARA</h2>
-</div>
 <div class="container" style="padding-top: 75px;">
     <h1 class="text-center">Invoices</h1>
-
+    <div>
+        
+    </div>
 </div>
-
-
-
-<script src="js/trans.js"></script>
 <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

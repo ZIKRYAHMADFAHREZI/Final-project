@@ -77,7 +77,6 @@ else if (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_metho
             $stmt->bindParam(':id_pay_method', $id_pay_method);
             $stmt->bindParam(':start_date', $start_date);
             $stmt->bindParam(':id_room', $id_room);
-            echo $id_room;
             $stmt->bindParam(':total_amount', $total_amount);
 
             $stmt->execute();
@@ -100,10 +99,15 @@ else if (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_metho
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Pembayaran</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detail Pembayaran</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    body {
+    background-color: #DCDCDC;
+    }
+</style>
 </head>
 <body>
 <div class="container mt-5">
@@ -119,8 +123,10 @@ else if (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_metho
     <?php if (isset($success_message)): ?>
         <div class="card mt-3">
             <div class="card-body">
-                <h5><strong>Metode Pembayaran:</strong> <?= htmlspecialchars($payment_details['method']); ?></h5>
-                <h6><strong>Total Pembayaran:</strong> Rp <?= number_format($total_amount, 0, ',', '.'); ?></h6>
+                <p><strong>Metode Pembayaran: <?= htmlspecialchars($payment_details['method']); ?></strong></p>
+                <p><strong>Nama Akun: <?= htmlspecialchars($payment_details['account_name']); ?></strong></p>
+                <p><strong>Nomor Tujuan: <?= htmlspecialchars($payment_details['payment_number']); ?></strong></p>
+                <p><strong>Total Pembayaran: Rp<?= number_format($total_amount, 0, ',', '.'); ?></strong></p>
 
                 <!-- Form untuk mengirimkan bukti pembayaran -->
                 <form action="" method="POST" enctype="multipart/form-data">
