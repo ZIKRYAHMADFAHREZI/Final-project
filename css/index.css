@@ -22,3 +22,29 @@
     from, to { border-color: transparent; }
     50% { border-color: #a1a0a5; }
 }
+body {
+    background-color: #DCDCDC;
+}
+h2 {
+    font-family: 'Playfair Display', serif;
+}
+p {
+    font-family: 'Lora', serif;
+}
+h5 {
+    font-family: 'Cinzel', serif;
+}
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden; /* Ensures content inside stays within card */
+}
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.card .card-img-top {
+    transition: transform 0.3s ease;
+}
+.card:hover .card-img-top {
+    transform: scale(1.05); /* Image zooms in when the card is hovered */
+}

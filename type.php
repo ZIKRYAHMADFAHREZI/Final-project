@@ -16,7 +16,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 }
 
 // Mengambil nomor kamar berdasarkan id_type
-$roomQuery = $pdo->prepare("SELECT id_room, number_room FROM rooms WHERE id_type = ?");
+$roomQuery = $pdo->prepare("SELECT id_room, number_room, status FROM rooms WHERE id_type = ?");
 $roomQuery->execute([$id_type]);
 $rooms = $roomQuery->fetchAll(PDO::FETCH_ASSOC);
 
@@ -81,6 +81,98 @@ function generateBookingOptions($id_type, $pdo) {
             width: 100%;
         }
     }
+/* Radio khusus untuk nomor kamar */
+.room-radio {
+    display: none; /* Sembunyikan elemen radio asli */
+}
+.number {
+    display: flex;
+    justify-content: flex-start; /* Mengatur elemen di kiri (pinggir) secara horizontal */
+    align-items: center; /* Mengatur elemen di tengah secara vertikal */
+    text-align: center; /* Memastikan teks berada di tengah */
+    flex-wrap: wrap; /* Membungkus elemen jika diperlukan */
+    gap: 10px; /* Menambahkan jarak antar elemen */
+}
+
+/* Responsif pada layar kecil */
+@media (max-width: 768px) {
+    .number {
+        justify-content: flex-start; /* Menjaga elemen tetap ke pinggir pada layar kecil */
+        gap: 15px; /* Menambah jarak antar elemen jika di kolom */
+    }
+
+    .room-radio + label {
+        display: inline-block;
+        padding: 8px 15px; /* Menyesuaikan padding pada layar kecil */
+        font-size: 14px; /* Menyesuaikan ukuran font */
+    }
+}
+
+/* Responsif pada layar lebih kecil (misalnya, ponsel) */
+@media (max-width: 480px) {
+    .room-radio + label {
+        font-size: 12px; /* Menurunkan ukuran font untuk ponsel */
+        padding: 6px 10px; /* Menyesuaikan padding */
+    }
+}
+
+.room-radio + label {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+/* Status Available - Warna Hijau */
+.room-radio + label.available {
+    background-color: green;
+    color: white;
+    border-color: green;
+}
+
+/* Status Unavailable - Warna Merah */
+.room-radio + label.unavailable {
+    background-color: red;
+    color: white;
+    border-color: red;
+}
+
+/* Status Pending - Warna Kuning */
+.room-radio + label.pending {
+    background-color: yellow;
+    color: black;
+    border-color: yellow;
+}
+
+/* Gaya saat radio button dinonaktifkan */
+.room-radio:disabled + label {
+    background-color: #ddd;  /* Warna abu-abu untuk disabled */
+    color: #888;  /* Warna teks abu-abu */
+    border-color: #bbb;  /* Border abu-abu */
+    cursor: not-allowed;  /* Menunjukkan bahwa elemen tidak dapat diklik */
+}
+
+/* Hover effect */
+.room-radio:checked + label {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.room-radio:checked + label.available {
+    background-color: darkgreen;
+}
+
+.room-radio:checked + label.unavailable {
+    background-color: darkred;
+}
+
+.room-radio:checked + label.pending {
+    background-color: darkgoldenrod;
+}
 </style>
 
 </head>
@@ -129,14 +221,21 @@ if (!isset($_SESSION['id_user'])) {
     <p id="totalAmount"></p>
     <input style="display:none;"type="number" name="total-amount" id="totalAmountReal" readonly>
 
-    <div>
-        <p>Pilih Nomor Kamar:</p>
+    <div class="select-room">
+    <p>Pilih Nomor Kamar:</p>
+        <div class="number">
         <?php foreach ($rooms as $room) : ?>
-            <input type="radio" id="room_<?= $room['number_room'] ?>" name="number_room" value="<?=$room['id_room']; ?>">
-            <label for="room_<?= $room['number_room'] ?>"><?= htmlspecialchars($room['number_room']); ?></label><br>
+            <?php
+            // Ambil status kamar dari hasil query
+            $status = $room['status']; // Status kamar bisa 'available', 'unavailable', atau 'pending'
+            // Tentukan apakah kamar bisa dipilih berdasarkan status
+            $disabled = ($status == 'unavailable' || $status == 'pending') ? 'disabled' : '';
+            ?>
+            <input type="radio" id="room_<?= $room['number_room'] ?>" name="number_room" value="<?= $room['id_room']; ?>" class="room-radio" <?= $disabled ?> required>
+            <label for="room_<?= $room['number_room'] ?>" class="<?= $status ?>"><?= htmlspecialchars($room['number_room']); ?></label><br>
         <?php endforeach; ?>
+        </div>
     </div>
-
     <button type="button" id="pesanButton" class="btn btn-primary mt-4">Pesan</button>
 </form>
 
@@ -214,33 +313,62 @@ if (!isset($_SESSION['id_user'])) {
         endDateInput.addEventListener('change', updatePrice);
     });
 
-    // Menambahkan event listener pada tombol "Pesan"
     document.getElementById('pesanButton').addEventListener('click', function () {
-        const payMethods = <?= json_encode($methods); ?>; // Menyisipkan data payMethods PHP ke dalam JavaScript
+    const startDate = document.getElementById('startDate').value;
+    const selectedRoom = document.querySelector('input[name="number_room"]:checked');
 
-        // Menampilkan alert jika memilih metode pembayaran
+    // Pengecekan apakah tanggal mulai sudah dipilih
+    if (!startDate) {
         Swal.fire({
-            title: 'Pilih Metode Pembayaran',
-            input: 'radio',
-            inputOptions: payMethods.reduce(function (options, method) {
-                options[method.id_pay_method] = method.method;
-                return options;
-            }, {}),
-            inputValidator: (value) => {
-                return !value && 'Anda harus memilih metode pembayaran!';
-            },
-            inputPlaceholder: 'Pilih Metode Pembayaran',
-            showCancelButton: true,
-            confirmButtonText: 'Konfirmasi',
-            cancelButtonText: 'Batal',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Mengatur metode pembayaran yang dipilih
-                document.getElementById('id_pay_method').value = result.value;
-                document.getElementById('bookingForm').submit();
-            }
+            title: 'Tanggal Belum Dipilih!',
+            text: 'Silakan pilih tanggal mulai terlebih dahulu.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
         });
+        return; // Menghentikan eksekusi jika tanggal belum dipilih
+    }
+
+    // Pengecekan apakah kamar sudah dipilih
+    if (!selectedRoom) {
+        Swal.fire({
+            title: 'Kamar Belum Dipilih!',
+            text: 'Silakan pilih kamar terlebih dahulu.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return; // Menghentikan eksekusi jika kamar belum dipilih
+    }
+
+    // Jika semua validasi berhasil, lanjutkan ke pemilihan metode pembayaran
+    const payMethods = <?= json_encode($methods); ?>; // Menyisipkan data payMethods PHP ke dalam JavaScript
+
+    // Menampilkan alert jika memilih metode pembayaran
+    Swal.fire({
+        title: 'Pilih Metode Pembayaran',
+        input: 'radio',
+        inputOptions: payMethods.reduce(function (options, method) {
+            options[method.id_pay_method] = method.method;
+            return options;
+        }, {}),
+        inputValidator: (value) => {
+            return !value && 'Anda harus memilih metode pembayaran!';
+        },
+        inputPlaceholder: 'Pilih Metode Pembayaran',
+        showCancelButton: true,
+        confirmButtonText: 'Konfirmasi',
+        cancelButtonText: 'Batal',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Mengatur metode pembayaran yang dipilih
+            document.getElementById('id_pay_method').value = result.value;
+            document.getElementById('bookingForm').submit();
+        }
     });
+});
+
+
+const payMethods = <?= json_encode($methods); ?>; // Menyisipkan data payMethods PHP ke dalam JavaScript
+
 </script>
 
 </body>

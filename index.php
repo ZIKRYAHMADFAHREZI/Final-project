@@ -88,6 +88,25 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
     </div>
 </div>
     <!-- Card -->
+    <style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-img-top {
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+</style>
+
 <div class="container">
     <div class="row">
     <?php foreach ($types as $type) : ?>
@@ -102,9 +121,10 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
                 </div>
             </div>
         </div>
-        <?php endforeach; ?>
+    <?php endforeach; ?>
     </div>
 </div>
+
 <?php include 'footer.html'; ?>
 <!-- <script src="js/trans.js" defer></script> -->
 <script src="js/writeEF.js"></script>  

@@ -9,7 +9,8 @@ body {
     width: 250px;
     background-color: #343a40;
     color: white;
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
     position: fixed;
     top: 0;
     left: 0;

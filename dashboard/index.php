@@ -15,41 +15,76 @@ if ($_SESSION['role'] !== 'admin') {
     exit;
 }
 
-$datas = "SELECT * FROM reservations";
+// Ambil data reservasi dari database
+$datas = [];
+$query = "SELECT * FROM reservations"; // Ambil semua data dari tabel reservations
+$stmt = $pdo->query($query);
+$datas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Menyimpan hasil query ke dalam array $datas
+
+// Ambil data reservasi beserta nama pengguna berdasarkan id_user
+$query = "
+    SELECT r.*, u.username, u.email, rt.number_room, pm.method, rt_type.name_type
+    FROM reservations r
+    JOIN users u ON r.id_user = u.id_user
+    JOIN rooms rt ON r.id_room = rt.id_room
+    JOIN pay_methods pm ON r.id_pay_method = pm.id_pay_method
+    JOIN types rt_type ON rt.id_type = rt_type.id_type"; // Menambahkan join dengan tabel room_types untuk mengambil name_type
+$stmt = $pdo->query($query);
+$datas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Menyimpan hasil query ke dalam array $datas
+
+
+// Menangani form pencarian
+if (isset($_POST['cari']) && isset($_POST['keyword'])) {
+    $keyword = $_POST['keyword'];
+    $datas = cari($keyword); // Menampilkan hasil pencarian
+}
+
+// Fungsi untuk mencari data berdasarkan keyword
 function cari($keyword) {
-    // Memastikan koneksi PDO
     global $pdo;
-    // Query dengan prepared statement untuk mencegah SQL Injection
-    $sql = "SELECT * FROM reservations WHERE
-                id_user LIKE :keyword OR
-                total_price LIKE :keyword OR
-                id_type LIKE :keyword OR
-                id_rooms LIKE :keyword OR
-                id_room_rate LIKE :keyword OR
-                id_transit LIKE :keyword OR
-                id_payment LIKE :keyword OR
-                payment_proof LIKE :keyword";
-
-    // Menyiapkan query
+    $sql = "
+    SELECT r.*, u.username, u.email, rt.number_room, pm.method, rt_type.name_type
+    FROM reservations r
+    JOIN users u ON r.id_user = u.id_user
+    JOIN rooms rt ON r.id_room = rt.id_room
+    JOIN pay_methods pm ON r.id_pay_method = pm.id_pay_method
+    JOIN types rt_type ON rt.id_type = rt_type.id_type
+    WHERE
+        u.username LIKE :keyword OR
+        u.email LIKE :keyword OR
+        rt.number_room LIKE :keyword OR
+        rt_type.name_type LIKE :keyword OR
+        pm.method LIKE :keyword OR
+        r.total_amount LIKE :keyword OR 
+        r.payment_proof LIKE :keyword";
+    
     $stmt = $pdo->prepare($sql);
-
-    // Mengikat parameter :keyword dengan nilai yang dimasukkan
-    $keyword = "%" . $keyword . "%";
+    $keyword = "%" . $keyword . "%"; // Membungkus keyword dengan wildcard untuk pencarian
     $stmt->bindParam(':keyword', $keyword, PDO::PARAM_STR);
-
-    // Menjalankan query
     $stmt->execute();
-
-    // Mengembalikan hasil pencarian
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Mengembalikan hasil pencarian
 }
 
 // Menangani form pencarian
 if (isset($_POST['cari']) && isset($_POST['keyword'])) {
     $keyword = $_POST['keyword'];
-    $results = cari($keyword);
+    $datas = cari($keyword); // Menampilkan hasil pencarian
 }
+
+// Menghitung jumlah kamar
+$queryRoom = "SELECT COUNT(*) AS rooms, 
+                     SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) AS available,
+                     SUM(CASE WHEN status = 'unavailable' THEN 1 ELSE 0 END) AS unavailable,
+                     SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending 
+              FROM rooms"; // Pastikan ada tabel rooms dengan status kamar
+$stmtRoom = $pdo->query($queryRoom);
+$roomStats = $stmtRoom->fetch(PDO::FETCH_ASSOC);
+
+$availableRooms = $roomStats['available'];
+$unvailableRooms = $roomStats['unavailable'];
+$pendingRooms = $roomStats['pending'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,12 +128,13 @@ if (isset($_POST['cari']) && isset($_POST['keyword'])) {
     }
     .card {
         flex: 1;
-        max-width: 30%;
+        max-width: 20%;
         background-color: #f8f9fa;
-        border-radius: 8px;
+        border-radius: 5px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         text-align: center;
-        padding: 15px;
+        padding: 20px;
+        font-size: 20px;
     }
     .card.green-bg {
         background-color: green;
@@ -151,13 +187,13 @@ if (isset($_POST['cari']) && isset($_POST['keyword'])) {
     <!-- Box Elements -->
     <div class="card-container mb-4">
         <div class="card green-bg">
-            <p>Total Kamar Tersedia: <?= $room; ?></p>
+            <p>Total Kamar Tersedia: <?= $availableRooms; ?></p>
         </div>
         <div class="card red-bg">
-            <p>Total Kamar Terpakai: <?= $room; ?></p>
+            <p>Total Kamar Terpakai: <?= $unvailableRooms; ?></p>
         </div>
         <div class="card yellow-bg">
-            <p>Total Kamar Terpending: <?= $room; ?></p>
+            <p>Total Kamar Terpending: <?= $pendingRooms; ?></p>
         </div>
     </div>
 
@@ -176,21 +212,68 @@ if (isset($_POST['cari']) && isset($_POST['keyword'])) {
             <button type="submit" name="cari" class="btn btn-primary">Cari!</button>
         </form>
     </div>
-    <div>
-        <?php $i = 0; ?>
-        <?php foreach ($datas as $data): ?>
-            <?= htmlspecialchars($data['id_user']); ?>
-            <?= htmlspecialchars($data['id_room']); ?>
-            <?= htmlspecialchars($data['id_type']); ?>
-            <?= htmlspecialchars($data['check_in_date']); ?>
-            <?= htmlspecialchars($data['id_pay_method']); ?>
-            <?= htmlspecialchars($data['total_ammount']); ?>
-            lihat<?= htmlspecialchars($data['payment_proof']); ?>
-        <?php endforeach; ?>
-        <?php $i++; ?>
+
+    <!-- Tampilkan data reservations -->
+    <div class="mt-5">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>No</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Tipe Kamar</th>
+                <th>Nomor Kamar</th>
+                <th>Check-in Date</th>
+                <th>Metode Pembayaran</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Bukti Pembayaran</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php 
+            $no = 1; // Inisialisasi variabel untuk nomor urut
+            foreach ($datas as $data): 
+            ?>
+                <tr>
+                    <td><?= $no++; ?></td> <!-- Menampilkan nomor urut dan meningkatkan $no -->
+                    <td><?= htmlspecialchars($data['username']); ?></td>
+                    <td><?= htmlspecialchars($data['email']); ?></td>
+                    <td><?= htmlspecialchars($data['name_type']); ?></td>
+                    <td><?= htmlspecialchars($data['number_room']); ?></td>
+                    <td><?= htmlspecialchars($data['start_date']); ?></td>
+                    <td><?= htmlspecialchars($data['method']); ?></td>
+                    <td><?= htmlspecialchars($data['total_amount']); ?></td>
+                    <td><?= htmlspecialchars($data['status']); ?></td>
+                    <td><a href="javascript:void(0);" onclick="showPaymentProof('<?= htmlspecialchars($data['payment_proof']); ?>')">Lihat Bukti Pembayaran</a></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+        </table>
+    </div>
+</div>
+<div id="paymentModal" style="display:none;">
+    <div style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">
+        <div style="background-color: white; padding: 20px; border-radius: 10px;">
+            <img id="paymentImage" src="" alt="Bukti Pembayaran" style="max-width: 600px; max-height: 400px; width: auto; height: auto;">
+            <button onclick="closeModal()" class="btn btn-secondary">Tutup</button>
+        </div>
     </div>
 </div>
 
+<script>
+function showPaymentProof(fileName) {
+    var modal = document.getElementById('paymentModal');
+    var img = document.getElementById('paymentImage');
+    img.src = '../paynt/uploads/' + fileName;
+    modal.style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('paymentModal').style.display = 'none';
+}
+</script>
+</script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
