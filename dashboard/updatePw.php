@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Main Content -->
 <div class="content" id="content">
     <header>
-        <h1 class="text-center">Ganti Email & Password</h1>
+        <h1 class="text-center">Ganti Password</h1>
     </header>
     <div class="form-container">
         <form id="updateForm" action="" method="post" enctype="multipart/form-data">

@@ -62,7 +62,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     }
     .room-list {
         display: block;
-        text-align: center;
+        text-align: left;
         margin-bottom: 30px;
     }
     .room {
@@ -70,7 +70,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         border: 1px solid #ccc;
         padding: 10px 20px;
         border-radius: 5px;
-        text-align: center;
+        text-align: left;
         width: 80px;
         height: 80px;
         display: inline-block;
@@ -140,7 +140,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
     <?php foreach ($rooms_by_type as $type => $rooms): ?>
         <div class="room-category mb-4">
-            <h2 class="text-center mb-3"><?php echo htmlspecialchars($type); ?></h2>
+            <h2 class="text-left mb-3"><?php echo htmlspecialchars($type); ?></h2>
             <div class="room-list">
                 <?php foreach ($rooms as $room): ?>
                     <div class="room <?= htmlspecialchars($room['status']) ?>" data-room-id="<?= $room['id_room'] ?>" onclick="changeStatus(<?= $room['id_room'] ?>, '<?= $room['status'] ?>')">

@@ -1,6 +1,5 @@
 <?php 
 session_start();
-include 'navbar.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,6 +57,7 @@ include 'navbar.php';
 </style>
 </head>
 <body>
+<?php include 'navbar.php'; ?>
 <div id="loading" class="loading">
     <div class="spinner"></div>
     <h2 class="loading-text">GRAND MUTIARA</h2>

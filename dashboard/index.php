@@ -204,7 +204,6 @@ $pendingRooms = $roomStats['pending'];
                 type="text" 
                 name="keyword" 
                 size="150%" 
-                autofocus 
                 placeholder="Masukkan keyword pencarian" 
                 autocomplete="off"
                 class="form-control d-inline-block w-50 mb-2"
@@ -220,15 +219,15 @@ $pendingRooms = $roomStats['pending'];
             <tr>
                 <th>No</th>
                 <th>Username</th>
-                <th>Email</th>
                 <th>Tipe Kamar</th>
                 <th>Nomor Kamar</th>
                 <th>Check-in Date</th>
                 <th>Metode Pembayaran</th>
                 <th>Total Amount</th>
                 <th>Status</th>
+                <th>Status Pembayaran</th>
                 <th>Bukti Pembayaran</th>
-                <th></th>
+                <th>Validasi Pembayaran</th>
             </tr>
         </thead>
         <tbody>
@@ -239,13 +238,13 @@ $pendingRooms = $roomStats['pending'];
                 <tr>
                     <td><?= $no++; ?></td> <!-- Menampilkan nomor urut dan meningkatkan $no -->
                     <td><?= htmlspecialchars($data['username']); ?></td>
-                    <td><?= htmlspecialchars($data['email']); ?></td>
                     <td><?= htmlspecialchars($data['name_type']); ?></td>
                     <td><?= htmlspecialchars($data['number_room']); ?></td>
                     <td><?= htmlspecialchars($data['start_date']); ?></td>
                     <td><?= htmlspecialchars($data['method']); ?></td>
                     <td><?= htmlspecialchars($data['total_amount']); ?></td>
                     <td><?= htmlspecialchars($data['status']); ?></td>
+                    <td><?= htmlspecialchars($data['payment_status']); ?></td>
                     <td><a href="javascript:void(0);" onclick="showPaymentProof('<?= htmlspecialchars($data['payment_proof']); ?>')">Lihat Bukti Pembayaran</a></td>
                     <td>
                         <?php
@@ -257,10 +256,10 @@ $pendingRooms = $roomStats['pending'];
                         // Cek apakah sudah dilakukan konfirmasi atau refund
                         if ($status == 'confirmed' || $paymentStatus == 'paid' || $status == 'cancelled' || $paymentStatus == 'refunded') {
                             // Jika sudah, sembunyikan tombol
-                            echo '<span class="text-muted">Aksi Tidak Tersedia</span>';
+                            echo '<span class="text-muted">Selesai</span>';
                         } else {
                             // Jika belum, tampilkan tombol aksi
-                            echo '<a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="showActionDialog(' . $reservationId . ')">Aksi Pembayaran</a>';
+                            echo '<a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="showActionDialog(' . $reservationId . ')">Konfirmasi</a>';
                         }
                         ?>
                     </td>
