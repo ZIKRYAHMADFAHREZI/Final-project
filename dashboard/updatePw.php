@@ -9,43 +9,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Validasi input
         if (empty($password_lama) || empty($password_baru) || empty($konfirmasi_password)) {
-            echo "<script>Swal.fire('Error', 'Semua field harus diisi!', 'error');</script>";
-            exit;
-        }
-
-        if ($password_baru !== $konfirmasi_password) {
-            echo "<script>Swal.fire('Error', 'Password baru dan konfirmasi tidak cocok!', 'error');</script>";
-            exit;
-        }
-
-        // Cek password lama
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-        $stmt->bindParam(':email', $_POST['email']); // Email lama yang digunakan untuk login
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user && password_verify($password_lama, $user['password'])) {
-            // Jika password lama cocok, lakukan update
-            $hashed_password = password_hash($password_baru, PASSWORD_BCRYPT);
-            $update_stmt = $pdo->prepare("UPDATE users SET password = :password_baru WHERE email = :email");
-            $update_stmt->bindParam(':password_baru', $hashed_password);
-            $update_stmt->bindParam(':email', $_POST['email']);
-            $update_stmt->execute();
-
-            if ($update_stmt->rowCount() > 0) {
-                echo "<script>Swal.fire('Berhasil', 'Password berhasil diubah!', 'success');</script>";
-            } else {
-                echo "<script>Swal.fire('Error', 'Tidak ada perubahan pada data!', 'error');</script>";
-            }
+            $message = "<script>Swal.fire('Error', 'Semua field harus diisi!', 'error');</script>";
+        } elseif ($password_baru !== $konfirmasi_password) {
+            $message = "<script>Swal.fire('Error', 'Password baru dan konfirmasi tidak cocok!', 'error');</script>";
         } else {
-            echo "<script>Swal.fire('Error', 'Password lama salah!', 'error');</script>";
+            // Cek password lama
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->bindParam(':email', $_POST['email']); // Email lama yang digunakan untuk login
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($password_lama, $user['password'])) {
+                // Jika password lama cocok, lakukan update
+                $hashed_password = password_hash($password_baru, PASSWORD_BCRYPT);
+                $update_stmt = $pdo->prepare("UPDATE users SET password = :password_baru WHERE email = :email");
+                $update_stmt->bindParam(':password_baru', $hashed_password);
+                $update_stmt->bindParam(':email', $_POST['email']);
+                $update_stmt->execute();
+
+                if ($update_stmt->rowCount() > 0) {
+                    $message = "<script>Swal.fire('Berhasil', 'Password berhasil diubah!', 'success');</script>";
+                } else {
+                    $message = "<script>Swal.fire('Error', 'Tidak ada perubahan pada data!', 'error');</script>";
+                }
+            } else {
+                $message = "<script>Swal.fire('Error', 'Password lama salah!', 'error');</script>";
+            }
         }
     } catch (PDOException $e) {
-        echo "<script>Swal.fire('Error', 'Terjadi kesalahan pada server!', 'error');</script>";
+        $message = "<script>Swal.fire('Error', 'Terjadi kesalahan pada server!', 'error');</script>";
         error_log("Database Error: " . $e->getMessage()); // Log error untuk debugging
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ganti Password</title>
-<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="../img/favicon.ico">
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -110,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </ul>
 </div>
 
-
 <!-- Toggle Button -->
 <button class="toggle-btn" id="toggle-btn">☰</button>
 
@@ -121,36 +115,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </header>
     <div class="form-container">
         <form id="updateForm" action="" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <input 
-                    type="password" 
-                    class="form-control" 
-                    id="password_lama" 
-                    name="password_lama"
-                    placeholder="Password Lama" 
-                    required
-                >
-            </div>
-            <div class="mb-3">
-                <input 
-                    type="password" 
-                    class="form-control" 
-                    id="password_baru" 
-                    name="password_baru" 
-                    placeholder="Password Baru"
-                    required
-                >
-            </div>
-            <div class="mb-3">
-                <input 
-                    type="password" 
-                    class="form-control" 
-                    id="konfirmasi_password" 
-                    name="konfirmasi_password"
-                    placeholder="Konfirmasi Password Baru"
-                    required
-                >
-            </div>
+        <div class="mb-3 position-relative">
+            <input 
+                type="password" 
+                class="form-control" 
+                id="password_lama" 
+                name="password_lama"
+                placeholder="Password Lama" 
+                required
+            >
+            <i class="fa fa-eye toggle-password" id="togglePassword_lama" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+        </div>
+        <div class="mb-3 position-relative">
+            <input 
+                type="password" 
+                class="form-control" 
+                id="password_baru" 
+                name="password_baru" 
+                placeholder="Password Baru"
+                required
+            >
+            <i class="fa fa-eye toggle-password" id="togglePassword_baru" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+        </div>
+        <div class="mb-3 position-relative">
+            <input 
+                type="password" 
+                class="form-control" 
+                id="konfirmasi_password" 
+                name="konfirmasi_password"
+                placeholder="Konfirmasi Password Baru"
+                required
+            >
+            <i class="fa fa-eye toggle-password" id="togglePassword_konfirmasi" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+        </div>
             <div class="d-flex justify-content-between">
                 <button type="reset" class="btn btn-secondary">Cancel</button>
                 <button type="button" id="submitButton" class="btn btn-primary">Ubah Data!</button>
@@ -164,6 +161,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+        // Menambahkan event listener untuk setiap ikon mata
+        document.getElementById('togglePassword_lama').addEventListener('click', function () {
+        const passwordField = document.getElementById('password_lama');
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    document.getElementById('togglePassword_baru').addEventListener('click', function () {
+        const passwordField = document.getElementById('password_baru');
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        this.classList.toggle('fa-eye-slash');
+    });
+
+    document.getElementById('togglePassword_konfirmasi').addEventListener('click', function () {
+        const passwordField = document.getElementById('konfirmasi_password');
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        this.classList.toggle('fa-eye-slash');
+    });
 // SweetAlert2 untuk tombol submit
 document.getElementById('submitButton').addEventListener('click', function (e) {
     Swal.fire({
@@ -181,6 +199,9 @@ document.getElementById('submitButton').addEventListener('click', function (e) {
         }
     });
 });
+
+// Menampilkan pesan berdasarkan kondisi PHP
+<?php if (isset($message)) { echo $message; } ?>
 </script>
 <script src="../js/admin.js"></script>
 </body>

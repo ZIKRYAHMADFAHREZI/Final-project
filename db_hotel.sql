@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 14, 2024 at 08:03 AM
+-- Generation Time: Dec 15, 2024 at 11:55 PM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -89,16 +89,26 @@ CREATE TABLE `reservations` (
 --
 
 INSERT INTO `reservations` (`id_reservation`, `id_user`, `id_room`, `reservation_date`, `check_in_date`, `check_out_date`, `status`, `payment_status`, `total_amount`, `created_at`, `updated_at`, `payment_proof`, `to_date`, `start_date`, `id_pay_method`) VALUES
-(4, 3, 19, '2024-12-14 06:43:21', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 06:43:21', '2024-12-14 06:43:21', NULL, NULL, '2024-12-14', 2),
-(5, 3, 19, '2024-12-14 06:46:22', NULL, NULL, 'pending', 'unpaid', '0.00', '2024-12-14 06:46:22', '2024-12-14 06:46:22', NULL, NULL, '2024-12-14', 2),
-(6, 3, 19, '2024-12-14 06:47:49', NULL, NULL, 'pending', 'unpaid', '0.00', '2024-12-14 06:47:49', '2024-12-14 06:47:49', NULL, NULL, '2024-12-14', 2),
-(7, 3, 28, '2024-12-14 06:48:26', NULL, NULL, 'pending', 'unpaid', '300000.00', '2024-12-14 06:48:26', '2024-12-14 06:48:26', NULL, '2024-12-16', '2024-12-14', 2),
-(8, 3, 24, '2024-12-14 06:48:56', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-14 06:48:56', '2024-12-14 06:48:56', NULL, '2024-12-21', '2024-12-21', 1),
-(9, 3, 28, '2024-12-14 06:50:53', NULL, NULL, 'pending', 'unpaid', '1050000.00', '2024-12-14 06:50:53', '2024-12-14 06:50:53', NULL, '2024-12-21', '2024-12-14', 2),
-(10, 3, 28, '2024-12-14 07:04:25', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 07:04:25', '2024-12-14 07:04:25', NULL, NULL, '2024-12-21', 1),
-(11, 3, 19, '2024-12-14 07:23:41', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 07:23:41', '2024-12-14 07:23:41', NULL, NULL, '2024-12-18', 1),
-(12, 3, 28, '2024-12-14 07:26:34', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 07:26:34', '2024-12-14 07:26:34', NULL, NULL, '2025-01-01', 2),
-(13, 3, 28, '2024-12-14 07:28:38', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-14 07:28:38', '2024-12-14 07:28:38', NULL, NULL, '2024-12-20', 2);
+(1, 3, 1, '2024-12-15 08:19:53', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:19:53', '2024-12-15 08:19:53', NULL, NULL, '2024-12-16', 3),
+(2, 3, 4, '2024-12-15 08:26:39', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:26:39', '2024-12-15 08:26:47', '20241215082647_675e92c71f48c.jpg', NULL, '2024-12-16', 3),
+(3, 3, 1, '2024-12-15 08:27:54', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:27:54', '2024-12-15 08:27:59', '20241215082759_675e930f2f165.jpg', NULL, '2024-12-16', 1),
+(4, 3, 2, '2024-12-15 08:28:46', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:28:46', '2024-12-15 08:28:50', '20241215082850_675e9342bcbca.jpg', NULL, '2024-12-17', 3),
+(5, 3, 2, '2024-12-15 08:29:17', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:29:17', '2024-12-15 08:29:40', '20241215082940_675e9374a6fc3.jpg', NULL, '2024-12-16', 1),
+(6, 3, 1, '2024-12-15 08:30:03', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:30:03', '2024-12-15 08:30:17', '20241215083017_675e93997b351.mp4', NULL, '2024-12-16', 1),
+(7, 3, 2, '2024-12-15 08:34:18', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:34:18', '2024-12-15 08:34:18', NULL, NULL, '2024-12-16', 2),
+(8, 3, 1, '2024-12-15 08:36:52', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:36:52', '2024-12-15 08:36:52', NULL, NULL, '2024-12-16', 2),
+(9, 3, 1, '2024-12-15 08:37:32', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:37:32', '2024-12-15 08:37:32', NULL, NULL, '2024-12-17', 1),
+(10, 3, 1, '2024-12-15 08:38:59', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:38:59', '2024-12-15 08:38:59', NULL, NULL, '2024-12-16', 2),
+(11, 3, 1, '2024-12-15 08:40:10', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:40:10', '2024-12-15 08:40:10', NULL, NULL, '2024-12-31', 1),
+(12, 3, 2, '2024-12-15 08:42:06', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:42:06', '2024-12-15 08:42:06', NULL, NULL, '2024-12-18', 1),
+(13, 3, 2, '2024-12-15 08:44:47', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:44:47', '2024-12-15 08:44:47', NULL, NULL, '2024-12-19', 1),
+(14, 3, 2, '2024-12-15 08:45:23', NULL, NULL, 'pending', 'unpaid', '0.00', '2024-12-15 08:45:23', '2024-12-15 08:45:38', '20241215084538_675e973255272.png', NULL, '2024-12-19', 1),
+(16, 4, 18, '2024-12-15 10:46:00', NULL, NULL, 'pending', 'unpaid', '1400000.00', '2024-12-15 10:46:00', '2024-12-15 10:46:09', '20241215104609_675eb3717a566.jpg', '2024-12-25', '2024-12-18', 2),
+(17, 4, 24, '2024-12-15 14:15:08', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-15 14:15:08', '2024-12-15 14:15:08', NULL, NULL, '2024-12-18', 2),
+(18, 4, 1, '2024-12-15 14:23:30', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 14:23:30', '2024-12-15 14:23:30', NULL, NULL, '2024-12-26', 2),
+(19, 2, 2, '2024-12-15 21:19:15', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 21:19:15', '2024-12-15 21:19:28', '20241215211928_675f47e02417f.jpg', NULL, '2024-12-18', 1),
+(20, 2, 2, '2024-12-15 21:41:16', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 21:41:16', '2024-12-15 21:41:25', '20241215214125_675f4d059d40b.jpg', NULL, '2024-12-24', 1),
+(21, 2, 4, '2024-12-15 21:42:53', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 21:42:53', '2024-12-15 21:43:17', '20241215214317_675f4d7525977.jpg', NULL, '2024-12-20', 2);
 
 -- --------------------------------------------------------
 
@@ -118,8 +128,8 @@ CREATE TABLE `rooms` (
 --
 
 INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
-(1, 1, 66, 'available'),
-(2, 1, 104, 'available'),
+(1, 1, 66, 'unavailable'),
+(2, 1, 104, 'pending'),
 (3, 2, 58, 'available'),
 (4, 2, 60, 'pending'),
 (5, 3, 54, 'available'),
@@ -141,10 +151,9 @@ INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
 (22, 6, 112, 'available'),
 (23, 6, 118, 'available'),
 (24, 6, 120, 'available'),
-(25, 6, 122, 'available'),
+(25, 6, 122, 'pending'),
 (26, 6, 124, 'available'),
-(27, 4, 101, 'available'),
-(28, 6, 1, 'available');
+(27, 4, 101, 'available');
 
 -- --------------------------------------------------------
 
@@ -212,8 +221,8 @@ CREATE TABLE `types` (
 --
 
 INSERT INTO `types` (`id_type`, `name_type`, `description`, `long_description`, `fasility`, `start`, `img`) VALUES
-(1, 'DELUXE AC', 'Kamar mewah dengan desain elegan, dilengkapi AC, tempat tidur king size, TV, meja, kamar mandi dengan shower, dan area duduk. Sempurna untuk kenyamanan premium.', '\r\nKamar Deluxe AC dengan desain elegan dan modern, menawarkan kenyamanan maksimal untuk tamu yang menginginkan pengalaman menginap premium. Dilengkapi dengan tempat tidur king size yang luas, TV layar datar, meja kerja, serta kamar mandi pribadi dengan shower. Untuk kenyamanan ekstra, kamar ini juga menyediakan area duduk yang nyaman, ideal untuk relaksasi setelah seharian beraktivitas. Fasilitas AC memastikan suhu ruangan tetap sejuk, menciptakan suasana yang menyenangkan selama menginap. Kamar ini adalah pilihan sempurna bagi Anda yang mengutamakan kualitas dan kenyamanan dalam setiap detail.', 'AC (Air Conditioning) – Menjaga kenyamanan suhu di dalam kamar.\r\nTempat Tidur King Size – Memberikan kenyamanan tidur yang optimal dengan ukuran besar.\r\nTV – Untuk hiburan selama menginap.\r\nMeja Kerja – Memudahkan untuk bekerja atau menyelesaikan tugas selama menginap.\r\nKamar Mandi dengan Shower – Menyediakan kenyamanan dan kesegaran dengan fasilitas shower modern.\r\nArea Duduk – Tempat untuk bersantai atau menikmati waktu luang.\r\nWi-Fi Gratis – Koneksi internet cepat untuk kebutuhan kerja atau hiburan.\r\nLemari Pakaian – Menyediakan ruang untuk menyimpan pakaian dan barang pribadi.\r\nMinibar – Tersedia berbagai pilihan minuman dan camilan.', '250.000', 'deluxe'),
-(2, 'FAMILLY ROOM', 'Kamar luas untuk 3-5 orang, dilengkapi AC, tempat tidur besar, kamar mandi, dan fasilitas tambahan seperti area duduk dan meja.', 'Family Room ini dirancang khusus untuk keluarga atau kelompok yang membutuhkan ruang lebih luas dan nyaman. Dapat menampung hingga 3-5 orang, dengan tempat tidur besar yang dapat disesuaikan untuk kenyamanan semua anggota keluarga.Kamar ini dilengkapi dengan AC untuk menciptakan suasana yang sejuk dan nyaman, cocok untuk berbagai cuaca. Terdapat juga kamar mandi pribadi dengan fasilitas lengkap, termasuk shower yang memberikan kenyamanan dan kesegaran setelah aktivitas sepanjang hari. Untuk meningkatkan kenyamanan, tersedia area duduk yang luas, di mana keluarga dapat bersantai bersama, menikmati waktu berkualitas, atau berbincang. Selain itu, terdapat meja kerja yang memudahkan Anda menyelesaikan pekerjaan atau aktivitas lainnya tanpa mengganggu waktu berkumpul. Dengan desain yang modern dan ruang yang lapang, Family Room ini menawarkan kenyamanan maksimal, ideal untuk keluarga yang menginginkan penginapan yang praktis, tetapi tetap premium dan menyenangkan.', 'AC (Air Conditioning) – Menjaga suhu ruangan tetap nyaman.\r\nTempat Tidur Besar – Ideal untuk 3-5 orang, memberikan kenyamanan tidur yang optimal.\r\nKamar Mandi Pribadi – Dilengkapi dengan shower untuk kenyamanan mandi.\r\nArea Duduk – Tempat bersantai bersama keluarga atau teman.\r\nMeja Kerja – Cocok untuk aktivitas atau bekerja selama menginap.\r\nTV – Hiburan untuk keluarga dengan berbagai saluran.\r\nWi-Fi Gratis – Koneksi internet cepat untuk kebutuhan hiburan atau pekerjaan.\r\nLemari Pakaian – Untuk menyimpan barang-barang pribadi selama menginap.\r\nPerlengkapan Mandi Lengkap – Seperti handuk, sabun, sampo, dan lainnya.', '250.000', 'familly'),
+(1, 'DELUXE AC', 'Kamar mewah dengan desain elegan, dilengkapi AC, tempat tidur king size, TV, meja, kamar mandi dengan shower, dan area duduk.', '\r\nKamar Deluxe AC dengan desain elegan dan modern, menawarkan kenyamanan maksimal untuk tamu yang menginginkan pengalaman menginap premium. Dilengkapi dengan tempat tidur king size yang luas, TV layar datar, meja kerja, serta kamar mandi pribadi dengan shower. Untuk kenyamanan ekstra, kamar ini juga menyediakan area duduk yang nyaman, ideal untuk relaksasi setelah seharian beraktivitas. Fasilitas AC memastikan suhu ruangan tetap sejuk, menciptakan suasana yang menyenangkan selama menginap. Kamar ini adalah pilihan sempurna bagi Anda yang mengutamakan kualitas dan kenyamanan dalam setiap detail.', 'AC (Air Conditioning) – Menjaga kenyamanan suhu di dalam kamar.\r\nTempat Tidur King Size – Memberikan kenyamanan tidur yang optimal dengan ukuran besar.\r\nTV – Untuk hiburan selama menginap.\r\nMeja Kerja – Memudahkan untuk bekerja atau menyelesaikan tugas selama menginap.\r\nKamar Mandi dengan Shower – Menyediakan kenyamanan dan kesegaran dengan fasilitas shower modern.\r\nArea Duduk – Tempat untuk bersantai atau menikmati waktu luang.\r\nWi-Fi Gratis – Koneksi internet cepat untuk kebutuhan kerja atau hiburan.\r\nLemari Pakaian – Menyediakan ruang untuk menyimpan pakaian dan barang pribadi.\r\nMinibar – Tersedia berbagai pilihan minuman dan camilan.', '250.000', 'deluxe'),
+(2, 'FAMILLY ROOM', 'Kamar luas untuk 3-5 orang, dilengkapi AC, tempat tidur besar, kamar mandi, dan fasilitas tambahan seperti area duduk dan meja.', 'Family Room ini dirancang khusus untuk keluarga atau kelompok yang membutuhkan ruang lebih luas dan nyaman. Dapat menampung hingga 3-5 orang, dengan tempat tidur besar yang dapat disesuaikan untuk kenyamanan semua anggota keluarga.Kamar ini dilengkapi dengan AC untuk menciptakan suasana yang sejuk dan nyaman, cocok untuk berbagai cuaca.\r\nTerdapat juga kamar mandi pribadi dengan fasilitas lengkap, termasuk shower yang memberikan kenyamanan dan kesegaran setelah aktivitas sepanjang hari. Untuk meningkatkan kenyamanan, tersedia area duduk yang luas, di mana keluarga dapat bersantai bersama, menikmati waktu berkualitas, atau berbincang. Selain itu, terdapat meja kerja yang memudahkan Anda menyelesaikan pekerjaan atau aktivitas lainnya tanpa mengganggu waktu berkumpul. Dengan desain yang modern dan ruang yang lapang, Family Room ini menawarkan kenyamanan maksimal, ideal untuk keluarga yang menginginkan penginapan yang praktis, tetapi tetap premium dan menyenangkan.', 'AC (Air Conditioning) – Menjaga suhu ruangan tetap nyaman.\r\nTempat Tidur Besar – Ideal untuk 3-5 orang, memberikan kenyamanan tidur yang optimal.\r\nKamar Mandi Pribadi – Dilengkapi dengan shower untuk kenyamanan mandi.\r\nArea Duduk – Tempat bersantai bersama keluarga atau teman.\r\nMeja Kerja – Cocok untuk aktivitas atau bekerja selama menginap.\r\nTV – Hiburan untuk keluarga dengan berbagai saluran.\r\nWi-Fi Gratis – Koneksi internet cepat untuk kebutuhan hiburan atau pekerjaan.\r\nLemari Pakaian – Untuk menyimpan barang-barang pribadi selama menginap.\r\nPerlengkapan Mandi Lengkap – Seperti handuk, sabun, sampo, dan lainnya.', '250.000', 'familly'),
 (3, 'SUPERIOR AC', 'Kamar luas dan nyaman dengan AC, tempat tidur king size,dan kamar mandi. Cocok untuk tamu yang mengutamakan kenyamanan lebih.', 'Kamar Superior dengan AC ini menawarkan kenyamanan maksimal untuk tamu yang mengutamakan kualitas penginapan. Dilengkapi dengan tempat tidur king size yang luas dan nyaman, memberikan pengalaman tidur yang menyenangkan sepanjang malam. Dengan AC yang terpasang, suhu di dalam kamar dapat disesuaikan sesuai keinginan, menciptakan atmosfer yang sejuk dan menyegarkan di setiap waktu. Kamar ini juga dilengkapi dengan kamar mandi pribadi yang modern, lengkap dengan fasilitas shower untuk memberikan kesegaran ekstra setelah beraktivitas. Desain interiornya yang elegan dan luas memberikan rasa lega dan privasi yang lebih. Didesain untuk memberikan kenyamanan ekstra, kamar ini cocok untuk tamu yang menginginkan ruang lebih luas dan fasilitas yang memadai untuk beristirahat dengan tenang. Dengan fasilitas premium dan suasana yang nyaman, Kamar Superior ini menjadi pilihan sempurna untuk pengalaman menginap yang lebih dari sekadar biasa.', 'AC (Air Conditioning) – Menjaga suhu ruangan tetap sejuk dan nyaman.\r\nTempat Tidur King Size – Memberikan kenyamanan tidur yang optimal dengan ukuran yang luas.\r\nKamar Mandi Pribadi – Dilengkapi dengan shower untuk kenyamanan mandi yang menyegarkan.\r\nTV – Hiburan selama menginap dengan berbagai saluran.\r\nMeja Kerja – Menyediakan ruang untuk bekerja atau menyelesaikan tugas.\r\nWi-Fi Gratis – Koneksi internet cepat untuk kebutuhan hiburan atau pekerjaan.\r\nLemari Pakaian – Untuk menyimpan barang pribadi dengan rapi dan aman.\r\nPerlengkapan Mandi Lengkap – Termasuk handuk, sabun, sampo, dan perlengkapan lainnya.\r\nTelepon – Untuk komunikasi dengan layanan hotel atau kebutuhan lainnya.', '200.000', 'superAc'),
 (4, 'STANDAR AC', 'Kamar nyaman dengan AC, tempat tidur double, kamar mandi pribadi, fasilitas dasar.', 'Kamar Standar dengan AC ini dirancang untuk memberikan kenyamanan dasar yang ideal bagi tamu yang mencari tempat menginap yang praktis dan nyaman. Dilengkapi dengan tempat tidur double yang pas untuk satu atau dua orang, memberikan kenyamanan tidur yang optimal setelah beraktivitas seharian. AC yang tersedia di kamar ini menjaga suhu ruangan tetap sejuk dan nyaman, menciptakan suasana yang tenang untuk istirahat yang nyenyak. Kamar ini juga dilengkapi dengan kamar mandi pribadi yang menyediakan fasilitas dasar, termasuk shower yang memberikan kesegaran. Desain interiornya sederhana namun fungsional, menciptakan ruang yang nyaman untuk beristirahat. Dengan fasilitas dasar yang lengkap, kamar ini menjadi pilihan ideal untuk tamu yang mengutamakan kenyamanan dengan harga yang lebih terjangkau, tanpa mengurangi kualitas penginapan. Cocok untuk perjalanan singkat, bisnis, atau liburan dengan anggaran terbatas, tetapi tetap mengutamakan kenyamanan dan kebutuhan dasar selama menginap.', 'AC (Air Conditioning) – Menjaga suhu ruangan tetap sejuk dan nyaman sepanjang hari.\r\nTempat Tidur Double – Memberikan kenyamanan tidur untuk satu atau dua orang.\r\nKamar Mandi Pribadi – Dilengkapi dengan shower untuk kenyamanan dan kesegaran.\r\nTV – Hiburan untuk tamu dengan berbagai saluran.\r\nMeja Sederhana – Untuk keperluan menulis atau bekerja ringan.\r\nWi-Fi Gratis – Koneksi internet cepat untuk kebutuhan hiburan atau komunikasi.\r\nLemari Pakaian – Menyediakan ruang untuk menyimpan barang pribadi dengan rapi.\r\nPerlengkapan Mandi Dasar – Seperti handuk, sabun, dan sampo.\r\nTelepon – Untuk komunikasi dengan layanan hotel atau kebutuhan lainnya.', '150.000', 'StandAc'),
 (5, 'SUPERIOR FAN', 'Kamar Superior Fan menawarkan kenyamanan dengan kasur besar, kipas angin, dan kamar mandi.', 'Kamar Superior Fan ini dirancang untuk memberikan kenyamanan sederhana namun menyenangkan bagi tamu yang mengutamakan relaksasi. Dilengkapi dengan kasur besar yang memastikan tidur yang nyaman dan nyenyak, kamar ini menawarkan pengalaman menginap yang tenang dan nyaman. Untuk menjaga suhu ruangan tetap sejuk, tersedia kipas angin yang efisien, menciptakan atmosfer yang menyegarkan tanpa memerlukan AC. Kamar ini juga dilengkapi dengan kamar mandi pribadi, lengkap dengan fasilitas shower untuk kesegaran setelah aktivitas. Desainnya yang sederhana namun elegan memberikan ruang yang ideal untuk tamu yang mencari kenyamanan tanpa kelebihan. Kamar ini cocok bagi Anda yang menginginkan akomodasi dengan harga terjangkau namun tetap memprioritaskan kualitas penginapan.', 'Kasur Besar – Memberikan kenyamanan tidur yang optimal dengan ukuran yang luas.\r\nKipas Angin – Menjaga suhu ruangan tetap sejuk dan nyaman.\r\nKamar Mandi Pribadi – Dilengkapi dengan shower untuk kenyamanan mandi yang menyegarkan.\r\nTV – Hiburan dengan berbagai saluran untuk menikmati waktu luang.\r\nWi-Fi Gratis – Koneksi internet cepat untuk keperluan hiburan atau pekerjaan.\r\nLemari Pakaian – Menyediakan ruang untuk menyimpan barang pribadi dengan rapi.\r\nPerlengkapan Mandi Dasar – Seperti handuk, sabun, sampo, dan perlengkapan lainnya.\r\nMeja Sederhana – Untuk menulis atau menyelesaikan pekerjaan ringan.', '150.000', 'SuperFan'),
@@ -242,9 +251,10 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`, `remember_token`, `password_reset_token`) VALUES
 (1, 'admin', 'admin@admin.com', '$2y$10$R1eJRC2U4Y8YWs5PuswEJOErrPiQk56rZ6s7hOCPBn6k5H.PqFX5a', '2024-11-26 11:23:58', 'admin', NULL, NULL),
-(2, 'yuda69', 'yuda@gmail.com', '$2y$10$Tyb9VAQgjHFp4ZufrWT1FuqIbKpd64ryxy6hx/RmoeDRfdGCG5AAi', '2024-11-30 09:48:28', 'user', NULL, NULL),
+(2, 'yuda69', 'yuda@gmail.com', '$2y$10$8zacY..QlkM3eQfGkbvJA.juLesHmC9b4l.cc88pix4yMIRQuwD.m', '2024-11-30 09:48:28', 'user', NULL, NULL),
 (3, 'yuda666', 'yuda666@yahaha.com', '$2y$10$ooaZUV4B75cQG6L7xZPU2uqZ2mEEIOOviEVvFlExTZtgiV9OsG6MW', '2024-12-03 01:16:46', 'user', NULL, NULL),
-(4, 'arif', 'ariftot@gmail.com', '$2y$10$.JKJ.HhlhibNiUyTnWXKtemMJoFXR62l4vGQRIxDx72Evsbp7pLNy', '2024-12-14 02:03:00', 'user', NULL, NULL);
+(4, 'arif', 'ariftot@gmail.com', '$2y$10$.JKJ.HhlhibNiUyTnWXKtemMJoFXR62l4vGQRIxDx72Evsbp7pLNy', '2024-12-14 02:03:00', 'user', NULL, NULL),
+(5, 'ashiap', 'ashiap@yahoo.co', '$2y$10$DjtLSYXdZb1mv3yBdJfi6OSBTiU5iJVjRNTmvq6R2hXh2Vz9ifcm6', '2024-12-15 14:34:31', 'user', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -270,7 +280,8 @@ CREATE TABLE `user_profile` (
 
 INSERT INTO `user_profile` (`id_profile`, `id_user`, `username`, `first_name`, `last_name`, `phone_number`, `email`, `date_of_birth`, `create_at`) VALUES
 (1, 2, 'yuda69', 'kiki', 'jmt', '9007644', 'yuda@gmail.com', '2024-12-06', '2024-12-06 02:46:37'),
-(3, 3, 'yuda666', 'kikil', 'kuuoo', '090076440088', 'yuda666@yahaha.com', '2024-12-06', '2024-12-06 03:18:58');
+(3, 3, 'yuda666', 'kikil', 'kuuoo', '090076440088', 'yuda666@yahaha.com', '2024-12-06', '2024-12-06 03:18:58'),
+(4, 4, 'arif', 'ariff', 'gacor', '549873697626759', 'ariftot@gmail.com', '2024-12-19', '2024-12-15 10:45:33');
 
 --
 -- Indexes for dumped tables
@@ -363,7 +374,7 @@ ALTER TABLE `pay_methods`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `rooms`
@@ -393,13 +404,13 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `user_profile`
 --
 ALTER TABLE `user_profile`
-  MODIFY `id_profile` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_profile` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

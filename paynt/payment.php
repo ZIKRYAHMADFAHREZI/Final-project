@@ -5,67 +5,66 @@ require '../db/connection.php'; // Pastikan file koneksi Anda benar
 // Daftar ekstensi file yang diperbolehkan
 $allowed_extensions = ['jpg', 'jpeg', 'png', 'pdf'];
 
-if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] == 0) {
-    $file_tmp = $_FILES['payment_proof']['tmp_name'];
-    $original_file_name = $_FILES['payment_proof']['name'];
+// Fungsi untuk mengupload bukti pembayaran
+function uploadPaymentProof($file) {
+    global $allowed_extensions;
+
+    $file_tmp = $file['tmp_name'];
+    $original_file_name = $file['name'];
     $file_extension = pathinfo($original_file_name, PATHINFO_EXTENSION);
-    
-    // Convert extension to lowercase to make it case-insensitive
-    $file_extension = strtolower($file_extension);
-    
+    $file_extension = strtolower($file_extension); // Convert extension to lowercase
+
     // Cek apakah ekstensi file diperbolehkan
     if (!in_array($file_extension, $allowed_extensions)) {
-        // Jika format file tidak diperbolehkan, arahkan ke halaman sebelumnya dan tampilkan SweetAlert
-        echo "<script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Format file tidak diperbolehkan!',
-                    text: 'Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.'
-                }).then(function() {
-                    window.history.back();
-                });
-              </script>";
-        exit();
-    } else {
-        $new_file_name = date('YmdHis') . '_' . uniqid() . '.' . $file_extension;
-
-        // Tentukan direktori tujuan untuk menyimpan file
-        $upload_dir = 'uploads/';
-        $target_file = $upload_dir . $new_file_name;
-
-        // Pastikan direktori ada
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-
-        // Cek apakah file bisa dipindahkan ke direktori tujuan
-        if (move_uploaded_file($file_tmp, $target_file)) {
-            // Pastikan $id_reservation diambil sebelum pembaruan
-            if (isset($_SESSION['id_reservation'])) {
-                $id_reservation = $_SESSION['id_reservation'];
-                try {
-                    $stmt = $pdo->prepare("UPDATE reservations SET payment_proof = :payment_proof WHERE id_reservation = :id_reservation");
-                    $stmt->bindParam(':payment_proof', $new_file_name);
-                    $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
-                    $stmt->execute();
-
-                    $payment_upload_message = "Bukti pembayaran berhasil diunggah.";
-                } catch (PDOException $e) {
-                    $payment_upload_message = "Terjadi kesalahan saat mengunggah bukti pembayaran: " . $e->getMessage();
-                }
-            } else {
-                $payment_upload_message = "ID pemesanan tidak ditemukan.";
-            }
-        } else {
-            $payment_upload_message = "Terjadi kesalahan saat mengunggah file.";
-        }
+        return "Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.";
     }
-    header('Location: ../invoices.php?id_payment=' . $id_reservation);
-    exit();
+
+    // Membuat nama file baru
+    $new_file_name = date('YmdHis') . '_' . uniqid() . '.' . $file_extension;
+    $upload_dir = 'uploads/';
+    $target_file = $upload_dir . $new_file_name;
+
+    // Pastikan direktori ada
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0777, true);
+    }
+
+    // Cek apakah file bisa dipindahkan ke direktori tujuan
+    if (move_uploaded_file($file_tmp, $target_file)) {
+        return $new_file_name;
+    } else {
+        return "Terjadi kesalahan saat mengunggah file.";
+    }
 }
 
-// Cek apakah data yang diperlukan ada
-else if (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method'], $_POST['total-amount'], $_POST['number_room'])) {
+// Proses upload bukti pembayaran
+if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] == 0) {
+    $upload_result = uploadPaymentProof($_FILES['payment_proof']);
+    if (strpos($upload_result, ".") !== false) { // Jika file berhasil diupload
+        $new_file_name = $upload_result;
+
+        if (isset($_SESSION['id_reservation'])) {
+            $id_reservation = $_SESSION['id_reservation'];
+            try {
+                $stmt = $pdo->prepare("UPDATE reservations SET payment_proof = :payment_proof WHERE id_reservation = :id_reservation");
+                $stmt->bindParam(':payment_proof', $new_file_name);
+                $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
+                $stmt->execute();
+                $payment_upload_message = "Bukti pembayaran berhasil diunggah.";
+            } catch (PDOException $e) {
+                $payment_upload_message = "Terjadi kesalahan saat mengunggah bukti pembayaran: " . $e->getMessage();
+            }
+        } else {
+            $payment_upload_message = "ID pemesanan tidak ditemukan.";
+        }
+    } else {
+        $payment_upload_message = $upload_result; // Menampilkan pesan kesalahan
+    }
+
+    // Pindahkan header setelah SweetAlert, jika sudah berhasil atau gagal upload
+    header('Location: ../invoices.php?id_payment=' . $_SESSION['id_reservation']);
+    exit();
+} elseif (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method'], $_POST['total-amount'], $_POST['number_room'])) {
     // Mendapatkan data dari form yang dikirimkan
     $start_date = $_POST['start_date'];
     $to_date = $_POST['to_date'] ?? null;
@@ -88,38 +87,42 @@ else if (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_metho
         $error_message = "Terjadi kesalahan saat mengambil data: " . $e->getMessage();
     }
 
-    if (!isset($error_message)) {
-        try {
-            if ($to_date) {
-                $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, to_date, id_room, total_amount) 
-                                       VALUES (:id_user, :id_pay_method, :start_date, :to_date, :id_room, :total_amount)");
-                $stmt->bindParam(':to_date', $to_date);
-            } else {
-                $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, id_room, total_amount) 
-                                       VALUES (:id_user, :id_pay_method, :start_date, :id_room, :total_amount)");
+    // Proses pembaruan status kamar menjadi 'pending'
+    try {
+        if ($total_amount > 0) { // Ganti dengan pengecekan yang valid untuk memastikan pembayaran berhasil
+            // Pembaruan status kamar menjadi pending
+            $stmt = $pdo->prepare("UPDATE rooms SET status = 'pending' WHERE id_room = ?");
+            $stmt->execute([$id_room]);
+
+            if (!isset($error_message)) {
+                if ($to_date) {
+                    $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, to_date, id_room, total_amount) 
+                                           VALUES (:id_user, :id_pay_method, :start_date, :to_date, :id_room, :total_amount)");
+                    $stmt->bindParam(':to_date', $to_date);
+                } else {
+                    $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, id_room, total_amount) 
+                                           VALUES (:id_user, :id_pay_method, :start_date, :id_room, :total_amount)");
+                }
+
+                $stmt->bindParam(':id_user', $_SESSION['id_user'], PDO::PARAM_INT);
+                $stmt->bindParam(':id_pay_method', $id_pay_method, PDO::PARAM_INT);
+                $stmt->bindParam(':start_date', $start_date);
+                $stmt->bindParam(':id_room', $id_room, PDO::PARAM_INT);
+                $stmt->bindParam(':total_amount', $total_amount);
+                $stmt->execute();
+
+                $id_reservation = $pdo->lastInsertId();
+                $_SESSION['id_reservation'] = $id_reservation;
+                $success_message = "Pemesanan berhasil. Silakan lanjutkan pembayaran.";
             }
-
-            $stmt->bindParam(':id_user', $_SESSION['id_user'], PDO::PARAM_INT);
-            $stmt->bindParam(':id_pay_method', $id_pay_method, PDO::PARAM_INT);
-            $stmt->bindParam(':start_date', $start_date);
-            $stmt->bindParam(':id_room', $id_room, PDO::PARAM_INT);
-            $stmt->bindParam(':total_amount', $total_amount);
-            $stmt->execute();
-
-            $id_reservation = $pdo->lastInsertId();
-            $_SESSION['id_reservation'] = $id_reservation;
-            $success_message = "Pemesanan berhasil. Silakan lanjutkan pembayaran.";
-
-        } catch (PDOException $e) {
-            $error_message = "Terjadi kesalahan saat memproses pemesanan: " . $e->getMessage();
         }
+    } catch (PDOException $e) {
+        $error_message = "Terjadi kesalahan saat memproses pemesanan: " . $e->getMessage();
     }
 } else {
     $error_message = "Data pemesanan tidak lengkap.";
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

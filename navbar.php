@@ -56,6 +56,7 @@
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="akunMenu">
                     <li><a class="dropdown-item" href="profile.php">Profile</a></li>
                     <li><a class="dropdown-item" href="history.php">History</a></li>
+                    <li><a class="dropdown-item" href="u_password.php">Ganti Password</a></li>
                     <li><a href="#" onclick="confirmLogout();" class="dropdown-item" style="color: red;">Logout</a></li>
                 </ul>
             </li>

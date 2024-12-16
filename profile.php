@@ -3,6 +3,7 @@ session_start();
 require 'db/connection.php';
 
 $id_user = $_SESSION['id_user'];
+
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
     // Jika belum login, arahkan ke halaman login
@@ -31,7 +32,7 @@ try {
             'last_name' => '',
             'phone_number' => '',
             'email' => '',
-            'date_of_birth' => '',
+            'date_of_birth' => null, // Pastikan null untuk date_of_birth jika tidak ada
             'password' => '' // Pastikan password tetap kosong
         ];
     }
@@ -53,6 +54,11 @@ try {
 
         if ($stmt->rowCount() > 0) {
             die("Kesalahan: Email sudah digunakan oleh pengguna lain.");
+        }
+
+        // Jika date_of_birth kosong, set ke NULL
+        if (empty($date_of_birth)) {
+            $date_of_birth = NULL;
         }
 
         // Jika data pengguna sudah ada (untuk update)
@@ -79,7 +85,7 @@ try {
         $stmt->bindParam(':last_name', $last_name);
         $stmt->bindParam(':phone_number', $phone_number);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':date_of_birth', $date_of_birth);
+        $stmt->bindParam(':date_of_birth', $date_of_birth, PDO::PARAM_STR); // Pastikan bind parameter dengan PDO::PARAM_STR
 
         // Eksekusi query
         if ($stmt->execute()) {
@@ -149,7 +155,6 @@ try {
     .form-group button {
         width: 100%;
         padding: 12px;
-        /* background-color: #5cb85c; */
         border: none;
         color: white;
         border-radius: 5px;
@@ -157,9 +162,6 @@ try {
         font-weight: bold;
         cursor: pointer;
         transition: background-color 0.3s ease;
-    }
-    .form-group button:hover {
-        background-color: #4cae4c;
     }
     .logout-link {
         display: block;
@@ -191,16 +193,16 @@ try {
             <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']); ?>" required>
         </div>
         <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>
+        </div>
+        <div class="form-group">
             <label for="first_name">Nama Depan:</label>
             <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($user_profile['first_name'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="last_name">Nama Belakang:</label>
             <input type="text" id="last_name" name="last_name" value="<?= htmlspecialchars($user_profile['last_name'] ?? ''); ?>">
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>
         </div>
         <div class="form-group">
             <label for="phone_number">Nomor Telepon:</label>
@@ -211,7 +213,7 @@ try {
             <input type="date" id="date_of_birth" name="date_of_birth" value="<?= htmlspecialchars($user_profile['date_of_birth'] ?? ''); ?>">
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-success">Simpan</button>
+            <button type="submit" id="submitButton" class="btn btn-success">Simpan</button>
         </div>
         <div class="form-group">
             <button type="reset" class="btn btn-secondary">Batal</a>
@@ -224,6 +226,74 @@ try {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+// Menambahkan event listener untuk mendeteksi perubahan pada form
+let formChanged = false;
+
+const form = document.querySelector('form');
+const formElements = form.querySelectorAll('input, select, textarea');
+
+// Menandai perubahan data pada form
+formElements.forEach(element => {
+    element.addEventListener('input', () => {
+        formChanged = true; // Form telah berubah
+    });
+});
+
+// Menambahkan event listener pada tombol submit
+document.getElementById('submitButton').addEventListener('click', async function (event) {
+    event.preventDefault();
+
+    // Menampilkan SweetAlert untuk konfirmasi
+    const result = await Swal.fire({
+        title: 'Konfirmasi Ubah Data',
+        text: "Apakah Anda yakin ingin mengubah data?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Ubah!',
+        cancelButtonText: 'Batal'
+    });
+
+    if (result.isConfirmed) {
+        // Jika pengguna memilih 'Ya, Ubah!', tampilkan SweetAlert untuk konfirmasi berhasil
+        await Swal.fire({
+            title: 'Data Berhasil Diubah',
+            text: 'Data Anda telah berhasil diperbarui.',
+            icon: 'success',
+            confirmButtonColor: '#3085d6'
+        });
+
+        // Kirim data form menggunakan AJAX
+        const formData = new FormData(document.querySelector('form'));
+        fetch('profile.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Reload halaman setelah sukses
+            setTimeout(() => {
+                location.reload();
+            }, 100);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+});
+
+// Menambahkan event listener untuk konfirmasi ketika meninggalkan halaman
+window.addEventListener('beforeunload', function (event) {
+    if (formChanged) {
+        // Munculkan pesan konfirmasi jika ada perubahan
+        const message = "Anda telah mengubah data, tetapi belum menyimpan perubahan. Apakah Anda yakin ingin meninggalkan halaman?";
+        event.returnValue = message; // Untuk sebagian besar browser
+        return message; // Untuk beberapa browser lain yang lebih lama
+    }
+});
+
+// Menambahkan konfirmasi logout
 function confirmLogout() {
     Swal.fire({
         title: "Apakah Anda yakin ingin logout?",
@@ -241,5 +311,6 @@ function confirmLogout() {
     });
 }
 </script>
+
 </body>
 </html>
