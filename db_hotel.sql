@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 17, 2024 at 11:42 AM
+-- Generation Time: Dec 18, 2024 at 04:08 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -84,6 +84,26 @@ CREATE TABLE `reservations` (
   `id_pay_method` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `reservations`
+--
+
+INSERT INTO `reservations` (`id_reservation`, `id_user`, `id_room`, `reservation_date`, `check_in_date`, `check_out_date`, `status`, `payment_status`, `total_amount`, `created_at`, `updated_at`, `payment_proof`, `to_date`, `start_date`, `id_pay_method`) VALUES
+(26, 7, 17, '2024-12-18 02:43:22', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 02:43:22', '2024-12-18 02:43:30', '20241218024330_676236d2c3196.jpg', NULL, '2024-12-24', 2),
+(27, 8, 18, '2024-12-18 02:58:42', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 02:58:42', '2024-12-18 02:58:50', '20241218025850_67623a6a3f248.jpg', NULL, '2024-12-26', 2),
+(28, 7, 24, '2024-12-18 03:14:33', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-18 03:14:33', '2024-12-18 03:14:41', '20241218031441_67623e219a928.jpg', NULL, '2024-12-20', 2),
+(29, 7, 23, '2024-12-18 03:21:39', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-18 03:21:39', '2024-12-18 03:21:47', '20241218032147_67623fcb24b8f.jpg', NULL, '2025-01-02', 1),
+(30, 7, 22, '2024-12-18 03:23:49', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-18 03:23:49', '2024-12-18 03:23:57', '20241218032357_6762404d4454b.jpg', NULL, '2024-12-21', 2),
+(31, 7, 26, '2024-12-18 03:26:39', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-18 03:26:39', '2024-12-18 03:26:50', '20241218032650_676240fa58fc6.jpg', NULL, '2024-12-19', 3),
+(32, 7, 16, '2024-12-18 03:31:05', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 03:31:05', '2024-12-18 03:31:28', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-21', 2),
+(33, 7, 10, '2024-12-18 03:32:48', NULL, NULL, 'pending', 'unpaid', '175000.00', '2024-12-18 03:32:48', '2024-12-18 03:33:06', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-27', 2),
+(34, 7, 9, '2024-12-18 03:34:48', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 03:34:48', '2024-12-18 03:35:04', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-19', 1),
+(35, 7, 6, '2024-12-18 03:38:48', NULL, NULL, 'pending', 'unpaid', '200000.00', '2024-12-18 03:38:48', '2024-12-18 03:39:05', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-20', 1),
+(36, 7, 5, '2024-12-18 03:45:15', NULL, NULL, 'pending', 'unpaid', '200000.00', '2024-12-18 03:45:15', '2024-12-18 03:45:31', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-19', 2),
+(37, 7, 11, '2024-12-18 03:50:44', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 03:50:44', '2024-12-18 03:51:00', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-21', 3),
+(38, 7, 27, '2024-12-18 04:06:33', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 04:06:33', '2024-12-18 04:06:33', NULL, NULL, '2024-12-20', 1),
+(39, 7, 8, '2024-12-18 04:07:01', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 04:07:01', '2024-12-18 04:07:01', NULL, NULL, '2024-12-20', 2);
+
 -- --------------------------------------------------------
 
 --
@@ -104,30 +124,30 @@ CREATE TABLE `rooms` (
 INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
 (1, 1, 66, 'unavailable'),
 (2, 1, 104, 'pending'),
-(3, 2, 58, 'available'),
+(3, 2, 58, 'pending'),
 (4, 2, 60, 'pending'),
-(5, 3, 54, 'available'),
-(6, 3, 62, 'available'),
-(8, 4, 102, 'available'),
-(9, 4, 103, 'available'),
-(10, 4, 105, 'available'),
-(11, 4, 107, 'available'),
+(5, 3, 54, 'pending'),
+(6, 3, 62, 'pending'),
+(8, 4, 102, 'pending'),
+(9, 4, 103, 'pending'),
+(10, 4, 105, 'pending'),
+(11, 4, 107, 'pending'),
 (12, 5, 142, 'available'),
 (13, 5, 144, 'available'),
 (14, 5, 146, 'available'),
 (15, 5, 148, 'available'),
-(16, 5, 150, 'available'),
-(17, 5, 152, 'available'),
-(18, 5, 154, 'available'),
+(16, 5, 150, 'pending'),
+(17, 5, 152, 'pending'),
+(18, 5, 154, 'pending'),
 (19, 6, 106, 'pending'),
 (20, 6, 108, 'pending'),
 (21, 6, 110, 'pending'),
-(22, 6, 112, 'available'),
-(23, 6, 118, 'available'),
-(24, 6, 120, 'available'),
+(22, 6, 112, 'pending'),
+(23, 6, 118, 'pending'),
+(24, 6, 120, 'pending'),
 (25, 6, 122, 'pending'),
-(26, 6, 124, 'available'),
-(27, 4, 101, 'available');
+(26, 6, 124, 'pending'),
+(27, 4, 101, 'pending');
 
 -- --------------------------------------------------------
 
@@ -210,14 +230,22 @@ INSERT INTO `types` (`id_type`, `name_type`, `description`, `long_description`, 
 
 CREATE TABLE `users` (
   `id_user` int NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `role` enum('admin','user') NOT NULL DEFAULT 'user',
   `remember_token` varchar(255) DEFAULT NULL,
-  `password_reset_token` varchar(255) DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL
+  `password_reset_token` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`, `remember_token`, `password_reset_token`) VALUES
+(7, 'fufufafa', 'fufufafa@gmail.com', '$2y$10$V5DF2fFB8ksi1YzYOa94w.wDHtyWlrOc7GS9dbtBzVegyyUVAPBNa', '2024-12-18 02:37:19', 'user', NULL, NULL),
+(8, 'admin', 'admin@gmail.com', '$2y$10$TGd/jMe6pn1SHQQwGBaTeutdBSudL3OV/3QoBTSj4.gLGs0GnK0tO', '2024-12-18 02:50:49', 'admin', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -228,14 +256,21 @@ CREATE TABLE `users` (
 CREATE TABLE `user_profile` (
   `id_profile` int NOT NULL,
   `id_user` int NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
   `phone_number` varchar(45) DEFAULT NULL,
   `date_of_birth` date DEFAULT NULL,
-  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `username` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `user_profile`
+--
+
+INSERT INTO `user_profile` (`id_profile`, `id_user`, `username`, `email`, `first_name`, `last_name`, `phone_number`, `date_of_birth`, `create_at`) VALUES
+(5, 7, 'fufufafafa', 'fufufafa@gmail.como', 'ali', 'mm', '08333', '2026-10-18', '2024-12-18 02:38:22');
 
 --
 -- Indexes for dumped tables
@@ -324,7 +359,7 @@ ALTER TABLE `pay_methods`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `rooms`
@@ -354,13 +389,13 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `user_profile`
 --
 ALTER TABLE `user_profile`
-  MODIFY `id_profile` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_profile` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables

@@ -1,15 +1,27 @@
 <?php
 session_start();
 require 'db/connection.php';
+// Ambil parameter id_reservation dari POST
+$id_reservation = isset($_POST['id_reservation']) ? $_POST['id_reservation'] : null;
 
-$id_reservation = $_GET['id_reservation']; // Misalnya, ID reservasi diterima melalui URL GET
+// Validasi apakah ID ada
+if (!$id_reservation) {
+    die("ID reservasi tidak ditemukan. Silakan coba lagi.");
+
+}
+
+// Proses menggunakan $id_reservation
+echo "ID Reservasi: " . htmlspecialchars($id_reservation);
+die;
+
+$id_reservation = $_POST['id_reservation']; 
 try {
-    // Query untuk mengambil data pemesanan berdasarkan id_reservation
     $query = $pdo->prepare("
-        SELECT r.*, p.method, p.payment_number, p.account_name, rt.room_name, rt.room_rate, r.status
+        SELECT r.*, u.phone_number, p.method, p.payment_number, p.account_name, rt.room_name, rt.room_rate, r.status
         FROM reservations r
-        LEFT JOIN pay_methods p ON r.id_pay_method = p.id_pay_method
-        LEFT JOIN room_types rt ON r.id_type = rt.id_type
+        JOIN users u ON r.user_id = u.user_id
+        JOIN pay_methods p ON r.id_pay_method = p.id_pay_method
+        JOIN room_types rt ON r.id_type = rt.id_type
         WHERE r.id_reservation = :id_reservation AND r.active = 1
     ");
     $query->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
@@ -17,11 +29,10 @@ try {
     $reservation_details = $query->fetch(PDO::FETCH_ASSOC);
 
     if (!$reservation_details) {
-        $error_message = "Data reservasi tidak ditemukan.";
+        die("Data reservasi tidak ditemukan untuk ID reservasi: " . htmlspecialchars($id_reservation));
     }
-
 } catch (PDOException $e) {
-    $error_message = "Terjadi kesalahan saat mengambil data: " . $e->getMessage();
+    die("Terjadi kesalahan saat mengambil data: " . $e->getMessage());
 }
 ?>
 
@@ -48,7 +59,7 @@ try {
               <div class="col-6">
                 <h5>Hotel Grand Mutiara</h5>
                 <p>Alamat: Jl. Raya No. 123, Kota Maluku Utara</p>
-                <p>Email: yandex</p>
+                <p>Email: hotelgrandmutiara4@gmail.com</p>
               </div>
               <div class="col-6 text-end">
                 <h5>Invoice #<?= $reservation_details['id_reservation']; ?></h5>
