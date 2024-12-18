@@ -6,7 +6,6 @@ $id_user = $_SESSION['id_user'];
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    // Jika belum login, arahkan ke halaman login
     header('Location: login.php');
     exit;
 }
@@ -24,7 +23,6 @@ try {
     $stmt->execute();
     $user_profile = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Jika data pengguna tidak ditemukan, inisialisasi dengan nilai kosong
     if (!$user) {
         $user = [
             'username' => '',
@@ -32,12 +30,11 @@ try {
             'last_name' => '',
             'phone_number' => '',
             'email' => '',
-            'date_of_birth' => null, // Pastikan null untuk date_of_birth jika tidak ada
-            'password' => '' // Pastikan password tetap kosong
+            'date_of_birth' => null,
+            'password' => ''
         ];
     }
 
-    // Jika formulir disubmit
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $_POST['username'];
         $first_name = $_POST['first_name'];
@@ -56,12 +53,11 @@ try {
             die("Kesalahan: Email sudah digunakan oleh pengguna lain.");
         }
 
-        // Jika date_of_birth kosong, set ke NULL
         if (empty($date_of_birth)) {
             $date_of_birth = NULL;
         }
 
-        // Jika data pengguna sudah ada (untuk update)
+        // Update atau tambahkan data user_profile
         if ($user_profile) {
             $stmt = $pdo->prepare("UPDATE user_profile SET
                 username = :username,
@@ -72,26 +68,35 @@ try {
                 date_of_birth = :date_of_birth
                 WHERE id_user = :id_user");
         } else {
-            // Tambah data baru tanpa password
             $stmt = $pdo->prepare("INSERT INTO user_profile 
                 (id_profile, id_user, username, first_name, last_name, phone_number, email, date_of_birth) 
                 VALUES (NULL, :id_user, :username, :first_name, :last_name, :phone_number, :email, :date_of_birth)");
         }
-
-        // Bind parameter
         $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
         $stmt->bindParam(':username', $username);
         $stmt->bindParam(':first_name', $first_name);
         $stmt->bindParam(':last_name', $last_name);
         $stmt->bindParam(':phone_number', $phone_number);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':date_of_birth', $date_of_birth, PDO::PARAM_STR); // Pastikan bind parameter dengan PDO::PARAM_STR
+        $stmt->bindParam(':date_of_birth', $date_of_birth, PDO::PARAM_STR);
 
-        // Eksekusi query
         if ($stmt->execute()) {
-            echo "Data berhasil disimpan!";
+            // Update tabel users
+            $stmt = $pdo->prepare("UPDATE users SET 
+                username = :username,
+                email = :email
+                WHERE id_user = :id_user");
+            $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':email', $email);
+
+            if ($stmt->execute()) {
+                echo "Data berhasil disimpan!";
+            } else {
+                echo "Gagal memperbarui data di tabel users.";
+            }
         } else {
-            echo "Gagal menyimpan data.";
+            echo "Gagal menyimpan data di tabel user_profile.";
         }
     }
 } catch (PDOException $e) {
@@ -102,6 +107,7 @@ try {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -187,11 +193,11 @@ try {
 
 <div class="form-container">
     <h1>Profil Pengguna</h1>
+    <div class="form-group">
+    <label for="username">Username:</label>
+        <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']); ?>" readonly>
+    </div>
     <form action="" method="POST">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']); ?>" required>
-        </div>
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>

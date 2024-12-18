@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 18, 2024 at 04:08 AM
+-- Generation Time: Dec 18, 2024 at 11:13 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -236,16 +236,17 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `role` enum('admin','user') NOT NULL DEFAULT 'user',
   `remember_token` varchar(255) DEFAULT NULL,
-  `password_reset_token` varchar(255) DEFAULT NULL
+  `password_reset_token` varchar(255) DEFAULT NULL,
+  `password_reset_exp` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`, `remember_token`, `password_reset_token`) VALUES
-(7, 'fufufafa', 'fufufafa@gmail.com', '$2y$10$V5DF2fFB8ksi1YzYOa94w.wDHtyWlrOc7GS9dbtBzVegyyUVAPBNa', '2024-12-18 02:37:19', 'user', NULL, NULL),
-(8, 'admin', 'admin@gmail.com', '$2y$10$TGd/jMe6pn1SHQQwGBaTeutdBSudL3OV/3QoBTSj4.gLGs0GnK0tO', '2024-12-18 02:50:49', 'admin', NULL, NULL);
+INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`, `remember_token`, `password_reset_token`, `password_reset_exp`) VALUES
+(7, 'fufufafa', 'fufufafa@gmail.com', '$2y$10$HNpX9qattJMjLOyLVS9Xc.eqCoTh2gmEu2C7T5O.f5r0ragWxj6bC', '2024-12-18 02:37:19', 'user', NULL, NULL, NULL),
+(8, 'admin', 'admin@gmail.com', '$2y$10$TGd/jMe6pn1SHQQwGBaTeutdBSudL3OV/3QoBTSj4.gLGs0GnK0tO', '2024-12-18 02:50:49', 'admin', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 

@@ -1,10 +1,7 @@
 <?php
 session_start();
-
-// Menginclude file koneksi
-require 'db/connection.php'; // Pastikan path ini sesuai dengan lokasi file koneksi.php
-
-
+// Menginclude file 
+require 'db/connection.php'; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,6 +37,18 @@ require 'db/connection.php'; // Pastikan path ini sesuai dengan lokasi file kone
         outline: none;
         background-color: #f8f9fa;
         transition: border-color 500ms;
+    }
+    .input-group {
+    position: relative;
+    margin-bottom: 25px; /* Tambahkan ruang di bawah grup */
+    }
+    #username-error {
+        position: absolute;
+        top: 45px; /* Geser elemen ke atas */
+        left: 0;
+        font-size: 12px;
+        color: red;
+        display: none;
     }
 </style>
 </head>
@@ -134,10 +143,12 @@ if (isset($_POST['submit'])) {
     <div class="login-container">
         <h2 class="title">Halaman Register</h2>
         <form action="" method="post">
-            <div class="input-group">
-                <input type="text" name="username" id="username" class="input-group__input" required>
-                <label for="username" class="input-group__label">Username</label>
-            </div>
+        <div class="input-group">
+            <input type="text" name="username" id="username" class="input-group__input" required>
+            <label for="username" class="input-group__label">Username</label>
+            <small id="username-error">Username sudah digunakan</small>
+        </div>
+
             <div class="input-group">
                 <input type="email" name="email" id="email" class="input-group__input" required>
                 <label for="email" class="input-group__label">Email</label>
@@ -200,6 +211,32 @@ if (input.value.trim() !== '') {
     input.classList.add('has-value');
 }
   });
+
+  document.getElementById("username").addEventListener("input", function () {
+    const username = this.value.trim();
+    const errorElement = document.getElementById("username-error");
+
+    if (username) {
+        fetch("check_username.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: `username=${encodeURIComponent(username)}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "unavailable") {
+                errorElement.style.display = "block";
+            } else {
+                errorElement.style.display = "none";
+            }
+        })
+        .catch(err => console.error("Error:", err));
+    } else {
+        errorElement.style.display = "none";
+    }
+});
 </script>
 
 </body>
