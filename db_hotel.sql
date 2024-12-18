@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 15, 2024 at 11:55 PM
+-- Generation Time: Dec 17, 2024 at 11:42 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -84,32 +84,6 @@ CREATE TABLE `reservations` (
   `id_pay_method` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `reservations`
---
-
-INSERT INTO `reservations` (`id_reservation`, `id_user`, `id_room`, `reservation_date`, `check_in_date`, `check_out_date`, `status`, `payment_status`, `total_amount`, `created_at`, `updated_at`, `payment_proof`, `to_date`, `start_date`, `id_pay_method`) VALUES
-(1, 3, 1, '2024-12-15 08:19:53', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:19:53', '2024-12-15 08:19:53', NULL, NULL, '2024-12-16', 3),
-(2, 3, 4, '2024-12-15 08:26:39', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:26:39', '2024-12-15 08:26:47', '20241215082647_675e92c71f48c.jpg', NULL, '2024-12-16', 3),
-(3, 3, 1, '2024-12-15 08:27:54', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:27:54', '2024-12-15 08:27:59', '20241215082759_675e930f2f165.jpg', NULL, '2024-12-16', 1),
-(4, 3, 2, '2024-12-15 08:28:46', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:28:46', '2024-12-15 08:28:50', '20241215082850_675e9342bcbca.jpg', NULL, '2024-12-17', 3),
-(5, 3, 2, '2024-12-15 08:29:17', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:29:17', '2024-12-15 08:29:40', '20241215082940_675e9374a6fc3.jpg', NULL, '2024-12-16', 1),
-(6, 3, 1, '2024-12-15 08:30:03', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:30:03', '2024-12-15 08:30:17', '20241215083017_675e93997b351.mp4', NULL, '2024-12-16', 1),
-(7, 3, 2, '2024-12-15 08:34:18', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:34:18', '2024-12-15 08:34:18', NULL, NULL, '2024-12-16', 2),
-(8, 3, 1, '2024-12-15 08:36:52', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:36:52', '2024-12-15 08:36:52', NULL, NULL, '2024-12-16', 2),
-(9, 3, 1, '2024-12-15 08:37:32', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:37:32', '2024-12-15 08:37:32', NULL, NULL, '2024-12-17', 1),
-(10, 3, 1, '2024-12-15 08:38:59', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:38:59', '2024-12-15 08:38:59', NULL, NULL, '2024-12-16', 2),
-(11, 3, 1, '2024-12-15 08:40:10', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:40:10', '2024-12-15 08:40:10', NULL, NULL, '2024-12-31', 1),
-(12, 3, 2, '2024-12-15 08:42:06', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:42:06', '2024-12-15 08:42:06', NULL, NULL, '2024-12-18', 1),
-(13, 3, 2, '2024-12-15 08:44:47', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 08:44:47', '2024-12-15 08:44:47', NULL, NULL, '2024-12-19', 1),
-(14, 3, 2, '2024-12-15 08:45:23', NULL, NULL, 'pending', 'unpaid', '0.00', '2024-12-15 08:45:23', '2024-12-15 08:45:38', '20241215084538_675e973255272.png', NULL, '2024-12-19', 1),
-(16, 4, 18, '2024-12-15 10:46:00', NULL, NULL, 'pending', 'unpaid', '1400000.00', '2024-12-15 10:46:00', '2024-12-15 10:46:09', '20241215104609_675eb3717a566.jpg', '2024-12-25', '2024-12-18', 2),
-(17, 4, 24, '2024-12-15 14:15:08', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-15 14:15:08', '2024-12-15 14:15:08', NULL, NULL, '2024-12-18', 2),
-(18, 4, 1, '2024-12-15 14:23:30', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 14:23:30', '2024-12-15 14:23:30', NULL, NULL, '2024-12-26', 2),
-(19, 2, 2, '2024-12-15 21:19:15', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 21:19:15', '2024-12-15 21:19:28', '20241215211928_675f47e02417f.jpg', NULL, '2024-12-18', 1),
-(20, 2, 2, '2024-12-15 21:41:16', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 21:41:16', '2024-12-15 21:41:25', '20241215214125_675f4d059d40b.jpg', NULL, '2024-12-24', 1),
-(21, 2, 4, '2024-12-15 21:42:53', NULL, NULL, 'pending', 'unpaid', '250000.00', '2024-12-15 21:42:53', '2024-12-15 21:43:17', '20241215214317_675f4d7525977.jpg', NULL, '2024-12-20', 2);
-
 -- --------------------------------------------------------
 
 --
@@ -145,9 +119,9 @@ INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
 (16, 5, 150, 'available'),
 (17, 5, 152, 'available'),
 (18, 5, 154, 'available'),
-(19, 6, 106, 'available'),
-(20, 6, 108, 'available'),
-(21, 6, 110, 'available'),
+(19, 6, 106, 'pending'),
+(20, 6, 108, 'pending'),
+(21, 6, 110, 'pending'),
 (22, 6, 112, 'available'),
 (23, 6, 118, 'available'),
 (24, 6, 120, 'available'),
@@ -236,25 +210,14 @@ INSERT INTO `types` (`id_type`, `name_type`, `description`, `long_description`, 
 
 CREATE TABLE `users` (
   `id_user` int NOT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `role` enum('admin','user') NOT NULL DEFAULT 'user',
   `remember_token` varchar(255) DEFAULT NULL,
-  `password_reset_token` varchar(255) DEFAULT NULL
+  `password_reset_token` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`, `remember_token`, `password_reset_token`) VALUES
-(1, 'admin', 'admin@admin.com', '$2y$10$R1eJRC2U4Y8YWs5PuswEJOErrPiQk56rZ6s7hOCPBn6k5H.PqFX5a', '2024-11-26 11:23:58', 'admin', NULL, NULL),
-(2, 'yuda69', 'yuda@gmail.com', '$2y$10$8zacY..QlkM3eQfGkbvJA.juLesHmC9b4l.cc88pix4yMIRQuwD.m', '2024-11-30 09:48:28', 'user', NULL, NULL),
-(3, 'yuda666', 'yuda666@yahaha.com', '$2y$10$ooaZUV4B75cQG6L7xZPU2uqZ2mEEIOOviEVvFlExTZtgiV9OsG6MW', '2024-12-03 01:16:46', 'user', NULL, NULL),
-(4, 'arif', 'ariftot@gmail.com', '$2y$10$.JKJ.HhlhibNiUyTnWXKtemMJoFXR62l4vGQRIxDx72Evsbp7pLNy', '2024-12-14 02:03:00', 'user', NULL, NULL),
-(5, 'ashiap', 'ashiap@yahoo.co', '$2y$10$DjtLSYXdZb1mv3yBdJfi6OSBTiU5iJVjRNTmvq6R2hXh2Vz9ifcm6', '2024-12-15 14:34:31', 'user', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -265,23 +228,14 @@ INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `
 CREATE TABLE `user_profile` (
   `id_profile` int NOT NULL,
   `id_user` int NOT NULL,
-  `username` varchar(255) NOT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
   `phone_number` varchar(45) DEFAULT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `date_of_birth` date DEFAULT NULL,
-  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `create_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `username` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `user_profile`
---
-
-INSERT INTO `user_profile` (`id_profile`, `id_user`, `username`, `first_name`, `last_name`, `phone_number`, `email`, `date_of_birth`, `create_at`) VALUES
-(1, 2, 'yuda69', 'kiki', 'jmt', '9007644', 'yuda@gmail.com', '2024-12-06', '2024-12-06 02:46:37'),
-(3, 3, 'yuda666', 'kikil', 'kuuoo', '090076440088', 'yuda666@yahaha.com', '2024-12-06', '2024-12-06 03:18:58'),
-(4, 4, 'arif', 'ariff', 'gacor', '549873697626759', 'ariftot@gmail.com', '2024-12-19', '2024-12-15 10:45:33');
 
 --
 -- Indexes for dumped tables
@@ -341,17 +295,13 @@ ALTER TABLE `types`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id_user`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD PRIMARY KEY (`id_user`);
 
 --
 -- Indexes for table `user_profile`
 --
 ALTER TABLE `user_profile`
   ADD PRIMARY KEY (`id_profile`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `username` (`username`),
   ADD KEY `id_user` (`id_user`);
 
 --
@@ -374,7 +324,7 @@ ALTER TABLE `pay_methods`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `rooms`
@@ -453,8 +403,6 @@ ALTER TABLE `transits`
 -- Constraints for table `user_profile`
 --
 ALTER TABLE `user_profile`
-  ADD CONSTRAINT `fk_email` FOREIGN KEY (`email`) REFERENCES `users` (`email`),
-  ADD CONSTRAINT `fk_username` FOREIGN KEY (`username`) REFERENCES `users` (`username`),
   ADD CONSTRAINT `user_profile_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`);
 COMMIT;
 
