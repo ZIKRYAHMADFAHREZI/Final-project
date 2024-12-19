@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 18, 2024 at 11:13 AM
+-- Generation Time: Dec 19, 2024 at 09:35 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -58,7 +58,13 @@ CREATE TABLE `pay_methods` (
 INSERT INTO `pay_methods` (`id_pay_method`, `method`, `payment_number`, `account_name`, `active`) VALUES
 (1, 'Dana', '0878-7888-4000', 'Bagus Subandar', 1),
 (2, 'Gopay', '0878-7888-4000', 'Bagus Subandar', 1),
-(3, 'BNI', '12313223', 'Bagus Subandar', 1);
+(3, 'BNI', '12313223', 'Bagus Subandar', 1),
+(16, 'bri', '877349943', 'Bagus Subandar', 1),
+(18, 'mandiri', '231312321', 'Bagus Subandar', 1),
+(19, 'mandiri', '231312321', 'Bagus Subandar', 1),
+(20, 'mandiri', '231312321', 'Bagus Subandar', 1),
+(21, 'jokowi', '342342532', 'Ngutang', 1),
+(22, 'koko', '2313', 'Bagus Subandar', 1);
 
 -- --------------------------------------------------------
 
@@ -354,7 +360,7 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `pay_methods`
 --
 ALTER TABLE `pay_methods`
-  MODIFY `id_pay_method` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_pay_method` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `reservations`

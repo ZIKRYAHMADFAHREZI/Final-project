@@ -97,9 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <li><a href="delete_rooms.php" class="dropdown-item">Hapus kamar</a></li>
                 <li><a href="rooms.php" class="dropdown-item">Status kamar</a></li>
                 <li><a href="add_rooms.php" class="dropdown-item">Tambah Kamar</a></li>
-                <li><a href="update_type.php" class="dropdown-item">Update Tipe</a></li>
             </ul>
         </li>
+        <li><a href="payments.php"><i class="fa fa-credit-card me-2"></i> Pembayaran</a></li>
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-sign-out-alt me-2"></i> Logout</a></li>
     </ul>
@@ -109,11 +109,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <button class="toggle-btn" id="toggle-btn">☰</button>
 
 <!-- Main Content -->
-<div class="content" id="content">
+<div class="content " id="content">
     <header>
         <h1 class="text-center">Ganti Password</h1>
     </header>
-    <div class="form-container">
+    <div class="container">
         <form id="updateForm" action="" method="post" enctype="multipart/form-data">
         <div class="mb-3 position-relative">
             <input 
