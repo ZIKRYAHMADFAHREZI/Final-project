@@ -37,7 +37,6 @@ function uploadPaymentProof($file) {
     }
 }
 
-// Proses upload bukti pembayaran
 if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] == 0) {
     $upload_result = uploadPaymentProof($_FILES['payment_proof']);
     if (strpos($upload_result, ".") !== false) { // Jika file berhasil diupload
@@ -51,6 +50,8 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
                 $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
                 $stmt->execute();
                 $payment_upload_message = "Bukti pembayaran berhasil diunggah.";
+                header('Location: invoices.php?id_reservation=' . $id_reservation);
+                exit();
             } catch (PDOException $e) {
                 $payment_upload_message = "Terjadi kesalahan saat mengunggah bukti pembayaran: " . $e->getMessage();
             }
@@ -60,11 +61,8 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
     } else {
         $payment_upload_message = $upload_result; // Menampilkan pesan kesalahan
     }
-
-    // Pindahkan header setelah SweetAlert, jika sudah berhasil atau gagal upload
-    header('Location: ../invoices.php?id_payment=' . $_SESSION['id_reservation']);
-    exit();
-} elseif (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method'], $_POST['total-amount'], $_POST['number_room'])) {
+}
+elseif (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method'], $_POST['total-amount'], $_POST['number_room'])) {
     // Mendapatkan data dari form yang dikirimkan
     $start_date = $_POST['start_date'];
     $to_date = $_POST['to_date'] ?? null;
@@ -91,8 +89,8 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
     try {
         if ($total_amount > 0) { // Ganti dengan pengecekan yang valid untuk memastikan pembayaran berhasil
             // Pembaruan status kamar menjadi pending
-            $stmt = $pdo->prepare("UPDATE rooms SET status = 'pending' WHERE id_room = ?");
-            $stmt->execute([$id_room]);
+            //$stmt = $pdo->prepare("UPDATE rooms SET status = 'pending' WHERE id_room = ?");
+            //$stmt->execute([$id_room]);
 
             if (!isset($error_message)) {
                 if ($to_date) {
@@ -132,7 +130,7 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
     body {
-    background-color: #DCDCDC;
+        background-color: #DCDCDC;
     }
 </style>
 </head>
@@ -156,12 +154,12 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
                 <p><strong>Total Pembayaran: Rp<?= number_format($total_amount, 0, ',', '.'); ?></strong></p>
 
                 <!-- Form untuk mengirimkan bukti pembayaran -->
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="" method="POST" enctype="multipart/form-data" id="payment-form">
                     <div class="form-group">
                         <label for="payment_proof">Bukti Pembayaran</label>
-                        <input type="file" class="form-control-file" name="payment_proof" required>
+                        <input type="file" class="form-control-file" name="payment_proof" id="payment_proof" required>
                     </div>
-                    <button type="submit" name="submit-payment" class="btn btn-primary">Kirim</button>
+                    <button type="submit" name="submit-payment" class="btn btn-primary" href="invoices.php">Kirim</button>
                 </form>
                 
                 <?php if (isset($payment_upload_message)): ?>
@@ -175,5 +173,27 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('payment-form').addEventListener('submit', function (e) {
+        const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+        const fileInput = document.getElementById('payment_proof');
+        const fileName = fileInput.value;
+        const fileExtension = fileName.split('.').pop().toLowerCase();
+
+        if (!allowedExtensions.includes(fileExtension)) {
+            e.preventDefault(); // Mencegah form dikirim
+            // Menampilkan pop-up error menggunakan SweetAlert2
+            Swal.fire({
+                icon: 'error',
+                title: 'Format File Tidak Diperbolehkan',
+                text: 'Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.',
+                confirmButtonText: 'OK'
+            });
+            fileInput.value = ''; // Reset file input
+        }
+    });
+</script>
+
 </body>
 </html>

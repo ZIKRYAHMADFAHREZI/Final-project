@@ -1,147 +1,125 @@
 <?php
 session_start();
-require 'db/connection.php';
-// Ambil parameter id_reservation dari POST
-$id_reservation = isset($_POST['id_reservation']) ? $_POST['id_reservation'] : null;
+require 'db/connection.php'; // Pastikan file koneksi benar
 
-// Validasi apakah ID ada
-if (!$id_reservation) {
-    die("ID reservasi tidak ditemukan. Silakan coba lagi.");
-
-}
-
-// Proses menggunakan $id_reservation
-echo "ID Reservasi: " . htmlspecialchars($id_reservation);
-die;
-
-$id_reservation = $_POST['id_reservation']; 
 try {
-    $query = $pdo->prepare("
-        SELECT r.*, u.phone_number, p.method, p.payment_number, p.account_name, rt.room_name, rt.room_rate, r.status
+    // Query untuk mengambil data terbaru satu pengguna berdasarkan sesi
+    $stmt = $pdo->prepare("
+        SELECT r.id_reservation, r.start_date, r.to_date, r.total_amount, r.payment_proof, r.status,
+               p.method AS payment_method, p.account_name, p.payment_number,
+               rm.number_room, rm.id_type
         FROM reservations r
-        JOIN users u ON r.user_id = u.user_id
         JOIN pay_methods p ON r.id_pay_method = p.id_pay_method
-        JOIN room_types rt ON r.id_type = rt.id_type
-        WHERE r.id_reservation = :id_reservation AND r.active = 1
+        JOIN rooms rm ON r.id_room = rm.id_room
+        WHERE r.id_user = :id_user
+        ORDER BY r.start_date DESC
+        LIMIT 1
     ");
-    $query->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
-    $query->execute();
-    $reservation_details = $query->fetch(PDO::FETCH_ASSOC);
-
-    if (!$reservation_details) {
-        die("Data reservasi tidak ditemukan untuk ID reservasi: " . htmlspecialchars($id_reservation));
-    }
+    $stmt->bindParam(':id_user', $_SESSION['id_user'], PDO::PARAM_INT);
+    $stmt->execute();
+    $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Terjadi kesalahan saat mengambil data: " . $e->getMessage());
 }
 ?>
 
+
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice Reservasi Hotel</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detail Invoice</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+    body {
+        background-color: #f4f4f4;
+        font-family: 'Arial', sans-serif;
+    }
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
+    .card-header.bg-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+    }
+    .card-header.bg-success {
+        background: linear-gradient(135deg, #28a745, #1e7e34);
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .alert {
+        border-radius: 12px;
+    }
+    .invoice-icon {
+        font-size: 50px;
+        color: #007bff;
+    }
+</style>
 </head>
 <body>
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-12 col-md-8">
-        <div class="card">
-          <div class="card-header text-center bg-primary text-white">
-            <h4>INVOICE RESERVASI HOTEL</h4>
-          </div>
-          <div class="card-body">
-            <!-- Header Invoice -->
-            <div class="row">
-              <div class="col-6">
-                <h5>Hotel Grand Mutiara</h5>
-                <p>Alamat: Jl. Raya No. 123, Kota Maluku Utara</p>
-                <p>Email: hotelgrandmutiara4@gmail.com</p>
-              </div>
-              <div class="col-6 text-end">
-                <h5>Invoice #<?= $reservation_details['id_reservation']; ?></h5>
-                <p>Tanggal: <?= date('d M Y') ?></p>
-                <!-- Menggunakan id_duration untuk menghitung tanggal cek out -->
-                <p>Cek out: <?= date('d M Y', strtotime('+' . $reservation_details['id_duration'] . ' days')); ?></p>
-              </div>
-            </div>
-            
-            <!-- Data Pelanggan -->
-            <div class="row mt-4">
-              <div class="col-12">
-                <h6><strong>Data Pelanggan</strong></h6>
-                <p>Nama: <?= htmlspecialchars($_SESSION['username']); ?></p> <!-- Asumsi nama pelanggan ada di session -->
-                <p>Email: <?= htmlspecialchars($_SESSION['email']); ?></p>
-                <p>Telepon: <?= htmlspecialchars($_SESSION['phone_number']); ?></p>
-              </div>
-            </div>
-
-            <!-- Detail Pemesanan -->
-            <div class="row mt-4">
-              <div class="col-12">
-                <h6><strong>Detail Pemesanan</strong></h6>
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Nama Kamar</th>
-                      <th>Jumlah Malam</th>
-                      <th>Harga Per Malam</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><?= htmlspecialchars($reservation_details['room_name']); ?></td>
-                      <td><?= htmlspecialchars($reservation_details['id_duration']); ?> Malam</td>
-                      <td>Rp <?= number_format($reservation_details['room_rate'], 0, ',', '.'); ?></td>
-                      <!-- Menghitung total biaya berdasarkan room_rate dan id_duration -->
-                      <td>Rp <?= number_format($reservation_details['room_rate'] * $reservation_details['id_duration'], 0, ',', '.'); ?></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <!-- Total Biaya -->
-            <div class="row mt-4">
-              <div class="col-12 text-end">
-                <h5><strong>Total Pembayaran: Rp <?= number_format($reservation_details['total_amount'], 0, ',', '.'); ?></strong></h5>
-                </div>
-            </div>
-
-            <!-- Pembayaran -->
-            <div class="row mt-4">
-              <div class="col-12">
-                <h6><strong>Metode Pembayaran:</strong></h6>
-                <p><strong>Metode:</strong> <?= htmlspecialchars($reservation_details['method']); ?></p>
-                <p><strong>No. Pembayaran:</strong> <?= htmlspecialchars($reservation_details['payment_number']); ?></p>
-                <p><strong>Atas Nama:</strong> <?= htmlspecialchars($reservation_details['account_name']); ?></p>
-              </div>
-            </div>
-
-            <!-- Status Pembayaran -->
-            <div class="row mt-4">
-              <div class="col-12">
-                <h6><strong>Status Pembayaran:</strong></h6>
-                <p class="text-<?= $reservation_details['status'] == 'pending' ? 'warning' : 'success'; ?>">
-                  <strong><?= ucfirst($reservation_details['status']); ?></strong>
-                </p>
-              </div>
-            </div>
-
-          </div>
-          <div class="card-footer text-center">
-            <p class="mb-0">Terima kasih telah menginap di Hotel Grand Mutiara</p>
-          </div>
-        </div>
-      </div>
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <i class="fa-solid fa-file-invoice invoice-icon"></i>
+        <h1 class="mt-2">Detail Invoice</h1>
+        <p class="text-muted">Detail informasi pemesanan dan pembayaran Anda.</p>
     </div>
-  </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <?php if (!$reservation): ?>
+        <div class="alert alert-info text-center">Belum ada reservasi yang ditemukan untuk pengguna ini.</div>
+    <?php else: ?>
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fa-solid fa-bed"></i> Detail Reservasi</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Nomor Reservasi:</strong> <?= htmlspecialchars($reservation['id_reservation']); ?></p>
+                <p><strong>Nama Kamar:</strong> <?= htmlspecialchars($reservation['room_name']); ?> (<?= htmlspecialchars($reservation['room_type']); ?>)</p>
+                <p><strong>Tanggal Check-in:</strong> <?= htmlspecialchars($reservation['start_date']); ?></p>
+                <p><strong>Tanggal Check-out:</strong> <?= htmlspecialchars($reservation['to_date']); ?></p>
+                <p><strong>Total Pembayaran:</strong> <span class="text-success">Rp<?= number_format($reservation['total_amount'], 0, ',', '.'); ?></span></p>
+                <p><strong>Status:</strong> 
+                    <span class="<?= $reservation['status'] === 'Pending' ? 'text-warning' : ($reservation['status'] === 'Confirmed' ? 'text-success' : 'text-danger'); ?>">
+                        <?= htmlspecialchars($reservation['status']); ?>
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fa-solid fa-credit-card"></i> Detail Pembayaran</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Metode Pembayaran:</strong> <?= htmlspecialchars($reservation['payment_method']); ?></p>
+                <p><strong>Nama Akun:</strong> <?= htmlspecialchars($reservation['account_name']); ?></p>
+                <p><strong>Nomor Tujuan:</strong> <?= htmlspecialchars($reservation['payment_number']); ?></p>
+                <?php if ($reservation['payment_proof']): ?>
+                    <p><strong>Bukti Pembayaran:</strong></p>
+                    <img src="uploads/<?= htmlspecialchars($reservation['payment_proof']); ?>" alt="Bukti Pembayaran" class="img-fluid rounded shadow">
+                <?php else: ?>
+                    <p class="text-danger">Bukti pembayaran belum diunggah.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="payment.php" class="btn btn-primary btn-lg"><i class="fa-solid fa-arrow-left"></i> Kembali ke Pembayaran</a>
+        </div>
+    <?php endif; ?>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
