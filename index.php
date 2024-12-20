@@ -44,10 +44,6 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
 </head>
 <body>
 <?php include 'navbar.php';?>
-<div id="loading" class="loading">
-    <div class="spinner"></div>
-    <h2 class="loading-text">GRAND MUTIARA</h2>
-</div>
     <!-- Gambar Auto Slide -->
 <div id="carouselExample" class="carousel slide mt-4" data-bs-ride="carousel" data-bs-interval="3000">
     <div class="carousel-inner">

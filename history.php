@@ -11,8 +11,24 @@ if (!isset($_SESSION['id_user'])) {
 // Ambil data reservation dari database
 try {
     $id_user = $_SESSION['id_user'];
-    // Query untuk mengambil data pemesanan berdasarkan id_user, urutkan berdasarkan start_date terbaru
-    $stmt = $pdo->prepare("SELECT * FROM reservations WHERE id_user = :id_user ORDER BY start_date DESC");
+    // Query untuk mengambil data pemesanan dan join dengan tabel rooms dan types
+    $query = "
+        SELECT 
+            r.*, 
+            ro.number_room, 
+            t.name_type 
+        FROM reservations r
+        JOIN 
+            rooms ro ON r.id_room = ro.id_room
+        JOIN 
+            types t ON ro.id_type = t.id_type
+        WHERE 
+            r.id_user = :id_user
+        ORDER BY 
+            r.start_date DESC
+    ";
+    
+    $stmt = $pdo->prepare($query);
     $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
     $stmt->execute();
     $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC); // Ambil data pemesanan
@@ -21,48 +37,30 @@ try {
 }
 ?>
 
-<!DOCTYPE html>
+
+
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
 <title>History Pemesanan</title>
-<!-- Menggunakan Bootstrap dan Font Awesome -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-<style>
-    body {
-        background-color: #f4f4f4;
-    }
-    .container {
-        margin-top: 50px;
-    }
-    .table thead {
-        background-color: #6c757d; /* Abu-abu */
-        color: white;
-    }
-    .table th, .table td {
-        vertical-align: middle;
-    }
-    .btn-custom {
-        border-radius: 20px;
-        padding: 10px 20px;
-    }
-    .alert-custom {
-        border-radius: 10px;
-        font-size: 16px;
-    }
-    .card-header {
-        background-color: #6c757d; /* Abu-abu */
-        color: white;
-    }
-    .table-striped tbody tr:nth-of-type(odd) {
-        background-color: #e9ecef; /* Abu-abu muda */
-    }
-</style>
+<link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<!-- Bootstrap CSS v5.2.1 -->
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+    crossorigin="anonymous"
+/>
+<link rel="stylesheet" href="css/history.css">
 </head>
 <body>
-<div class="container">
+<?php include 'navbar.php'; ?>
+<div class="tainer">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card shadow-sm">
@@ -81,9 +79,11 @@ try {
                                     <th>No</th>
                                     <th>Tanggal Mulai</th>
                                     <th>Tanggal Akhir</th>
-                                    <th>ID Kamar</th>
+                                    <th>Tipe Kamar</th>  
+                                    <th>Nomor Kamar</th>  
                                     <th>Total Pembayaran</th>
                                     <th>Status Pembayaran</th>
+                                    <th>Status Reservasi</th>
                                     <th>Bukti</th>
                                 </tr>
                             </thead>
@@ -94,25 +94,20 @@ try {
                                             <td><?= $index + 1; ?></td>
                                             <td><?= htmlspecialchars(date('d-m-Y', strtotime($reservation['start_date']))); ?></td>
                                             <td><?= $reservation['to_date'] ? htmlspecialchars(date('d-m-Y', strtotime($reservation['to_date']))) : '-'; ?></td>
-                                            <td><?= htmlspecialchars($reservation['id_room']); // Ganti dengan nama kamar jika tersedia ?></td>
+                                            <td><?= htmlspecialchars($reservation['name_type']); ?></td>
+                                            <td><?= htmlspecialchars($reservation['number_room']); ?></td>
                                             <td>Rp<?= number_format($reservation['total_amount'], 0, ',', '.'); ?></td>
-                                            <td><?= $reservation['payment_proof'] ? 'Sudah Dibayar' : 'Belum Dibayar'; ?></td>
                                             <td>
-                                                <?php if (!$reservation['payment_proof']): ?>
-                                                    <a href="upload_payment.php?id_reservation=<?= $reservation['id_reservation']; ?>" class="btn btn-light btn-sm btn-custom">
-                                                        <i class="fas fa-upload"></i> Upload Bukti Pembayaran
-                                                    </a>
-                                                <?php else: ?>
-                                                    <a href="view_payment.php?id_reservation=<?= $reservation['id_reservation']; ?>" class="btn btn-success btn-sm btn-custom">
-                                                        <i class="fas fa-eye"></i> Lihat Bukti Pembayaran
-                                                    </a>
-                                                <?php endif; ?>
+                                                <?= $reservation['payment_status'] === 'paid' ? 'Sudah Dibayar' : 
+                                                ($reservation['payment_status'] === 'refunded' ? 'Dikembalikan' : '') ?>
                                             </td>
+                                            <td><?= htmlspecialchars($reservation['status'])  ?></td>
+                                            <td><a href="javascript:void(0);" onclick="showPaymentProof('<?= htmlspecialchars($reservation['payment_proof']); ?>')">Lihat Bukti Pembayaran</a></td>
                                         </tr>
                                     <?php endforeach; ?>
-                                <?php else: ?>
+                                    <?php else: ?>
                                     <tr>
-                                        <td colspan="7" class="text-center">Tidak ada data pemesanan.</td>
+                                        <td colspan="9" class="text-center">Tidak ada data pemesanan.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -123,9 +118,46 @@ try {
         </div>
     </div>
 </div>
+<div id="paymentModal" style="display:none;">
+    <div style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">
+        <div style="background-color: white; padding: 20px; border-radius: 10px;">
+            <img id="paymentImage" src="" alt="Bukti Pembayaran" style="max-width: 600px; max-height: 400px; width: auto; height: auto;">
+            <button onclick="closeModal()" class="btn btn-secondary mt-3">Tutup</button>
+        </div>
+    </div>
+</div>
+<script>
+function showPaymentProof(fileName) {
+    console.log('File name:', fileName); // Periksa apakah fileName terisi
+    var modal = document.getElementById('paymentModal');
+    var img = document.getElementById('paymentImage');
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    if (fileName) {
+        img.src = 'paynt/uploads/' + fileName; // Path lengkap ke file gambar
+        modal.style.display = 'flex'; // Tampilkan modal
+    } else {
+        alert('Bukti pembayaran tidak tersedia');
+    }
+}
+function closeModal() {
+    var modal = document.getElementById('paymentModal');
+    if (modal) {
+        modal.style.display = 'none'; // Sembunyikan modal
+    } else {
+        console.error('Modal element not found');
+    }
+}
+</script>
+<script
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"
+></script>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+    crossorigin="anonymous"
+></script>
 </body>
 </html>

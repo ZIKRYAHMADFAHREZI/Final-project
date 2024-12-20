@@ -1,0 +1,28 @@
+body {
+    background-color: #f4f4f4;
+}
+.tainer {
+    margin-top: 70px;
+}
+.table thead {
+    background-color: #6c757d; /* Abu-abu */
+    color: white;
+}
+.table th, .table td {
+    vertical-align: middle;
+}
+.btn-custom {
+    border-radius: 20px;
+    padding: 10px 20px;
+}
+.alert-custom {
+    border-radius: 10px;
+    font-size: 16px;
+}
+.card-header {
+    background-color: #6c757d; /* Abu-abu */
+    color: white;
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #e9ecef; /* Abu-abu muda */
+}

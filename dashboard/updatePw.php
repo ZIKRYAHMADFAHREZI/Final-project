@@ -1,5 +1,20 @@
 <?php
-require '../db/connection.php'; // Pastikan $pdo sudah terinisialisasi di file ini
+session_start();
+require '../db/connection.php';
+// Cek apakah pengguna sudah login
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    // Jika belum login, arahkan ke halaman login
+    header('Location: ../login.php');
+    exit;
+}
+
+// Cek apakah pengguna memiliki role 'admin'
+if ($_SESSION['role'] !== 'admin') {
+    // Jika bukan admin, arahkan ke halaman lain (misalnya halaman beranda atau halaman akses terbatas)
+    header('Location: ../index.php');
+    exit;
+}
+$id_user = $_SESSION['id_user'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
@@ -13,32 +28,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($password_baru !== $konfirmasi_password) {
             $message = "<script>Swal.fire('Error', 'Password baru dan konfirmasi tidak cocok!', 'error');</script>";
         } else {
-            // Cek password lama
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
-            $stmt->bindParam(':email', $_POST['email']); // Email lama yang digunakan untuk login
+            // Periksa password lama
+            $stmt = $pdo->prepare("SELECT password FROM users WHERE id_user = :id_user");
+            $stmt->bindParam(':id_user', $id_user);
             $stmt->execute();
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($user && password_verify($password_lama, $user['password'])) {
-                // Jika password lama cocok, lakukan update
                 $hashed_password = password_hash($password_baru, PASSWORD_BCRYPT);
-                $update_stmt = $pdo->prepare("UPDATE users SET password = :password_baru WHERE email = :email");
+                $update_stmt = $pdo->prepare("UPDATE users SET password = :password_baru WHERE id_user = :id_user");
                 $update_stmt->bindParam(':password_baru', $hashed_password);
-                $update_stmt->bindParam(':email', $_POST['email']);
+                $update_stmt->bindParam(':id_user', $id_user);
                 $update_stmt->execute();
 
-                if ($update_stmt->rowCount() > 0) {
-                    $message = "<script>Swal.fire('Berhasil', 'Password berhasil diubah!', 'success');</script>";
-                } else {
-                    $message = "<script>Swal.fire('Error', 'Tidak ada perubahan pada data!', 'error');</script>";
-                }
+                $message = "<script>Swal.fire('Berhasil', 'Password berhasil diubah!', 'success');</script>";
             } else {
                 $message = "<script>Swal.fire('Error', 'Password lama salah!', 'error');</script>";
             }
         }
     } catch (PDOException $e) {
         $message = "<script>Swal.fire('Error', 'Terjadi kesalahan pada server!', 'error');</script>";
-        error_log("Database Error: " . $e->getMessage()); // Log error untuk debugging
+        error_log("Database Error: " . $e->getMessage());
     }
 }
 ?>

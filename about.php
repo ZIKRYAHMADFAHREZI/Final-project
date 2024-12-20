@@ -58,24 +58,20 @@ session_start();
 </head>
 <body>
 <?php include 'navbar.php'; ?>
-<div id="loading" class="loading">
-    <div class="spinner"></div>
-    <h2 class="loading-text">GRAND MUTIARA</h2>
+<h1 class="title text-center" style="padding-top: 80px; font-family: 'Neuton', serif;"><b>About</b></h1>
+<div class="isi">
+    <img src="./img/GRAND MUTIARA.png" alt="grandmutiara" class="logo">
+    <div class="container">
+        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error asperiores vero blanditiis non deserunt ducimus reiciendis. Doloremque porro assumenda odit adipisci dicta nobis. Dicta deleniti ipsam rerum vero consequatur fugiat.</p>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque quam earum dignissimos quis accusamus. Sunt molestias doloremque, consequuntur, a aperiam nobis ea quod voluptatum delectus doloribus odit alias dignissimos magnam!</p>
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis dolor maiores voluptas magnam corrupti. Rerum, sed. Quae officiis, veritatis sunt minima accusamus quisquam, iure autem, explicabo eaque necessitatibus nostrum ullam.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius dicta laudantium sequi cum natus officia facilis, ipsam voluptatem dolorem at consequatur quidem suscipit voluptate accusamus id quaerat porro minima nulla.</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur iste, laborum vitae earum, vel quae iusto voluptas culpa adipisci quasi similique magnam est voluptatibus, obcaecati odit voluptates. Ea, facere alias.</p>
+    </div>
 </div>
-    <h1 class="title text-center" style="padding-top: 80px; font-family: 'Neuton', serif;"><b>About</b></h1>
-    <div class="isi">
-        <img src="./img/GRAND MUTIARA.png" alt="grandmutiara" class="logo">
-        <div class="container">
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error asperiores vero blanditiis non deserunt ducimus reiciendis. Doloremque porro assumenda odit adipisci dicta nobis. Dicta deleniti ipsam rerum vero consequatur fugiat.</p>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eaque quam earum dignissimos quis accusamus. Sunt molestias doloremque, consequuntur, a aperiam nobis ea quod voluptatum delectus doloribus odit alias dignissimos magnam!</p>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Veritatis dolor maiores voluptas magnam corrupti. Rerum, sed. Quae officiis, veritatis sunt minima accusamus quisquam, iure autem, explicabo eaque necessitatibus nostrum ullam.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius dicta laudantium sequi cum natus officia facilis, ipsam voluptatem dolorem at consequatur quidem suscipit voluptate accusamus id quaerat porro minima nulla.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur iste, laborum vitae earum, vel quae iusto voluptas culpa adipisci quasi similique magnam est voluptatibus, obcaecati odit voluptates. Ea, facere alias.</p>
-        </div>
-    </div>
-    <div class="map d-flex justify-content-center">
-    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7929.533401069718!2d107.478647!3d-6.424014!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6972a0a4cfae79%3A0xc6caafd15b4cf7d3!2sHOTEL%20GRAND%20MUTIARA!5e0!3m2!1sid!2sid!4v1734060129267!5m2!1sid!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
+<div class="map d-flex justify-content-center">
+<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7929.533401069718!2d107.478647!3d-6.424014!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6972a0a4cfae79%3A0xc6caafd15b4cf7d3!2sHOTEL%20GRAND%20MUTIARA!5e0!3m2!1sid!2sid!4v1734060129267!5m2!1sid!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
 
 <div class="text-center">
     <h3 style="padding-top: 50px;">Contact</h3>

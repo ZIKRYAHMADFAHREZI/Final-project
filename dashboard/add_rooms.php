@@ -1,5 +1,19 @@
 <?php
+session_start();
 require '../db/connection.php';
+// Cek apakah pengguna sudah login
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    // Jika belum login, arahkan ke halaman login
+    header('Location: ../login.php');
+    exit;
+}
+
+// Cek apakah pengguna memiliki role 'admin'
+if ($_SESSION['role'] !== 'admin') {
+    // Jika bukan admin, arahkan ke halaman lain (misalnya halaman beranda atau halaman akses terbatas)
+    header('Location: ../index.php');
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_type = $_POST['tipe'];

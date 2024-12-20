@@ -248,22 +248,21 @@ $pendingRooms = $roomStats['pending'];
                     <td><a href="javascript:void(0);" onclick="showPaymentProof('<?= htmlspecialchars($data['payment_proof']); ?>')">Lihat Bukti Pembayaran</a></td>
                     <td>
                         <?php
-                        // Ambil status dan payment_status dari database untuk memeriksa apakah tombol harus disembunyikan
+                        // Ambil status dan payment_status dari database
                         $reservationId = $data['id_reservation'];
                         $status = $data['status'];
                         $paymentStatus = $data['payment_status'];
 
-                        // Cek apakah sudah dilakukan konfirmasi atau refund
-                        if ($status == 'confirmed' || $paymentStatus == 'paid' || $status == 'cancelled' || $paymentStatus == 'refunded') {
-                            // Jika sudah, sembunyikan tombol
+                        // Cek apakah status pembayaran memungkinkan tombol tampil
+                        if ($status == 'cancelled' || $paymentStatus == 'refunded' || $status == 'confirmed') {
+                            // Jika status sudah cancelled atau refunded, hanya tampilkan teks
                             echo '<span class="text-muted">Selesai</span>';
                         } else {
-                            // Jika belum, tampilkan tombol aksi
+                            // Tampilkan tombol aksi meskipun payment_status adalah paid
                             echo '<a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="showActionDialog(' . $reservationId . ')">Konfirmasi</a>';
                         }
                         ?>
                     </td>
-
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -285,25 +284,30 @@ function showActionDialog(reservationId) {
     setTimeout(() => {
         Swal.fire({
             title: 'Pilih Aksi',
-            text: 'Pilih apakah ingin mengonfirmasi pembayaran atau refund.',
+            text: 'Pilih apakah ingin mengonfirmasi pembayaran, refund, atau kembali ke menu awal.',
             icon: 'question',
             showCancelButton: true,
+            showDenyButton: true, // Tambahkan tombol Deny untuk Refund
             confirmButtonText: 'Konfirmasi Pembayaran',
-            cancelButtonText: 'Refund',
+            denyButtonText: 'Refund Pembayaran',
+            cancelButtonText: 'Cancel',
             allowOutsideClick: false, // Tidak bisa menutup dengan klik di luar
             allowEscapeKey: false,    // Tidak bisa menutup dengan tombol ESC
         }).then((result) => {
-            // Memastikan pengguna memilih salah satu opsi sebelum melanjutkan
             if (result.isConfirmed) {
                 // Jika Konfirmasi Pembayaran
                 window.location.href = 'confirm_payment.php?id=' + reservationId + '&action=confirm';
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
+            } else if (result.isDenied) {
                 // Jika Refund
                 window.location.href = 'confirm_payment.php?id=' + reservationId + '&action=refund';
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                // Jika Cancel, kembali ke menu awal
+                window.location.href = 'index.php';
             }
         });
     }, 500);  // Delay 500 ms sebelum menampilkan SweetAlert
 }
+
 
 function showPaymentProof(fileName) {
     var modal = document.getElementById('paymentModal');

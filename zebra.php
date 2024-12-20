@@ -1,3 +1,13 @@
+<?php 
+date_default_timezone_set('Asia/Jakarta'); // Pastikan diatur
+echo "Timezone PHP: " . date_default_timezone_get() . "<br>";
+echo "Current Time: " . date('Y-m-d H:i:s') . "<br>";
+$check_in_date = new DateTime(); // Current time
+$check_in_date->modify('+3 hours'); // Tambahkan 3 jam
+
+echo "Check-in Date: " . $check_in_date->format('Y-m-d H:i:s') . "<br>";
+
+ ?>
 <div class="card" style="width: 18rem;">
     <img src="..." class="card-img-top" alt="...">
     <div class="card-body">
