@@ -42,22 +42,33 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
     if (strpos($upload_result, ".") !== false) { // Jika file berhasil diupload
         $new_file_name = $upload_result;
 
-        if (isset($_SESSION['id_reservation'])) {
+        if (isset($_SESSION['id_reservation'], $_POST['id_room'])) {
             $id_reservation = $_SESSION['id_reservation'];
+            $id_room = $_POST['id_room'];
+        
             try {
+                // Update payment_proof di tabel reservations
                 $stmt = $pdo->prepare("UPDATE reservations SET payment_proof = :payment_proof WHERE id_reservation = :id_reservation");
                 $stmt->bindParam(':payment_proof', $new_file_name);
                 $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
                 $stmt->execute();
+        
+                // Update status room di tabel rooms
+                $stmt = $pdo->prepare("UPDATE rooms SET status = 'pending' WHERE id_room = ?");
+                $stmt->execute([$id_room]);
+        
                 $payment_upload_message = "Bukti pembayaran berhasil diunggah.";
-                header('Location: invoices.php?id_reservation=' . $id_reservation);
+        
+                // Redirect ke halaman invoices
+                header('Location: ../invoices.php?id_reservation=' . $id_reservation);
                 exit();
             } catch (PDOException $e) {
                 $payment_upload_message = "Terjadi kesalahan saat mengunggah bukti pembayaran: " . $e->getMessage();
             }
         } else {
-            $payment_upload_message = "ID pemesanan tidak ditemukan.";
+            $payment_upload_message = "ID pemesanan atau ID kamar tidak ditemukan.";
         }
+        
     } else {
         $payment_upload_message = $upload_result; // Menampilkan pesan kesalahan
     }
@@ -85,13 +96,8 @@ elseif (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method
         $error_message = "Terjadi kesalahan saat mengambil data: " . $e->getMessage();
     }
 
-    // Proses pembaruan status kamar menjadi 'pending'
     try {
         if ($total_amount > 0) { // Ganti dengan pengecekan yang valid untuk memastikan pembayaran berhasil
-            // Pembaruan status kamar menjadi pending
-            //$stmt = $pdo->prepare("UPDATE rooms SET status = 'pending' WHERE id_room = ?");
-            //$stmt->execute([$id_room]);
-
             if (!isset($error_message)) {
                 if ($to_date) {
                     $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, to_date, id_room, total_amount) 
@@ -156,10 +162,11 @@ elseif (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method
                 <!-- Form untuk mengirimkan bukti pembayaran -->
                 <form action="" method="POST" enctype="multipart/form-data" id="payment-form">
                     <div class="form-group">
+                    <input type="hidden" id="id_room" name="id_room" value="<?= htmlspecialchars($id_room); ?>">
                         <label for="payment_proof">Bukti Pembayaran</label>
                         <input type="file" class="form-control-file" name="payment_proof" id="payment_proof" required>
                     </div>
-                    <button type="submit" name="submit-payment" class="btn btn-primary" href="invoices.php">Kirim</button>
+                    <button type="submit" name="submit-payment" class="btn btn-primary">Kirim</button>
                 </form>
                 
                 <?php if (isset($payment_upload_message)): ?>

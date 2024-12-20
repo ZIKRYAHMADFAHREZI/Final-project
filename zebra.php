@@ -136,6 +136,22 @@
         .number_room input[type="radio"]:checked + label .custom-radio {
             background-color: yellow; /* Warna saat dicentang */
         }
+        .wa-logo {
+  display: inline-block;
+  margin: 10px;
+  transition: transform 0.2s;
+}
+
+.wa-logo:hover {
+  transform: scale(1.1);
+}
+
+.wa-logo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
     </style>
 </head>
 <body>
