@@ -221,7 +221,8 @@ $pendingRooms = $roomStats['pending'];
                 <th>Username</th>
                 <th>Tipe Kamar</th>
                 <th>Nomor Kamar</th>
-                <th>Check-in Date</th>
+                <th>Tanggal Mulai</th>
+                <th>Tanggal Selesai</th>
                 <th>Metode Pembayaran</th>
                 <th>Total Amount</th>
                 <th>Status</th>
@@ -241,6 +242,7 @@ $pendingRooms = $roomStats['pending'];
                     <td><?= htmlspecialchars($data['name_type']); ?></td>
                     <td><?= htmlspecialchars($data['number_room']); ?></td>
                     <td><?= htmlspecialchars($data['start_date']); ?></td>
+                    <td><?= $data['to_date'] !== null ? htmlspecialchars($data['to_date']) : '' ; ?></td>
                     <td><?= htmlspecialchars($data['method']); ?></td>
                     <td><?= htmlspecialchars($data['total_amount']); ?></td>
                     <td><?= htmlspecialchars($data['status']); ?></td>

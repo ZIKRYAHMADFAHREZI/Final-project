@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Dec 19, 2024 at 09:35 AM
+-- Generation Time: Dec 21, 2024 at 03:38 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.1.10
 
@@ -77,10 +77,10 @@ CREATE TABLE `reservations` (
   `id_user` int NOT NULL,
   `id_room` int NOT NULL,
   `reservation_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `check_in_date` date DEFAULT NULL,
-  `check_out_date` date DEFAULT NULL,
+  `check_in_date` datetime DEFAULT '1970-01-01 00:00:00',
+  `check_out_date` datetime DEFAULT '1970-01-01 00:00:00',
   `status` enum('pending','confirmed','cancelled','completed') DEFAULT 'pending',
-  `payment_status` enum('paid','unpaid','refunded') DEFAULT 'unpaid',
+  `payment_status` enum('paid','unpaid','refunded') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'paid',
   `total_amount` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -89,26 +89,6 @@ CREATE TABLE `reservations` (
   `start_date` date NOT NULL,
   `id_pay_method` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `reservations`
---
-
-INSERT INTO `reservations` (`id_reservation`, `id_user`, `id_room`, `reservation_date`, `check_in_date`, `check_out_date`, `status`, `payment_status`, `total_amount`, `created_at`, `updated_at`, `payment_proof`, `to_date`, `start_date`, `id_pay_method`) VALUES
-(26, 7, 17, '2024-12-18 02:43:22', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 02:43:22', '2024-12-18 02:43:30', '20241218024330_676236d2c3196.jpg', NULL, '2024-12-24', 2),
-(27, 8, 18, '2024-12-18 02:58:42', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 02:58:42', '2024-12-18 02:58:50', '20241218025850_67623a6a3f248.jpg', NULL, '2024-12-26', 2),
-(28, 7, 24, '2024-12-18 03:14:33', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-18 03:14:33', '2024-12-18 03:14:41', '20241218031441_67623e219a928.jpg', NULL, '2024-12-20', 2),
-(29, 7, 23, '2024-12-18 03:21:39', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-18 03:21:39', '2024-12-18 03:21:47', '20241218032147_67623fcb24b8f.jpg', NULL, '2025-01-02', 1),
-(30, 7, 22, '2024-12-18 03:23:49', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-18 03:23:49', '2024-12-18 03:23:57', '20241218032357_6762404d4454b.jpg', NULL, '2024-12-21', 2),
-(31, 7, 26, '2024-12-18 03:26:39', NULL, NULL, 'pending', 'unpaid', '100000.00', '2024-12-18 03:26:39', '2024-12-18 03:26:50', '20241218032650_676240fa58fc6.jpg', NULL, '2024-12-19', 3),
-(32, 7, 16, '2024-12-18 03:31:05', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 03:31:05', '2024-12-18 03:31:28', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-21', 2),
-(33, 7, 10, '2024-12-18 03:32:48', NULL, NULL, 'pending', 'unpaid', '175000.00', '2024-12-18 03:32:48', '2024-12-18 03:33:06', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-27', 2),
-(34, 7, 9, '2024-12-18 03:34:48', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 03:34:48', '2024-12-18 03:35:04', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-19', 1),
-(35, 7, 6, '2024-12-18 03:38:48', NULL, NULL, 'pending', 'unpaid', '200000.00', '2024-12-18 03:38:48', '2024-12-18 03:39:05', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-20', 1),
-(36, 7, 5, '2024-12-18 03:45:15', NULL, NULL, 'pending', 'unpaid', '200000.00', '2024-12-18 03:45:15', '2024-12-18 03:45:31', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-19', 2),
-(37, 7, 11, '2024-12-18 03:50:44', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 03:50:44', '2024-12-18 03:51:00', 'Format file tidak diperbolehkan! Hanya file dengan ekstensi JPG, JPEG, PNG, atau PDF yang diperbolehkan.', NULL, '2024-12-21', 3),
-(38, 7, 27, '2024-12-18 04:06:33', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 04:06:33', '2024-12-18 04:06:33', NULL, NULL, '2024-12-20', 1),
-(39, 7, 8, '2024-12-18 04:07:01', NULL, NULL, 'pending', 'unpaid', '150000.00', '2024-12-18 04:07:01', '2024-12-18 04:07:01', NULL, NULL, '2024-12-20', 2);
 
 -- --------------------------------------------------------
 
@@ -130,30 +110,30 @@ CREATE TABLE `rooms` (
 INSERT INTO `rooms` (`id_room`, `id_type`, `number_room`, `status`) VALUES
 (1, 1, 66, 'unavailable'),
 (2, 1, 104, 'pending'),
-(3, 2, 58, 'pending'),
-(4, 2, 60, 'pending'),
-(5, 3, 54, 'pending'),
-(6, 3, 62, 'pending'),
-(8, 4, 102, 'pending'),
-(9, 4, 103, 'pending'),
-(10, 4, 105, 'pending'),
-(11, 4, 107, 'pending'),
+(3, 2, 58, 'available'),
+(4, 2, 60, 'available'),
+(5, 3, 54, 'available'),
+(6, 3, 62, 'available'),
+(8, 4, 102, 'available'),
+(9, 4, 103, 'available'),
+(10, 4, 105, 'available'),
+(11, 4, 107, 'available'),
 (12, 5, 142, 'available'),
 (13, 5, 144, 'available'),
 (14, 5, 146, 'available'),
 (15, 5, 148, 'available'),
-(16, 5, 150, 'pending'),
-(17, 5, 152, 'pending'),
-(18, 5, 154, 'pending'),
-(19, 6, 106, 'pending'),
-(20, 6, 108, 'pending'),
-(21, 6, 110, 'pending'),
-(22, 6, 112, 'pending'),
-(23, 6, 118, 'pending'),
-(24, 6, 120, 'pending'),
-(25, 6, 122, 'pending'),
-(26, 6, 124, 'pending'),
-(27, 4, 101, 'pending');
+(16, 5, 150, 'available'),
+(17, 5, 152, 'available'),
+(18, 5, 154, 'available'),
+(19, 6, 106, 'available'),
+(20, 6, 108, 'available'),
+(21, 6, 110, 'available'),
+(22, 6, 112, 'available'),
+(23, 6, 118, 'unavailable'),
+(24, 6, 120, 'available'),
+(25, 6, 122, 'available'),
+(26, 6, 124, 'available'),
+(27, 4, 101, 'available');
 
 -- --------------------------------------------------------
 
@@ -252,7 +232,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id_user`, `username`, `email`, `password`, `created_at`, `role`, `remember_token`, `password_reset_token`, `password_reset_exp`) VALUES
 (7, 'fufufafa', 'fufufafa@gmail.com', '$2y$10$HNpX9qattJMjLOyLVS9Xc.eqCoTh2gmEu2C7T5O.f5r0ragWxj6bC', '2024-12-18 02:37:19', 'user', NULL, NULL, NULL),
-(8, 'admin', 'admin@gmail.com', '$2y$10$TGd/jMe6pn1SHQQwGBaTeutdBSudL3OV/3QoBTSj4.gLGs0GnK0tO', '2024-12-18 02:50:49', 'admin', NULL, NULL, NULL);
+(8, 'admin', 'admin@gmail.com', '$2y$10$TGd/jMe6pn1SHQQwGBaTeutdBSudL3OV/3QoBTSj4.gLGs0GnK0tO', '2024-12-18 02:50:49', 'admin', NULL, NULL, NULL),
+(9, 'pengguna', 'user1@example.com', '$2y$10$6vyJ80skpIvXO8FJuzdF2eLq9dc7MKzKLvTN2RsPH5dVGIfcqMVYq', '2024-12-20 16:54:17', 'user', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -366,7 +347,7 @@ ALTER TABLE `pay_methods`
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`
-  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id_reservation` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `rooms`
@@ -396,7 +377,7 @@ ALTER TABLE `types`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_user` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user_profile`

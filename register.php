@@ -154,12 +154,12 @@ if (isset($_POST['submit'])) {
                 <label for="email" class="input-group__label">Email</label>
             </div>
             <div class="input-group">
-                <input type="password" name="password" id="password" class="input-group__input" required>
+                <input type="password" name="password" id="password" class="input-group__input" min="8" required>
                 <label for="password" class="input-group__label">Password</label>
                 <span class="show-password-icon" id="toggle-password">&#x1F512;</span>
             </div>
             <div class="input-group">
-                <input type="password" name="confirm_password" id="confirm_password" class="input-group__input" required>
+                <input type="password" name="confirm_password" id="confirm_password" class="input-group__input" min="8" required>
                 <label for="confirm_password" class="input-group__label">Konfirmasi Password</label>
                 <span class="show-password-icon" id="toggle-confirm-password">&#x1F512;</span>
             </div>

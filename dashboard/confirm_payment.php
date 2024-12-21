@@ -92,6 +92,16 @@ if (isset($_GET['id'])) {
                 $stmt->bindParam(':id_room', $id_room, PDO::PARAM_INT);
                 $stmt->execute();
 
+                // Perbarui status kamar menjadi 'available' jika waktu telah melewati check_out_date
+                $updateRoomStatus = "
+                    UPDATE rooms r
+                    JOIN reservations res ON r.id_room = res.id_room
+                    SET r.status = 'available'
+                    WHERE res.check_out_date <= NOW() AND r.status = 'unavailable'
+                ";
+                $stmt = $pdo->prepare($updateRoomStatus);
+                $stmt->execute();
+
                 // Commit transaksi
                 $pdo->commit();
 
@@ -136,6 +146,7 @@ if (isset($_GET['id'])) {
     $message = 'ID Reservasi tidak ditemukan.';
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
