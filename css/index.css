@@ -48,3 +48,39 @@ h5 {
 .card:hover .card-img-top {
     transform: scale(1.05); /* Image zooms in when the card is hovered */
 }
+.whatsapp-float {
+    position: fixed;
+    bottom: 20px; /* Jarak dari bawah */
+    right: 20px;  /* Jarak dari kanan */
+    background-color: #25d366; /* Warna hijau khas WhatsApp */
+    color: white;
+    border-radius: 50px; /* Membuat bentuk lingkaran */
+    padding: 10px 20px; /* Ruang di sekitar ikon dan teks */
+    font-size: 16px; /* Ukuran teks */
+    display: flex; /* Agar ikon dan teks sejajar */
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Efek bayangan */
+    text-decoration: none; /* Menghilangkan garis bawah */
+    z-index: 1000; /* Agar selalu terlihat di atas elemen lain */
+}
+
+.whatsapp-float i {
+    font-size: 20px; /* Ukuran ikon */
+    margin-right: 10px; /* Jarak ikon dengan teks */
+}
+
+.whatsapp-float:hover {
+    background-color: #1ebe57; /* Warna lebih gelap saat hover */
+}
+
+/* Responsif untuk mobile: hanya ikon yang terlihat */
+@media (max-width: 768px) {
+    .whatsapp-float {
+        padding: 10px;
+        font-size: 0; /* Menyembunyikan teks */
+    }
+    .whatsapp-float i {
+        font-size: 24px;
+        margin-right: 0;
+    }
+}

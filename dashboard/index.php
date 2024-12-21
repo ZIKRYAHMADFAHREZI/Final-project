@@ -32,45 +32,6 @@ $query = "
 $stmt = $pdo->query($query);
 $datas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Menyimpan hasil query ke dalam array $datas
 
-
-// Menangani form pencarian
-if (isset($_POST['cari']) && isset($_POST['keyword'])) {
-    $keyword = $_POST['keyword'];
-    $datas = cari($keyword); // Menampilkan hasil pencarian
-}
-
-// Fungsi untuk mencari data berdasarkan keyword
-function cari($keyword) {
-    global $pdo;
-    $sql = "
-    SELECT r.*, u.username, u.email, rt.number_room, pm.method, rt_type.name_type
-    FROM reservations r
-    JOIN users u ON r.id_user = u.id_user
-    JOIN rooms rt ON r.id_room = rt.id_room
-    JOIN pay_methods pm ON r.id_pay_method = pm.id_pay_method
-    JOIN types rt_type ON rt.id_type = rt_type.id_type
-    WHERE
-        u.username LIKE :keyword OR
-        u.email LIKE :keyword OR
-        rt.number_room LIKE :keyword OR
-        rt_type.name_type LIKE :keyword OR
-        pm.method LIKE :keyword OR
-        r.total_amount LIKE :keyword OR 
-        r.payment_proof LIKE :keyword";
-    
-    $stmt = $pdo->prepare($sql);
-    $keyword = "%" . $keyword . "%"; // Membungkus keyword dengan wildcard untuk pencarian
-    $stmt->bindParam(':keyword', $keyword, PDO::PARAM_STR);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Mengembalikan hasil pencarian
-}
-
-// Menangani form pencarian
-if (isset($_POST['cari']) && isset($_POST['keyword'])) {
-    $keyword = $_POST['keyword'];
-    $datas = cari($keyword); // Menampilkan hasil pencarian
-}
-
 // Menghitung jumlah kamar
 $queryRoom = "SELECT COUNT(*) AS rooms, 
                      SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) AS available,
@@ -102,6 +63,9 @@ $pendingRooms = $roomStats['pending'];
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
     rel="stylesheet"
 />
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
 <link rel="stylesheet" href="../css/admin.css">
 <style>
     .toggle-btn {
@@ -197,24 +161,9 @@ $pendingRooms = $roomStats['pending'];
         </div>
     </div>
 
-    <!-- Cari -->
-    <div class="form-container text-center mt-5">
-        <form action="" method="post" class="d-inline-block">
-            <input 
-                type="text" 
-                name="keyword" 
-                size="150%" 
-                placeholder="Masukkan keyword pencarian" 
-                autocomplete="off"
-                class="form-control d-inline-block w-50 mb-2"
-            >
-            <button type="submit" name="cari" class="btn btn-primary">Cari!</button>
-        </form>
-    </div>
-
     <!-- Tampilkan data reservations -->
     <div class="mt-5">
-        <table class="table table-striped">
+        <table id="reservationsTable" class="table table-striped">
             <thead>
             <tr>
                 <th>No</th>
@@ -232,6 +181,7 @@ $pendingRooms = $roomStats['pending'];
             </tr>
         </thead>
         <tbody>
+            <?php if (count($datas) > 0): ?>
             <?php 
             $no = 1; // Inisialisasi variabel untuk nomor urut
             foreach ($datas as $data): 
@@ -267,6 +217,11 @@ $pendingRooms = $roomStats['pending'];
                     </td>
                 </tr>
             <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="12" class="text-center">Tidak ada data pemesanan.</td>
+                </tr>
+            <?php endif; ?>
         </tbody>
         </table>
     </div>
@@ -279,8 +234,37 @@ $pendingRooms = $roomStats['pending'];
         </div>
     </div>
 </div>
-
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<!-- boootsrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Sweet Alert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../js/admin.js"></script>
 <script>
+$(document).ready(function() {
+    $('#reservationsTable').DataTable({
+        paging: true,
+        searching: true,
+        info: true,
+        ordering: true,
+        debug: true, // Aktifkan debug
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data per halaman",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            paginate: {
+                first: "Awal",
+                last: "Akhir",
+                next: "Berikutnya",
+                previous: "Sebelumnya"
+            }
+        }
+    });
+});
+
 function showActionDialog(reservationId) {
     // Menambahkan penundaan untuk memperlambat eksekusi
     setTimeout(() => {
@@ -322,12 +306,5 @@ function closeModal() {
     document.getElementById('paymentModal').style.display = 'none';
 }
 </script>
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Sweet Alert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../js/admin.js"></script>
 </body>
 </html>

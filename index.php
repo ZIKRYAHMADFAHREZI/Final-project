@@ -27,6 +27,8 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
 <!-- goole font -->
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+<!-- Font Awesome untuk ikon WhatsApp -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
     body {
         background-color: #DCDCDC;
@@ -101,6 +103,43 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
     .card:hover .card-img-top {
         transform: scale(1.05);
     }
+       /* Gaya untuk tombol WhatsApp */
+       .whatsapp-float {
+            position: fixed;
+            bottom: 20px; /* Jarak dari bawah */
+            right: 20px;  /* Jarak dari kanan */
+            background-color: #25d366; /* Warna hijau khas WhatsApp */
+            color: white;
+            border-radius: 50px; /* Membuat bentuk lingkaran */
+            padding: 15px 30px; /* Ruang di sekitar ikon dan teks (lebih besar) */
+            font-size: 20px; /* Ukuran teks (lebih besar) */
+            display: flex; /* Agar ikon dan teks sejajar */
+            align-items: center;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Efek bayangan */
+            text-decoration: none; /* Menghilangkan garis bawah */
+            z-index: 1000; /* Agar selalu terlihat di atas elemen lain */
+        }
+
+        .whatsapp-float i {
+            font-size: 28px; /* Ukuran ikon (lebih besar) */
+            margin-right: 15px; /* Jarak ikon dengan teks */
+        }
+
+        .whatsapp-float:hover {
+            background-color: #1ebe57; /* Warna lebih gelap saat hover */
+        }
+
+        /* Responsif untuk mobile: hanya ikon yang terlihat */
+        @media (max-width: 768px) {
+            .whatsapp-float {
+                padding: 15px;
+                font-size: 0; /* Menyembunyikan teks */
+            }
+            .whatsapp-float i {
+                font-size: 32px; /* Ukuran ikon lebih besar di mobile */
+                margin-right: 0;
+            }
+        }
 </style>
 
 <div class="container">
@@ -119,6 +158,10 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
         </div>
     <?php endforeach; ?>
     </div>
+    <a href="https://wa.me/6282211879219?text=Halo%20saya%20ingin%20bertanya." class="whatsapp-float" target="_blank">
+            <i class="fab fa-whatsapp"></i>
+            Hubungi Kami
+    </a>
 </div>
 
 <?php include 'footer.html'; ?>

@@ -101,8 +101,13 @@ try {
                 <p><strong>Nomor Kamar:</strong> <?= htmlspecialchars($reservation['number_room']); ?> </p>
                 <p><strong>Tanggal Mulai:</strong> <?= htmlspecialchars($reservation['start_date']); ?></p>
                 <p><strong>Tanggal Selesai:</strong> <?= $reservation['to_date'] !== null ? htmlspecialchars($reservation['to_date']) : ''; ?></p>
-                <p><strong>Tanggal Check-in:</strong> <?= $reservation['check_in_date'] !== null ? htmlspecialchars($reservation['check_in_date']) : ''; ?></p>
-                <p><strong>Tanggal Check-out:</strong> <?= $reservation['check_out_date'] !== null ? htmlspecialchars($reservation['check_out_date']) : ''; ?></p>
+                <p><strong>Tanggal Check-in:</strong> 
+                    <?= ($reservation['check_in_date'] !== null && $reservation['check_in_date'] !== '1970-01-01 00:00:00') ? htmlspecialchars($reservation['check_in_date']) : ''; ?>
+                </p>
+                <p><strong>Tanggal Check-out:</strong> 
+                    <?= ($reservation['check_out_date'] !== null && $reservation['check_out_date'] !== '1970-01-01 00:00:00') ? htmlspecialchars($reservation['check_out_date']) : ''; ?>
+                </p>
+
 
                 <p><strong>Total Pembayaran:</strong> <span class="text-success">Rp<?= number_format($reservation['total_amount'], 0, ',', '.'); ?></span></p>
                 <p><strong>Status:</strong> 

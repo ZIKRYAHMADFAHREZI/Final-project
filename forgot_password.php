@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($user) {
                 // Generate token untuk reset password
-                $token = bin2hex(random_bytes(64));
+                $token = bin2hex(random_bytes(32));
                 $createdAt = date('Y-m-d H:i:s');
 
                 // Update token dan timestamp di database
