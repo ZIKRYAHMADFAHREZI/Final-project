@@ -80,7 +80,7 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-center mb-4">Welcome to Hotel <span id="typing-text" class="typing-effect"></span></h2>
-            <p class="text-center mb-4">Kami Tidak Pernah Meragukan Tamu Meski Permintaannya Aneh-Aneh</p>
+            <p class="text-center mb-4">Tempat Beristirahat dengan Kenyamanan Berkelas, Pelayanan Ramah, dan Fasilitas Berkualitas untuk Pengalaman Menginap yang Tak Terlupakan.</p>
 
         </div>
     </div>
@@ -103,43 +103,40 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
     .card:hover .card-img-top {
         transform: scale(1.05);
     }
-       /* Gaya untuk tombol WhatsApp */
-       .whatsapp-float {
-            position: fixed;
-            bottom: 20px; /* Jarak dari bawah */
-            right: 20px;  /* Jarak dari kanan */
-            background-color: #25d366; /* Warna hijau khas WhatsApp */
-            color: white;
-            border-radius: 50px; /* Membuat bentuk lingkaran */
-            padding: 15px 30px; /* Ruang di sekitar ikon dan teks (lebih besar) */
-            font-size: 20px; /* Ukuran teks (lebih besar) */
-            display: flex; /* Agar ikon dan teks sejajar */
-            align-items: center;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Efek bayangan */
-            text-decoration: none; /* Menghilangkan garis bawah */
-            z-index: 1000; /* Agar selalu terlihat di atas elemen lain */
+    /* Gaya untuk tombol WhatsApp */
+    .whatsapp-float {
+        position: fixed;
+        bottom: 20px; /* Jarak dari bawah */
+        right: 20px;  /* Jarak dari kanan */
+        background-color: #25d366; /* Warna hijau khas WhatsApp */
+        color: white;
+        border-radius: 50px; /* Membuat bentuk lingkaran */
+        padding: 15px 30px; /* Ruang di sekitar ikon dan teks (lebih besar) */
+        font-size: 20px; /* Ukuran teks (lebih besar) */
+        display: flex; /* Agar ikon dan teks sejajar */
+        align-items: center;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Efek bayangan */
+        text-decoration: none; /* Menghilangkan garis bawah */
+        z-index: 1000; /* Agar selalu terlihat di atas elemen lain */
+    }
+    .whatsapp-float i {
+        font-size: 28px; /* Ukuran ikon (lebih besar) */
+        margin-right: 15px; /* Jarak ikon dengan teks */
+    }
+    .whatsapp-float:hover {
+        background-color: #1ebe57; /* Warna lebih gelap saat hover */
+    }
+    /* Responsif untuk mobile: hanya ikon yang terlihat */
+    @media (max-width: 768px) {
+        .whatsapp-float {
+            padding: 15px;
+            font-size: 0; /* Menyembunyikan teks */
         }
-
         .whatsapp-float i {
-            font-size: 28px; /* Ukuran ikon (lebih besar) */
-            margin-right: 15px; /* Jarak ikon dengan teks */
+            font-size: 32px; /* Ukuran ikon lebih besar di mobile */
+            margin-right: 0;
         }
-
-        .whatsapp-float:hover {
-            background-color: #1ebe57; /* Warna lebih gelap saat hover */
-        }
-
-        /* Responsif untuk mobile: hanya ikon yang terlihat */
-        @media (max-width: 768px) {
-            .whatsapp-float {
-                padding: 15px;
-                font-size: 0; /* Menyembunyikan teks */
-            }
-            .whatsapp-float i {
-                font-size: 32px; /* Ukuran ikon lebih besar di mobile */
-                margin-right: 0;
-            }
-        }
+    }
 </style>
 
 <div class="container">

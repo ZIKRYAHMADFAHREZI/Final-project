@@ -73,41 +73,27 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
                     <?php endif; ?>
 
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Tanggal Mulai</th>
-                                    <th>Tanggal Akhir</th>
-                                    <th>Tipe Kamar</th>  
-                                    <th>Nomor Kamar</th>  
-                                    <th>Total Pembayaran</th>
-                                    <th>Status Pembayaran</th>
-                                    <th>Status Reservasi</th>
-                                    <th>Bukti</th>
-                                </tr>
-                            </thead>
+                        <table class="table">
                             <tbody>
                                 <?php if (count($reservations) > 0): ?>
                                     <?php foreach ($reservations as $index => $reservation): ?>
                                         <tr>
                                             <td><?= $index + 1; ?></td>
-                                            <td><?= htmlspecialchars(date('d-m-Y', strtotime($reservation['start_date']))); ?></td>
-                                            <td><?= $reservation['to_date'] ? htmlspecialchars(date('d-m-Y', strtotime($reservation['to_date']))) : '-'; ?></td>
+                                            <td><?= htmlspecialchars(date('d F Y', strtotime($reservation['reservation_date']))); ?></td>
                                             <td><?= htmlspecialchars($reservation['name_type']); ?></td>
                                             <td><?= htmlspecialchars($reservation['number_room']); ?></td>
                                             <td>Rp<?= number_format($reservation['total_amount'], 0, ',', '.'); ?></td>
                                             <td>
-                                                <?= $reservation['payment_status'] === 'paid' ? 'Sudah Dibayar' : 
-                                                ($reservation['payment_status'] === 'refunded' ? 'Dikembalikan' : '') ?>
+                                                <a href="javascript:void(0);" 
+                                                onclick="showInvoiceFromFile('invoice.php?id=<?= urlencode($reservation['id_reservation']); ?>')">
+                                                Lihat Invoice
+                                                </a>
                                             </td>
-                                            <td><?= htmlspecialchars($reservation['status'])  ?></td>
-                                            <td><a href="javascript:void(0);" onclick="showPaymentProof('<?= htmlspecialchars($reservation['payment_proof']); ?>')">Lihat Bukti Pembayaran</a></td>
                                         </tr>
                                     <?php endforeach; ?>
                                     <?php else: ?>
                                     <tr>
-                                        <td colspan="9" class="text-center">Tidak ada data pemesanan.</td>
+                                        <td colspan="2" class="text-center">Tidak ada data pemesanan.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -118,35 +104,48 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
         </div>
     </div>
 </div>
-<div id="paymentModal" style="display:none;">
+<div id="invoiceModal" style="display:none;">
     <div style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">
-        <div style="background-color: white; padding: 20px; border-radius: 10px;">
-            <img id="paymentImage" src="" alt="Bukti Pembayaran" style="max-width: 600px; max-height: 400px; width: auto; height: auto;">
+        <div style="background-color: white; padding: 20px; border-radius: 10px; max-width: 90%; width: 600px;">
+            <div id="invoiceContent"></div> <!-- Konten invoice akan dimasukkan ke sini -->
             <button onclick="closeModal()" class="btn btn-secondary mt-3">Tutup</button>
         </div>
     </div>
 </div>
-<script>
-function showPaymentProof(fileName) {
-    console.log('File name:', fileName); // Periksa apakah fileName terisi
-    var modal = document.getElementById('paymentModal');
-    var img = document.getElementById('paymentImage');
 
-    if (fileName) {
-        img.src = 'paynt/uploads/' + fileName; // Path lengkap ke file gambar
-        modal.style.display = 'flex'; // Tampilkan modal
+<script>
+function showInvoiceFromFile(fileUrl) {
+    if (fileUrl) {
+        var modal = document.getElementById('invoiceModal');
+        var content = document.getElementById('invoiceContent');
+
+        // Fetch konten dari file invoice
+        fetch(fileUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Gagal memuat invoice.');
+                }
+                return response.text();
+            })
+            .then(html => {
+                content.innerHTML = html; // Masukkan konten file ke dalam modal
+                modal.style.display = 'flex'; // Tampilkan modal
+            })
+            .catch(error => {
+                content.innerHTML = `<p class="text-danger">Error: ${error.message}</p>`;
+                modal.style.display = 'flex';
+            });
     } else {
-        alert('Bukti pembayaran tidak tersedia');
+        alert('File invoice tidak ditemukan.');
     }
 }
+
 function closeModal() {
-    var modal = document.getElementById('paymentModal');
-    if (modal) {
-        modal.style.display = 'none'; // Sembunyikan modal
-    } else {
-        console.error('Modal element not found');
-    }
+    var modal = document.getElementById('invoiceModal');
+    modal.style.display = 'none'; // Sembunyikan modal
+    document.getElementById('invoiceContent').innerHTML = ''; // Bersihkan konten modal
 }
+
 </script>
 <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

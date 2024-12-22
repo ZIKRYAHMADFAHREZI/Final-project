@@ -188,10 +188,14 @@ $pendingRooms = $roomStats['pending'];
             ?>
                 <tr>
                     <td><?= $no++; ?></td> <!-- Menampilkan nomor urut dan meningkatkan $no -->
-                    <td><?= htmlspecialchars($data['username']); ?></td>
+                    <td>
+                        <a href="javascript:void(0);" onclick="showDetailUser('<?= htmlspecialchars($data['username']); ?>')">
+                            <?= htmlspecialchars($data['username']); ?>
+                        </a>
+                    </td>
                     <td><?= htmlspecialchars($data['name_type']); ?></td>
                     <td><?= htmlspecialchars($data['number_room']); ?></td>
-                    <td><?= htmlspecialchars($data['start_date']); ?></td>
+                    <td><?= htmlspecialchars(date('d F Y', strtotime($data['start_date']))); ?></td>
                     <td><?= $data['to_date'] !== null ? htmlspecialchars($data['to_date']) : '' ; ?></td>
                     <td><?= htmlspecialchars($data['method']); ?></td>
                     <td><?= htmlspecialchars($data['total_amount']); ?></td>
@@ -226,11 +230,25 @@ $pendingRooms = $roomStats['pending'];
         </table>
     </div>
 </div>
+<div id="userDetailModal" style="display:none;">
+    <div style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">
+        <div style="background-color: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 500px;">
+            <h4>Detail User</h4>
+            <p><strong>Username:</strong> <span id="modalUsername"></span></p>
+            <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+            <p><strong>Nama Lengkap:</strong> <span id="modalFullName"></span></p>
+            <p><strong>Nomor Telepon:</strong> <span id="modalPhoneNumber"></span></p>
+            <p><strong>Tanggal Lahir:</strong> <span id="modalDateOfBirth"></span></p>
+            <button onclick="closeModal('userDetailModal')" class="btn btn-secondary">Tutup</button>
+        </div>
+    </div>
+</div>
+
 <div id="paymentModal" style="display:none;">
     <div style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">
         <div style="background-color: white; padding: 20px; border-radius: 10px;">
             <img id="paymentImage" src="" alt="Bukti Pembayaran" style="max-width: 600px; max-height: 400px; width: auto; height: auto;">
-            <button onclick="closeModal()" class="btn btn-secondary">Tutup</button>
+            <button onclick="closeModal('paymentModal')" class="btn btn-secondary">Tutup</button>
         </div>
     </div>
 </div>
@@ -294,6 +312,36 @@ function showActionDialog(reservationId) {
     }, 500);  // Delay 500 ms sebelum menampilkan SweetAlert
 }
 
+function showDetailUser(username) {
+    fetch(`get_user_detail.php?username=${username}`)
+        .then(response => {
+            console.log("Status Code:", response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Isi modal dengan data user
+            document.getElementById('modalUsername').innerText = data.username;
+            document.getElementById('modalEmail').innerText = data.email;
+            document.getElementById('modalFullName').innerText = `${data.first_name} ${data.last_name}`;
+            document.getElementById('modalPhoneNumber').innerText = data.phone_number;
+            document.getElementById('modalDateOfBirth').innerText = data.date_of_birth;
+
+            // Tampilkan modal
+            document.getElementById('userDetailModal').style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Gagal memuat detail user: ' + error.message);
+        });
+}
+
 
 function showPaymentProof(fileName) {
     var modal = document.getElementById('paymentModal');
@@ -302,9 +350,11 @@ function showPaymentProof(fileName) {
     modal.style.display = 'flex';
 }
 
-function closeModal() {
-    document.getElementById('paymentModal').style.display = 'none';
+// Fungsi closeModal dengan parameter modalId
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
 }
+
 </script>
 </body>
 </html>

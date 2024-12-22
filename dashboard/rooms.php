@@ -180,6 +180,10 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             newStatus = 'available';
             statusText = 'Tersedia';
             colorClass = 'available';
+        } else if (currentStatus === 'pending') {
+            newStatus = 'available';
+            statusText = 'Tersedia';
+            colorClass = 'available';
         } else {
             // Jika statusnya tidak valid, keluar dari fungsi
             Swal.fire('Gagal', 'Status tidak valid', 'error');

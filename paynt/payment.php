@@ -60,7 +60,7 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
                 $payment_upload_message = "Bukti pembayaran berhasil diunggah.";
         
                 // Redirect ke halaman invoices
-                header('Location: ../invoices.php?id_reservation=' . $id_reservation);
+                header('Location: ../invoice.php?id_reservation=' . $id_reservation);
                 exit();
             } catch (PDOException $e) {
                 $payment_upload_message = "Terjadi kesalahan saat mengunggah bukti pembayaran: " . $e->getMessage();
