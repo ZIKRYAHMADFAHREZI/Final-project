@@ -1,24 +1,43 @@
-<?php 
-$servername = "localhost"; 
-$username = "root"; 
-$password = ""; 
-$dbname = "db_hotel"; 
+<?php
 
+class Database {
+    private $servername;
+    private $username;
+    private $password;
+    private $dbname;
+    private $pdo;
 
-try {
-    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  } catch (PDOException $e) {
-    die("Koneksi gagal: " . $e->getMessage());
-  }
-// Membuat koneksi 
-// $conn = mysqli_connect($servername, $username, $password, $dbname); 
+    // Constructor untuk inisialisasi parameter database
+    public function __construct($servername, $username, $password, $dbname) {
+        $this->servername = $servername;
+        $this->username = $username;
+        $this->password = $password;
+        $this->dbname = $dbname;
+    }
 
-// Periksa Koneksi 
-// if (!$conn) { 
-//     die("Koneksi gagal: " . mysqli_connect_error()); 
-// } 
+    // Metode untuk membuat koneksi PDO
+    public function connect() {
+        try {
+            $this->pdo = new PDO("mysql:host={$this->servername};dbname={$this->dbname}", $this->username, $this->password);
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $this->pdo;
+        } catch (PDOException $e) {
+            die("Koneksi gagal: " . $e->getMessage());
+        }
+    }
 
-// echo "Koneksi berhasil"; 
+    // Metode untuk menutup koneksi (opsional karena PDO otomatis menutup koneksi saat script selesai)
+    public function disconnect() {
+        $this->pdo = null;
+    }
+}
 
-?> 
+// Contoh penggunaan
+$database = new Database("localhost", "root", "", "db_hotel");
+$pdo = $database->connect();
+
+// if ($pdo) {
+//     echo "Koneksi berhasil";
+// }
+
+?>

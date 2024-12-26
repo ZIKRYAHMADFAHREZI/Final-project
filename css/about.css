@@ -1,0 +1,33 @@
+/* Menata elemen menggunakan Flexbox */
+.isi {
+    display: flex;
+    align-items: center; /* Agar gambar dan teks sejajar secara vertikal */
+    justify-content: space-between; /* Atur ruang di antara gambar dan teks */
+}
+
+/* Styling gambar */
+.logo {
+    border-radius: 50%;
+    margin-right: 70px;
+    margin-left: 40px;
+    width: 20%; /* Ukuran logo */
+}
+/* Styling teks */
+.container {
+    flex-grow: 1; /* Membiarkan teks mengambil ruang lebih banyak jika diperlukan */
+    font-family: 'Cinzel', serif;
+}
+/* Media Query untuk layar kecil (misalnya, ponsel) */
+@media (max-width: 768px) {
+    .isi {
+        flex-direction: column; /* Gambar dan teks berubah menjadi kolom (gambar pindah ke bawah) */
+        align-items: center; /* Pusatkan gambar dan teks */
+    }
+
+    .logo {
+        margin-right: 0;
+        margin-left: 0;
+        margin-bottom: 20px; /* Beri jarak antara gambar dan teks */
+        width: 50%; /* Gambar lebih besar pada layar kecil, sesuaikan dengan keinginan */
+    }
+}

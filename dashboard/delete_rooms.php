@@ -1,46 +1,59 @@
 <?php
 session_start();
 require '../db/connection.php';
-// Cek apakah pengguna sudah login
+
+class RoomManager {
+    private $pdo;
+
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+    }
+
+    public function fetchAllRoomsByType() {
+        $stmt = $this->pdo->query("
+            SELECT 
+                t.id_type,
+                t.name_type,
+                r.id_room,
+                r.number_room,
+                r.status
+            FROM types t 
+            LEFT JOIN rooms r ON t.id_type = r.id_type 
+            ORDER BY t.id_type, r.number_room
+        ");
+
+        $rooms_by_type = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if (!isset($rooms_by_type[$row['name_type']])) {
+                $rooms_by_type[$row['name_type']] = [];
+            }
+            if ($row['id_room']) { // Only add if room exists
+                $rooms_by_type[$row['name_type']][] = [
+                    'id_room' => $row['id_room'],
+                    'number_room' => $row['number_room'],
+                    'status' => $row['status']
+                ];
+            }
+        }
+
+        return $rooms_by_type;
+    }
+}
+
+// Periksa apakah pengguna sudah login
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    // Jika belum login, arahkan ke halaman login
     header('Location: ../login.php');
     exit;
 }
 
-// Cek apakah pengguna memiliki role 'admin'
+// Periksa apakah pengguna memiliki peran 'admin'
 if ($_SESSION['role'] !== 'admin') {
-    // Jika bukan admin, arahkan ke halaman lain (misalnya halaman beranda atau halaman akses terbatas)
     header('Location: ../index.php');
     exit;
 }
 
-// Fetch all room types with their rooms using JOIN
-$stmt = $pdo->query("
-    SELECT 
-        t.id_type,
-        t.name_type,
-        r.id_room,
-        r.number_room,
-        r.status
-    FROM types t 
-    LEFT JOIN rooms r ON t.id_type = r.id_type 
-    ORDER BY t.id_type, r.number_room
-");
-
-$rooms_by_type = [];
-while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    if (!isset($rooms_by_type[$row['name_type']])) {
-        $rooms_by_type[$row['name_type']] = [];
-    }
-    if ($row['id_room']) {  // Only add if room exists
-        $rooms_by_type[$row['name_type']][] = [
-            'id_room' => $row['id_room'],
-            'number_room' => $row['number_room'],
-            'status' => $row['status']
-        ];
-    }
-}
+$roomManager = new RoomManager($pdo);
+$rooms_by_type = $roomManager->fetchAllRoomsByType();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,29 +62,14 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hapus Kamar</title>
 <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/togle.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../css/admin.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Previous head content remains the same -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <style>
-    .toggle-btn {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        background-color: #343a40;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 1000;
-        transition: left 0.3s ease-in-out;
-    }
-    .toggle-btn.closed {
-        left: 15px;
-    }
     .room-list {
         display: block;
         text-align: left;
@@ -136,6 +134,7 @@ while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             </ul>
         </li>
         <li><a href="payments.php"><i class="fa fa-credit-card me-2"></i> Pembayaran</a></li>
+        <li><a href="updateMail.php"><i class="fas fa-envelope me-2"></i> Ganti Email</a></li>
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-sign-out-alt me-2"></i> Logout</a></li>
     </ul>

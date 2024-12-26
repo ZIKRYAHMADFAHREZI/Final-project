@@ -1,5 +1,8 @@
 <?php
 session_start();
+echo '<pre>';
+print_r($_POST);
+echo '</pre>';
 require '../db/connection.php'; // Pastikan file koneksi Anda benar
 
 // Daftar ekstensi file yang diperbolehkan
@@ -36,7 +39,39 @@ function uploadPaymentProof($file) {
         return "Terjadi kesalahan saat mengunggah file.";
     }
 }
+// Fungsi untuk mendapatkan harga berdasarkan durasi
+function getPrice($id_room, $hour) {
+    global $pdo;
 
+    // Query untuk mendapatkan harga berdasarkan durasi
+    $stmt = $pdo->prepare("SELECT types.transit, types.12hour, types.24hour 
+                            FROM rooms 
+                            JOIN types ON rooms.id_type = types.id_type 
+                            WHERE rooms.id_room = :id_room");
+    $stmt->bindParam(':id_room', $id_room, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $price = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$price) {
+        throw new Exception("Data harga tidak ditemukan untuk kamar yang dipilih.");
+    }
+
+    // Pilih harga sesuai dengan durasi
+    switch ($hour) {
+        case '3 jam':
+            return $price['transit'];
+        case '12 jam':
+            return $price['12hour'];
+        case '24 jam':
+            return $price['24hour'];
+        default:
+            throw new Exception("Durasi tidak valid.");
+    }
+}
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
 if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILES['payment_proof']['error'] == 0) {
     $upload_result = uploadPaymentProof($_FILES['payment_proof']);
     if (strpos($upload_result, ".") !== false) { // Jika file berhasil diupload
@@ -72,15 +107,15 @@ if (isset($_POST['submit-payment']) && isset($_FILES['payment_proof']) && $_FILE
     } else {
         $payment_upload_message = $upload_result; // Menampilkan pesan kesalahan
     }
-}
-elseif (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method'], $_POST['total-amount'], $_POST['number_room'])) {
+
+} elseif (isset($_POST['start_date'], $_POST['id_pay_method'], $_POST['total_amount'], $_POST['number_room'], $_POST['hour'])) {
     // Mendapatkan data dari form yang dikirimkan
     $start_date = $_POST['start_date'];
     $to_date = $_POST['to_date'] ?? null;
-    $id_duration = $_POST['id_duration'];
     $id_pay_method = $_POST['id_pay_method'];
-    $total_amount = (float) $_POST['total-amount'];
+    $total_amount = (float) $_POST['total_amount'];
     $id_room = $_POST['number_room'];  // Mendapatkan nomor kamar yang dipilih
+    $hour = $_POST['hour'];
 
     try {
         $query = $pdo->prepare("SELECT * FROM pay_methods WHERE id_pay_method = :id_pay_method AND active = 1");
@@ -100,20 +135,25 @@ elseif (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method
         if ($total_amount > 0) { // Ganti dengan pengecekan yang valid untuk memastikan pembayaran berhasil
             if (!isset($error_message)) {
                 if ($to_date) {
-                    $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, to_date, id_room, total_amount) 
-                                           VALUES (:id_user, :id_pay_method, :start_date, :to_date, :id_room, :total_amount)");
+                    $stmt = $pdo->prepare("
+                        INSERT INTO reservations (id_user, id_pay_method, start_date, to_date, id_room, total_amount, hour) 
+                        VALUES (:id_user, :id_pay_method, :start_date, :to_date, :id_room, :total_amount, :hour)
+                    ");
                     $stmt->bindParam(':to_date', $to_date);
                 } else {
-                    $stmt = $pdo->prepare("INSERT INTO reservations (id_user, id_pay_method, start_date, id_room, total_amount) 
-                                           VALUES (:id_user, :id_pay_method, :start_date, :id_room, :total_amount)");
+                    $stmt = $pdo->prepare("
+                        INSERT INTO reservations (id_user, id_pay_method, start_date, id_room, total_amount, hour) 
+                        VALUES (:id_user, :id_pay_method, :start_date, :id_room, :total_amount, :hour)
+                    ");
                 }
-
+                
                 $stmt->bindParam(':id_user', $_SESSION['id_user'], PDO::PARAM_INT);
                 $stmt->bindParam(':id_pay_method', $id_pay_method, PDO::PARAM_INT);
                 $stmt->bindParam(':start_date', $start_date);
                 $stmt->bindParam(':id_room', $id_room, PDO::PARAM_INT);
                 $stmt->bindParam(':total_amount', $total_amount);
-                $stmt->execute();
+                $stmt->bindParam(':hour', $hour);
+                $stmt->execute();                
 
                 $id_reservation = $pdo->lastInsertId();
                 $_SESSION['id_reservation'] = $id_reservation;
@@ -162,7 +202,7 @@ elseif (isset($_POST['start_date'], $_POST['id_duration'], $_POST['id_pay_method
                 <!-- Form untuk mengirimkan bukti pembayaran -->
                 <form action="" method="POST" enctype="multipart/form-data" id="payment-form">
                     <div class="form-group">
-                    <input type="hidden" id="id_room" name="id_room" value="<?= htmlspecialchars($id_room); ?>">
+                        <input type="hidden" id="id_room" name="id_room" value="<?= htmlspecialchars($id_room); ?>">
                         <label for="payment_proof">Bukti Pembayaran</label>
                         <input type="file" class="form-control-file" name="payment_proof" id="payment_proof" required>
                     </div>

@@ -1,51 +1,63 @@
 <?php
 session_start();
 require '../db/connection.php';
-// Cek apakah pengguna sudah login
+
+class ReservationManager {
+    private $pdo;
+
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+    }
+
+    public function fetchAllReservations() {
+        $query = "
+            SELECT r.*, u.username, u.email, rt.number_room, pm.method, rt_type.name_type
+            FROM reservations r
+            JOIN users u ON r.id_user = u.id_user
+            JOIN rooms rt ON r.id_room = rt.id_room
+            JOIN pay_methods pm ON r.id_pay_method = pm.id_pay_method
+            JOIN types rt_type ON rt.id_type = rt_type.id_type
+        ";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getRoomStatistics() {
+        $query = "
+            SELECT COUNT(*) AS rooms, 
+                   SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) AS available,
+                   SUM(CASE WHEN status = 'unavailable' THEN 1 ELSE 0 END) AS unavailable,
+                   SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending 
+            FROM rooms
+        ";
+        $stmt = $this->pdo->query($query);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+}
+
+// Periksa apakah pengguna sudah login
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    // Jika belum login, arahkan ke halaman login
     header('Location: ../login.php');
     exit;
 }
 
-// Cek apakah pengguna memiliki role 'admin'
+// Periksa apakah pengguna memiliki peran 'admin'
 if ($_SESSION['role'] !== 'admin') {
-    // Jika bukan admin, arahkan ke halaman lain (misalnya halaman beranda atau halaman akses terbatas)
     header('Location: ../index.php');
     exit;
 }
 
-// Ambil data reservasi dari database
-$datas = [];
-$query = "SELECT * FROM reservations"; // Ambil semua data dari tabel reservations
-$stmt = $pdo->query($query);
-$datas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Menyimpan hasil query ke dalam array $datas
+$reservationManager = new ReservationManager($pdo);
 
-// Ambil data reservasi beserta nama pengguna berdasarkan id_user
-$query = "
-    SELECT r.*, u.username, u.email, rt.number_room, pm.method, rt_type.name_type
-    FROM reservations r
-    JOIN users u ON r.id_user = u.id_user
-    JOIN rooms rt ON r.id_room = rt.id_room
-    JOIN pay_methods pm ON r.id_pay_method = pm.id_pay_method
-    JOIN types rt_type ON rt.id_type = rt_type.id_type"; // Menambahkan join dengan tabel room_types untuk mengambil name_type
-$stmt = $pdo->query($query);
-$datas = $stmt->fetchAll(PDO::FETCH_ASSOC); // Menyimpan hasil query ke dalam array $datas
+// Ambil data reservasi
+$reservations = $reservationManager->fetchAllReservations();
 
-// Menghitung jumlah kamar
-$queryRoom = "SELECT COUNT(*) AS rooms, 
-                     SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) AS available,
-                     SUM(CASE WHEN status = 'unavailable' THEN 1 ELSE 0 END) AS unavailable,
-                     SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending 
-              FROM rooms"; // Pastikan ada tabel rooms dengan status kamar
-$stmtRoom = $pdo->query($queryRoom);
-$roomStats = $stmtRoom->fetch(PDO::FETCH_ASSOC);
-
-$availableRooms = $roomStats['available'];
-$unvailableRooms = $roomStats['unavailable'];
-$pendingRooms = $roomStats['pending'];
+// Ambil statistik kamar
+$roomStats = $reservationManager->getRoomStatistics();
+$availableRooms = $roomStats['available'] ?? 0;
+$unvailableRooms = $roomStats['unavailable'] ?? 0;
+$pendingRooms = $roomStats['pending'] ?? 0;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,6 +65,8 @@ $pendingRooms = $roomStats['pending'];
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin</title>
 <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/togle.css">
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -65,25 +79,7 @@ $pendingRooms = $roomStats['pending'];
 />
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-
-<link rel="stylesheet" href="../css/admin.css">
 <style>
-    .toggle-btn {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        background-color: #343a40;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 1000;
-        transition: left 0.3s ease-in-out;
-    }
-    .toggle-btn.closed {
-        left: 15px;
-    }
     .card-container {
         display: flex;
         justify-content: space-between;
@@ -134,6 +130,7 @@ $pendingRooms = $roomStats['pending'];
             </ul>
         </li>
         <li><a href="payments.php"><i class="fa fa-credit-card me-2"></i> Pembayaran</a></li>
+        <li><a href="updateMail.php"><i class="fas fa-envelope me-2"></i> Ganti Email</a></li>
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-sign-out-alt me-2"></i> Logout</a></li>
     </ul>
@@ -181,33 +178,33 @@ $pendingRooms = $roomStats['pending'];
             </tr>
         </thead>
         <tbody>
-            <?php if (count($datas) > 0): ?>
+            <?php if (count($reservations) > 0): ?>
             <?php 
             $no = 1; // Inisialisasi variabel untuk nomor urut
-            foreach ($datas as $data): 
+            foreach ($reservations as $reservation): 
             ?>
                 <tr>
                     <td><?= $no++; ?></td> <!-- Menampilkan nomor urut dan meningkatkan $no -->
                     <td>
-                        <a href="javascript:void(0);" onclick="showDetailUser('<?= htmlspecialchars($data['username']); ?>')">
-                            <?= htmlspecialchars($data['username']); ?>
+                        <a href="javascript:void(0);" onclick="showDetailUser('<?= htmlspecialchars($reservation['username']); ?>')">
+                            <?= htmlspecialchars($reservation['username']); ?>
                         </a>
                     </td>
-                    <td><?= htmlspecialchars($data['name_type']); ?></td>
-                    <td><?= htmlspecialchars($data['number_room']); ?></td>
-                    <td><?= htmlspecialchars(date('d F Y', strtotime($data['start_date']))); ?></td>
-                    <td><?= $data['to_date'] !== null ? htmlspecialchars($data['to_date']) : '' ; ?></td>
-                    <td><?= htmlspecialchars($data['method']); ?></td>
-                    <td><?= htmlspecialchars($data['total_amount']); ?></td>
-                    <td><?= htmlspecialchars($data['status']); ?></td>
-                    <td><?= htmlspecialchars($data['payment_status']); ?></td>
-                    <td><a href="javascript:void(0);" onclick="showPaymentProof('<?= htmlspecialchars($data['payment_proof']); ?>')">Lihat Bukti Pembayaran</a></td>
+                    <td><?= htmlspecialchars($reservation['name_type']); ?></td>
+                    <td><?= htmlspecialchars($reservation['number_room']); ?></td>
+                    <td><?= htmlspecialchars(date('d F Y', strtotime($reservation['start_date']))); ?></td>
+                    <td><?= $reservation['to_date'] !== null ? htmlspecialchars($reservation['to_date']) : '' ; ?></td>
+                    <td><?= htmlspecialchars($reservation['method']); ?></td>
+                    <td><?= htmlspecialchars($reservation['total_amount']); ?></td>
+                    <td><?= htmlspecialchars($reservation['status']); ?></td>
+                    <td><?= htmlspecialchars($reservation['payment_status']); ?></td>
+                    <td><a href="javascript:void(0);" onclick="showPaymentProof('<?= htmlspecialchars($reservation['payment_proof']); ?>')">Lihat Bukti Pembayaran</a></td>
                     <td>
                         <?php
                         // Ambil status dan payment_status dari database
-                        $reservationId = $data['id_reservation'];
-                        $status = $data['status'];
-                        $paymentStatus = $data['payment_status'];
+                        $reservationId = $reservation['id_reservation'];
+                        $status = $reservation['status'];
+                        $paymentStatus = $reservation['payment_status'];
 
                         // Cek apakah status pembayaran memungkinkan tombol tampil
                         if ($status == 'cancelled' || $paymentStatus == 'refunded' || $status == 'confirmed') {
@@ -319,7 +316,14 @@ function showDetailUser(username) {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json();
+            // Coba parse JSON atau kembalikan text untuk debugging
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (error) {
+                    throw new Error('Respon bukan JSON valid: ' + text);
+                }
+            });
         })
         .then(data => {
             if (data.error) {
@@ -327,11 +331,11 @@ function showDetailUser(username) {
             }
 
             // Isi modal dengan data user
-            document.getElementById('modalUsername').innerText = data.username;
-            document.getElementById('modalEmail').innerText = data.email;
-            document.getElementById('modalFullName').innerText = `${data.first_name} ${data.last_name}`;
-            document.getElementById('modalPhoneNumber').innerText = data.phone_number;
-            document.getElementById('modalDateOfBirth').innerText = data.date_of_birth;
+            document.getElementById('modalUsername').innerText = data.username || 'Tidak tersedia';
+            document.getElementById('modalEmail').innerText = data.email || 'Tidak tersedia';
+            document.getElementById('modalFullName').innerText = `${data.first_name || ''} ${data.last_name || ''}`.trim() || 'Tidak tersedia';
+            document.getElementById('modalPhoneNumber').innerText = data.phone_number || 'Tidak tersedia';
+            document.getElementById('modalDateOfBirth').innerText = data.date_of_birth || 'Tidak tersedia';
 
             // Tampilkan modal
             document.getElementById('userDetailModal').style.display = 'flex';
@@ -341,20 +345,16 @@ function showDetailUser(username) {
             alert('Gagal memuat detail user: ' + error.message);
         });
 }
-
-
 function showPaymentProof(fileName) {
     var modal = document.getElementById('paymentModal');
     var img = document.getElementById('paymentImage');
     img.src = '../paynt/uploads/' + fileName;
     modal.style.display = 'flex';
 }
-
 // Fungsi closeModal dengan parameter modalId
 function closeModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
-
 </script>
 </body>
 </html>

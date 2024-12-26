@@ -26,3 +26,8 @@ body {
 .table-striped tbody tr:nth-of-type(odd) {
     background-color: #e9ecef; /* Abu-abu muda */
 }
+@media (max-width: 768px) {
+    #modalContent {
+        width: 95%; /* Sesuaikan modal untuk layar kecil */
+    }
+}

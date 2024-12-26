@@ -1,114 +1,6 @@
 <?php 
-session_start();
-require 'db/connection.php';
-
-$id_user = $_SESSION['id_user'];
-
-// Cek apakah pengguna sudah login
-if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    header('Location: login.php');
-    exit;
-}
-
-// Ambil data pengguna berdasarkan ID yang login
-try {
-    // Ambil data user dan user_profile
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id_user = :id_user");
-    $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    $stmt = $pdo->prepare("SELECT * FROM user_profile WHERE id_user = :id_user");
-    $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-    $stmt->execute();
-    $user_profile = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (!$user) {
-        $user = [
-            'username' => '',
-            'first_name' => '',
-            'last_name' => '',
-            'phone_number' => '',
-            'email' => '',
-            'date_of_birth' => null,
-            'password' => ''
-        ];
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $username = $_POST['username'];
-        $first_name = $_POST['first_name'];
-        $last_name = $_POST['last_name'];
-        $phone_number = $_POST['phone_number'];
-        $email = $_POST['email'];
-        $date_of_birth = $_POST['date_of_birth'];
-
-        // Cek apakah email sudah digunakan oleh pengguna lain
-        $stmt = $pdo->prepare("SELECT id_user FROM user_profile WHERE email = :email AND id_user != :id_user");
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-        $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
-            die("Kesalahan: Email sudah digunakan oleh pengguna lain.");
-        }
-
-        if (empty($date_of_birth)) {
-            $date_of_birth = NULL;
-        }
-
-        // Update atau tambahkan data user_profile
-        if ($user_profile) {
-            $stmt = $pdo->prepare("UPDATE user_profile SET
-                username = :username,
-                first_name = :first_name,
-                last_name = :last_name,
-                phone_number = :phone_number,
-                email = :email,
-                date_of_birth = :date_of_birth
-                WHERE id_user = :id_user");
-        } else {
-            $stmt = $pdo->prepare("INSERT INTO user_profile 
-                (id_profile, id_user, username, first_name, last_name, phone_number, email, date_of_birth) 
-                VALUES (NULL, :id_user, :username, :first_name, :last_name, :phone_number, :email, :date_of_birth)");
-        }
-        $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':first_name', $first_name);
-        $stmt->bindParam(':last_name', $last_name);
-        $stmt->bindParam(':phone_number', $phone_number);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':date_of_birth', $date_of_birth, PDO::PARAM_STR);
-
-        if ($stmt->execute()) {
-            // Update tabel users
-            $stmt = $pdo->prepare("UPDATE users SET 
-                username = :username,
-                email = :email
-                WHERE id_user = :id_user");
-            $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-            $stmt->bindParam(':username', $username);
-            $stmt->bindParam(':email', $email);
-
-            if ($stmt->execute()) {
-                echo "Data berhasil disimpan!";
-            } else {
-                echo "Gagal memperbarui data di tabel users.";
-            }
-        } else {
-            echo "Gagal menyimpan data di tabel user_profile.";
-        }
-    }
-} catch (PDOException $e) {
-    if ($e->getCode() == 23000) {
-        die("Kesalahan: Data yang dimasukkan sudah ada di sistem.");
-    } else {
-        die("Kesalahan: " . $e->getMessage());
-    }
-}
+require 'db/functions/user_profile.php';
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -116,88 +8,19 @@ try {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>User Profile</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="stylesheet" href="css/user_profile.css">
+<!-- bootsrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<link rel="stylesheet" href="css/trans.css">
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f8f9fa;
-    }
-    .form-container {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    max-width: 700px;
-    margin-top: 75px; /* Menambah jarak atas sesuai kebutuhan */
-    margin-left: auto;
-    margin-right: auto;
-    }
-    .form-container h1 {
-        font-size: 28px;
-        font-weight: bold;
-        color: #495057;
-        margin-bottom: 20px;
-    }
-    .form-group {
-        margin-bottom: 20px;
-    }
-    .form-group label {
-        font-size: 14px;
-        font-weight: 600;
-        color: #6c757d;
-    }
-    .form-group input {
-        width: 100%;
-        padding: 12px 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-    .form-group input:focus {
-        border-color: #5cb85c;
-        box-shadow: 0 0 5px rgba(92, 184, 92, 0.5);
-    }
-    .form-group button {
-        width: 100%;
-        padding: 12px;
-        border: none;
-        color: white;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-    .logout-link {
-        display: block;
-        text-align: center;
-        margin-top: 20px;
-        color: #dc3545;
-        font-size: 16px;
-        text-decoration: none;
-        font-weight: bold;
-    }
-    .logout-link:hover {
-        text-decoration: underline;
-    }
-    .card-header {
-        background-color: #f8f9fa;
-        font-size: 20px;
-        font-weight: 600;
-    }
-</style>
 </head>
 <body>
 <?php include 'navbar.php';?>
-
 <div class="form-container">
     <h1>Profil Pengguna</h1>
     <div class="form-group">
-    <label for="username">Username:</label>
-        <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']); ?>" readonly>
-    </div>
-    <form action="" method="POST">
+    <form action="db/functions/user_profile.php" method="POST">
+        <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username']); ?>" readonly>
+        </div>
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>
@@ -229,94 +52,10 @@ try {
 
 <a href="#" onclick="confirmLogout();" class="logout-link"><i class="fa fa-lock me-2"></i> Logout</a>
 <br><br>
+<script src="js/user_profile.js"></script>
+<!-- bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- sweet alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-// Menambahkan event listener untuk mendeteksi perubahan pada form
-let formChanged = false;
-
-const form = document.querySelector('form');
-const formElements = form.querySelectorAll('input, select, textarea');
-
-// Menandai perubahan data pada form
-formElements.forEach(element => {
-    element.addEventListener('input', () => {
-        formChanged = true; // Form telah berubah
-    });
-});
-
-// Menambahkan event listener pada tombol submit
-document.getElementById('submitButton').addEventListener('click', async function (event) {
-    event.preventDefault();
-
-    // Menampilkan SweetAlert untuk konfirmasi
-    const result = await Swal.fire({
-        title: 'Konfirmasi Ubah Data',
-        text: "Apakah Anda yakin ingin mengubah data?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Ya, Ubah!',
-        cancelButtonText: 'Batal'
-    });
-
-    if (result.isConfirmed) {
-        // Jika pengguna memilih 'Ya, Ubah!', tampilkan SweetAlert untuk konfirmasi berhasil
-        await Swal.fire({
-            title: 'Data Berhasil Diubah',
-            text: 'Data Anda telah berhasil diperbarui.',
-            icon: 'success',
-            confirmButtonColor: '#3085d6'
-        });
-
-        // Kirim data form menggunakan AJAX
-        const formData = new FormData(document.querySelector('form'));
-        fetch('profile.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Reload halaman setelah sukses
-            setTimeout(() => {
-                location.reload();
-            }, 100);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-});
-
-// Menambahkan event listener untuk konfirmasi ketika meninggalkan halaman
-window.addEventListener('beforeunload', function (event) {
-    if (formChanged) {
-        // Munculkan pesan konfirmasi jika ada perubahan
-        const message = "Anda telah mengubah data, tetapi belum menyimpan perubahan. Apakah Anda yakin ingin meninggalkan halaman?";
-        event.returnValue = message; // Untuk sebagian besar browser
-        return message; // Untuk beberapa browser lain yang lebih lama
-    }
-});
-
-// Menambahkan konfirmasi logout
-function confirmLogout() {
-    Swal.fire({
-        title: "Apakah Anda yakin ingin logout?",
-        text: "Anda akan keluar dari akun ini.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Ya, logout!",
-        cancelButtonText: "Batal"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = 'logout.php'; 
-        }
-    });
-}
-</script>
-
 </body>
 </html>

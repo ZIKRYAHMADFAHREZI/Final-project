@@ -1,44 +1,6 @@
 <?php 
-session_start();
-require 'db/connection.php'; // Pastikan file koneksi Anda benar
-
-// Cek apakah user sudah login
-if (!isset($_SESSION['id_user'])) {
-    header('Location: login.php'); // Jika belum login, redirect ke halaman login
-    exit();
-}
-
-// Ambil data reservation dari database
-try {
-    $id_user = $_SESSION['id_user'];
-    // Query untuk mengambil data pemesanan dan join dengan tabel rooms dan types
-    $query = "
-        SELECT 
-            r.*, 
-            ro.number_room, 
-            t.name_type 
-        FROM reservations r
-        JOIN 
-            rooms ro ON r.id_room = ro.id_room
-        JOIN 
-            types t ON ro.id_type = t.id_type
-        WHERE 
-            r.id_user = :id_user
-        ORDER BY 
-            r.start_date DESC
-    ";
-    
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-    $stmt->execute();
-    $reservations = $stmt->fetchAll(PDO::FETCH_ASSOC); // Ambil data pemesanan
-} catch (PDOException $e) {
-    $error_message = "Terjadi kesalahan saat mengambil data pemesanan: " . $e->getMessage();
-}
+require 'db/functions/history.php';
 ?>
-
-
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -51,11 +13,12 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <!-- Bootstrap CSS v5.2.1 -->
 <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-    crossorigin="anonymous"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+rel="stylesheet"
+integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+crossorigin="anonymous"
 />
+
 <link rel="stylesheet" href="css/history.css">
 </head>
 <body>
@@ -84,10 +47,9 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
                                             <td><?= htmlspecialchars($reservation['number_room']); ?></td>
                                             <td>Rp<?= number_format($reservation['total_amount'], 0, ',', '.'); ?></td>
                                             <td>
-                                                <a href="javascript:void(0);" 
-                                                onclick="showInvoiceFromFile('invoice.php?id=<?= urlencode($reservation['id_reservation']); ?>')">
-                                                Lihat Invoice
-                                                </a>
+                                            <a href="#" onclick="showInvoiceFromFile('invoice.php?id_reservation=<?= urlencode($reservation['id_reservation']); ?>')">
+                                                Lihat Bukti
+                                            </a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -106,7 +68,7 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
 </div>
 <div id="invoiceModal" style="display:none;">
     <div style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;">
-        <div style="background-color: white; padding: 20px; border-radius: 10px; max-width: 90%; width: 600px;">
+        <div id="modalContent" style="background-color: white; padding: 20px; border-radius: 10px; max-width: 90%; width: 1000px; max-height: 90vh; overflow-y: auto;">
             <div id="invoiceContent"></div> <!-- Konten invoice akan dimasukkan ke sini -->
             <button onclick="closeModal()" class="btn btn-secondary mt-3">Tutup</button>
         </div>

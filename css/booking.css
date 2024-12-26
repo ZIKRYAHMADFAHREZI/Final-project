@@ -1,0 +1,113 @@
+body {
+    background-color: #DCDCDC;
+}
+.container {
+    padding-top: 70px;
+}
+.date-picker-container {
+    display: flex;
+    gap: 15px;
+    flex-direction: column;
+}
+/* Responsif pada layar kecil */
+@media (max-width: 768px) {
+    .date-picker-container {
+        flex-direction: column;
+        width: 100%;
+    }
+    .form-group {
+        width: 100%;
+    }
+}
+/* Radio khusus untuk nomor kamar */
+.room-radio {
+display: none; /* Sembunyikan elemen radio asli */
+}
+.number {
+display: flex;
+justify-content: flex-start; /* Mengatur elemen di kiri (pinggir) secara horizontal */
+align-items: center; /* Mengatur elemen di tengah secara vertikal */
+text-align: center; /* Memastikan teks berada di tengah */
+flex-wrap: wrap; /* Membungkus elemen jika diperlukan */
+gap: 10px; /* Menambahkan jarak antar elemen */
+}
+
+/* Responsif pada layar kecil */
+@media (max-width: 768px) {
+.number {
+    justify-content: flex-start; /* Menjaga elemen tetap ke pinggir pada layar kecil */
+    gap: 15px; /* Menambah jarak antar elemen jika di kolom */
+}
+
+.room-radio + label {
+    display: inline-block;
+    padding: 8px 15px; /* Menyesuaikan padding pada layar kecil */
+    font-size: 14px; /* Menyesuaikan ukuran font */
+}
+}
+
+/* Responsif pada layar lebih kecil (misalnya, ponsel) */
+@media (max-width: 480px) {
+.room-radio + label {
+    font-size: 12px; /* Menurunkan ukuran font untuk ponsel */
+    padding: 6px 10px; /* Menyesuaikan padding */
+}
+}
+
+.room-radio + label {
+display: inline-block;
+padding: 10px 20px;
+margin: 5px;
+border: 2px solid #ccc;
+border-radius: 5px;
+cursor: pointer;
+font-size: 16px;
+transition: all 0.3s;
+}
+
+/* Status Available - Warna Hijau */
+.room-radio + label.available {
+background-color: green;
+color: white;
+border-color: green;
+}
+
+/* Status Unavailable - Warna Merah */
+.room-radio + label.unavailable {
+background-color: red;
+color: white;
+border-color: red;
+}
+
+/* Status Pending - Warna Kuning */
+.room-radio + label.pending {
+background-color: yellow;
+color: black;
+border-color: yellow;
+}
+
+/* Gaya saat radio button dinonaktifkan */
+.room-radio:disabled + label {
+background-color: #ddd;  /* Warna abu-abu untuk disabled */
+color: #888;  /* Warna teks abu-abu */
+border-color: #bbb;  /* Border abu-abu */
+cursor: not-allowed;  /* Menunjukkan bahwa elemen tidak dapat diklik */
+}
+
+/* Hover effect */
+.room-radio:checked + label {
+transform: scale(1.1);
+box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.room-radio:checked + label.available {
+background-color: darkgreen;
+}
+
+.room-radio:checked + label.unavailable {
+background-color: darkred;
+}
+
+.room-radio:checked + label.pending {
+background-color: darkgoldenrod;
+}

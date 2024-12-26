@@ -1,21 +1,47 @@
-<?php 
+<?php
 require '../db/connection.php';
 
+class PaymentManager {
+    private $pdo;
+
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+    }
+
+    public function addPaymentMethod($method, $payment_number, $account_name) {
+        $stmt = $this->pdo->prepare("
+            INSERT INTO pay_methods (id_pay_method, method, payment_number, account_name, active) 
+            VALUES (null, :method, :payment_number, :account_name, 1)
+        ");
+        $stmt->bindParam(':method', $method);
+        $stmt->bindParam(':payment_number', $payment_number);
+        $stmt->bindParam(':account_name', $account_name);
+        return $stmt->execute();
+    }
+
+    public function togglePaymentStatus($id, $current_status) {
+        $new_status = $current_status === 1 ? 0 : 1;
+        $stmt = $this->pdo->prepare("UPDATE pay_methods SET active = :status WHERE id_pay_method = :id");
+        $stmt->bindParam(':status', $new_status, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function getAllPaymentMethods() {
+        $stmt = $this->pdo->query("SELECT * FROM pay_methods");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+
+$paymentManager = new PaymentManager($pdo);
+
 // Handle form submission for adding payment methods
-// Handle form submission for adding payment methods
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['method'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['method'])) {
     $method = $_POST['method'];
     $payment_number = $_POST['payment_number'];
     $account_name = $_POST['account_name'];
 
-    // Debugging output (untuk cek data yang diterima)
-    // echo "Method: $method, Number: $payment_number, Name: $account_name";
-
-    $stmt = $pdo->prepare("INSERT INTO pay_methods (id_pay_method, method, payment_number, account_name, active) VALUES (null, :method, :payment_number, :account_name, 1)");
-    $stmt->bindParam(':method', $method);
-    $stmt->bindParam(':payment_number', $payment_number);
-    $stmt->bindParam(':account_name', $account_name);
-    if ($stmt->execute()) {
+    if ($paymentManager->addPaymentMethod($method, $payment_number, $account_name)) {
         echo "<script>
             Swal.fire({
                 title: 'Berhasil!',
@@ -35,23 +61,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['method'])) {
         </script>";
     }
 }
-// Toggle activation status
+
+// Handle toggle activation status
 if (isset($_GET['toggle_id'])) {
     $id = $_GET['toggle_id'];
     $current_status = (int)$_GET['active'];
-    $new_status = $current_status === 1 ? 0 : 1;
 
-    $stmt = $pdo->prepare("UPDATE pay_methods SET active = :status WHERE id_pay_method = :id");
-    $stmt->bindParam(':status', $new_status, PDO::PARAM_INT);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
-    header("Location: payments.php");
-    exit;
+    if ($paymentManager->togglePaymentStatus($id, $current_status)) {
+        header("Location: payments.php");
+        exit;
+    }
 }
 
 // Retrieve all payment methods
-$stmt = $pdo->query("SELECT * FROM pay_methods");
-$methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$methods = $paymentManager->getAllPaymentMethods();
 ?>
 <!doctype html>
 <html lang="en">
@@ -60,27 +83,10 @@ $methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <title>Pembayaran</title>
 <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/togle.css">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="../css/admin.css">
-<style>
-    .toggle-btn {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        background-color: #343a40;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 1000;
-        transition: left 0.3s ease-in-out;
-    }
-    .toggle-btn.closed {
-        left: 15px;
-    }
-</style>
 </head>
 <body>
 <!-- Sidebar -->
@@ -102,6 +108,7 @@ $methods = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </ul>
         </li>
         <li><a href="payments.php"><i class="fa fa-credit-card me-2"></i> Pembayaran</a></li>
+        <li><a href="updateMail.php"><i class="fas fa-envelope me-2"></i> Ganti Email</a></li>
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-sign-out-alt me-2"></i> Logout</a></li>
     </ul>

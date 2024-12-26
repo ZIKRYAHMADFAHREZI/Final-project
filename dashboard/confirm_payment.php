@@ -5,6 +5,13 @@ require '../db/connection.php';
 // Set timezone untuk PHP
 date_default_timezone_set('Asia/Jakarta');
 
+// Fungsi untuk menambahkan jam ke tanggal tertentu
+function addHoursToDate($date, $hours) {
+    $dateTime = new DateTime($date);
+    $dateTime->modify("+{$hours} hours");
+    return $dateTime->format('Y-m-d H:i:s'); 
+}
+
 // Cek apakah pengguna sudah login dan memiliki role admin
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true || $_SESSION['role'] !== 'admin') {
     header('Location: ../login.php');
@@ -23,53 +30,23 @@ if (isset($_GET['id'])) {
             $pdo->beginTransaction();
 
             if ($action == 'confirm') {
-                // Ambil informasi kamar dan tipe
-                $queryRoomInfo = "
-                    SELECT r.id_room, r.id_type, rr.12hour, rr.24hour, res.check_in_date
-                    FROM reservations res
-                    JOIN rooms r ON res.id_room = r.id_room
-                    JOIN room_rates rr ON rr.id_type = r.id_type
-                    WHERE res.id_reservation = :id_reservation
-                ";
-                $stmt = $pdo->prepare($queryRoomInfo);
-                $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
-                $stmt->execute();
-                $roomInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+                // Ambil tanggal saat ini sebagai check-in date
+                $check_in_date = new DateTime();
 
-                if (!$roomInfo) {
-                    throw new Exception('Informasi kamar tidak ditemukan.');
+                // Tentukan durasi check-out berdasarkan logika
+                $duration_hours = 12; // Default 12 jam
+                // Contoh logika untuk menentukan durasi
+                if ($check_in_date->format('H') < 6) { // Sebelum jam 6 pagi
+                    $duration_hours = 3;
+                } elseif ($check_in_date->format('H') >= 18) { // Setelah jam 6 sore
+                    $duration_hours = 24;
                 }
 
-                $id_room = $roomInfo['id_room'];
-                $id_type = $roomInfo['id_type'];
-
-                // Atur check_in_date dengan timezone
-                $check_in_date = new DateTime($roomInfo['check_in_date'], new DateTimeZone('UTC'));
-                $check_in_date->setTimezone(new DateTimeZone('Asia/Jakarta'));
-
-                // Logika durasi berdasarkan id_type dan kolom 12hour/24hour
-                if (in_array($id_type, [4, 6])) {
-                    // Untuk tipe transit, tambahkan 3 jam
-                    $check_out_date = clone $check_in_date;
-                    $check_out_date->modify('+3 hours');
-                } elseif (!empty($roomInfo['12hour'])) {
-                    // Untuk tarif 12 jam
-                    $check_out_date = clone $check_in_date;
-                    $check_out_date->modify('+12 hours');
-                } elseif (!empty($roomInfo['24hour'])) {
-                    // Untuk tarif 24 jam
-                    $check_out_date = clone $check_in_date;
-                    $check_out_date->modify('+24 hours');
-                } else {
-                    throw new Exception('Durasi tidak ditemukan untuk kamar ini.');
-                }
-
-                // Debug hasil check-in dan check-out
-                echo "Check-in Date (Asia/Jakarta): " . $check_in_date->format('Y-m-d H:i:s') . "<br>";
-                echo "Check-out Date (Asia/Jakarta): " . $check_out_date->format('Y-m-d H:i:s') . "<br>";
+                // Hitung check-out date
+                $check_out_date = addHoursToDate($check_in_date->format('Y-m-d H:i:s'), $duration_hours);
 
                 // Format check_out_date
-                $formatted_checkout_date = $check_out_date->format('Y-m-d H:i:s');
+                $formatted_checkout_date = $check_out_date;
 
                 // Konfirmasi pembayaran dan set check_in_date serta check_out_date
                 $updateReservation = "
@@ -86,10 +63,10 @@ if (isset($_GET['id'])) {
                 $updateRoom = "
                     UPDATE rooms
                     SET status = 'unavailable'
-                    WHERE id_room = :id_room
+                    WHERE id_room = (SELECT id_room FROM reservations WHERE id_reservation = :id_reservation)
                 ";
                 $stmt = $pdo->prepare($updateRoom);
-                $stmt->bindParam(':id_room', $id_room, PDO::PARAM_INT);
+                $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
                 $stmt->execute();
 
                 // Perbarui status kamar menjadi 'available' jika waktu telah melewati check_out_date
@@ -106,7 +83,7 @@ if (isset($_GET['id'])) {
                 $pdo->commit();
 
                 $status = 'success';
-                $message = 'Pembayaran dikonfirmasi dan check_out_date diperbarui.';
+                $message = "Pembayaran dikonfirmasi. Check-out date: $formatted_checkout_date.";
             } elseif ($action == 'refund') {
                 // Refund pembayaran
                 $updateReservation = "
@@ -146,7 +123,6 @@ if (isset($_GET['id'])) {
     $message = 'ID Reservasi tidak ditemukan.';
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="id">

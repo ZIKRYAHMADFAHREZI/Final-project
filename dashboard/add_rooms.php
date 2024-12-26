@@ -1,80 +1,66 @@
 <?php
 session_start();
 require '../db/connection.php';
-// Cek apakah pengguna sudah login
+
+class RoomManager {
+    private $pdo;
+
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+    }
+
+    public function roomExists($id_type, $number_room) {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM rooms WHERE id_type = :id_type AND number_room = :number_room");
+        $stmt->bindParam(':id_type', $id_type, PDO::PARAM_INT);
+        $stmt->bindParam(':number_room', $number_room, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function addRoom($id_type, $number_room) {
+        $stmt = $this->pdo->prepare("INSERT INTO rooms (id_type, number_room) VALUES (:id_type, :number_room)");
+        $stmt->bindParam(':id_type', $id_type, PDO::PARAM_INT);
+        $stmt->bindParam(':number_room', $number_room, PDO::PARAM_INT);
+        if (!$stmt->execute()) {
+            throw new Exception("Gagal menyimpan data: " . implode(", ", $stmt->errorInfo()));
+        }
+        return true;
+    }
+}
+
+// Periksa apakah pengguna sudah login
 if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
-    // Jika belum login, arahkan ke halaman login
     header('Location: ../login.php');
     exit;
 }
 
-// Cek apakah pengguna memiliki role 'admin'
+// Periksa apakah pengguna memiliki peran 'admin'
 if ($_SESSION['role'] !== 'admin') {
-    // Jika bukan admin, arahkan ke halaman lain (misalnya halaman beranda atau halaman akses terbatas)
     header('Location: ../index.php');
     exit;
 }
 
+$roomManager = new RoomManager($pdo);
+$success_message = '';
+$error_message = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_type = $_POST['tipe'];
-    $number_room = $_POST['nomor'];
+    $id_type = $_POST['tipe'] ?? null;
+    $number_room = $_POST['nomor'] ?? null;
 
     if (!empty($id_type) && !empty($number_room) && is_numeric($number_room)) {
         try {
-            // Periksa apakah nomor kamar sudah ada
-            $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM rooms WHERE id_type = :id_type AND number_room = :number_room");
-            $checkStmt->bindParam(':id_type', $id_type, PDO::PARAM_INT);
-            $checkStmt->bindParam(':number_room', $number_room, PDO::PARAM_INT);
-            $checkStmt->execute();
-            $roomExists = $checkStmt->fetchColumn();
-
-            if ($roomExists > 0) {
-                echo "<script>
-                    document.addEventListener('DOMContentLoaded', function() {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '',
-                            text: 'Nomor kamar tersebut sudah ada dalam tipe yang dipilih.',
-                            confirmButtonColor: '#007bff'
-                        });
-                    });
-                </script>";
+            if ($roomManager->roomExists($id_type, $number_room)) {
+                $error_message = "Nomor kamar tersebut sudah ada dalam tipe yang dipilih.";
             } else {
-                // Prepare the insert statement
-                $stmt = $pdo->prepare("INSERT INTO rooms (id_type, number_room) VALUES (:id_type, :number_room)");
-                $stmt->bindParam(':id_type', $id_type, PDO::PARAM_INT);
-                $stmt->bindParam(':number_room', $number_room, PDO::PARAM_INT);
-
-                if ($stmt->execute()) {
-                    echo "<script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: 'Data berhasil disimpan!',
-                                confirmButtonColor: '#007bff'
-                            });
-                        });
-                    </script>";
-                } else {
-                    $errorInfo = $stmt->errorInfo();
-                    echo "<script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Kesalahan!',
-                                text: 'Gagal menyimpan data: " . addslashes($errorInfo[2]) . "',
-                                confirmButtonColor: '#007bff'
-                            });
-                        });
-                    </script>";
-                }
+                $roomManager->addRoom($id_type, $number_room);
+                $success_message = "Data berhasil disimpan!";
             }
-        } catch (PDOException $e) {
-            echo "<script>alert('Kesalahan: " . addslashes($e->getMessage()) . "');</script>";
+        } catch (Exception $e) {
+            $error_message = $e->getMessage();
         }
     } else {
-        echo "<script>alert('Harap isi semua bidang dengan benar.');</script>";
+        $error_message = "Harap isi semua bidang dengan benar.";
     }
 }
 ?>
@@ -86,6 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tambah Kamar</title>
 <link rel="icon" type="image/x-icon" href="../img/favicon.ico">
+<link rel="stylesheet" href="../css/admin.css">
+<link rel="stylesheet" href="../css/togle.css">
 <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
     rel="stylesheet"
@@ -96,26 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" 
     rel="stylesheet"
 />
-<link rel="stylesheet" href="../css/admin.css">
 <!-- Previous head content remains the same -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <style>
-    .toggle-btn {
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        background-color: #343a40;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 1000;
-        transition: left 0.3s ease-in-out;
-    }
-    .toggle-btn.closed {
-        left: 15px;
-    }
     section {
         margin: 20px 0;
         padding: 15px;
@@ -207,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </ul>
         </li>
         <li><a href="payments.php"><i class="fa fa-credit-card me-2"></i> Pembayaran</a></li>
+        <li><a href="updateMail.php"><i class="fas fa-envelope me-2"></i> Ganti Email</a></li>
         <li><a href="updatePw.php"><i class="fa fa-lock me-2"></i> Ganti Password</a></li>
         <li><a href="#" onclick="confirmLogout();"><i class="fa fa-sign-out-alt me-2"></i> Logout</a></li>
     </ul>
@@ -221,6 +193,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <header>
         <h1 class="text-center mb-5">Tambah Kamar</h1>
     </header>
+    <?php if (!empty($success_message)): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '<?= htmlspecialchars($success_message) ?>',
+                    confirmButtonColor: '#007bff'
+                });
+            });
+        </script>
+    <?php endif; ?>
+
+    <?php if (!empty($error_message)): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan!',
+                    text: '<?= htmlspecialchars($error_message) ?>',
+                    confirmButtonColor: '#007bff'
+                });
+            });
+        </script>
+    <?php endif; ?>
     <form action="" method="POST" class="p-3 border rounded">
     <section>
         <label for="tipe" class="form-label">Pilih Tipe</label>

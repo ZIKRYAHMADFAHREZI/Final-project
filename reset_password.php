@@ -1,4 +1,79 @@
 <?php
+
+class PasswordReset
+{
+    private $pdo;
+    private $token;
+    private $user;
+
+    public function __construct($pdo, $token)
+    {
+        $this->pdo = $pdo;
+        $this->token = $token;
+        $this->user = null;
+    }
+
+    // Menemukan pengguna berdasarkan token
+    public function findUserByToken()
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE password_reset_token = :token");
+        $stmt->execute(['token' => $this->token]);
+        $this->user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$this->user) {
+            die("Token tidak ditemukan.");
+        }
+    }
+
+    // Verifikasi apakah token sudah kadaluwarsa
+    public function isTokenExpired()
+    {
+        $expireAt = strtotime($this->user['password_reset_exp']);
+        $currentTime = time();
+
+        if ($currentTime > $expireAt) {
+            return ['status' => 'error', 'message' => 'Token sudah kadaluarsa.'];
+        } else {
+            return ['status' => 'success', 'message' => 'Token valid.'];
+        }
+    }
+
+    // Menghapus token reset password setelah digunakan
+    public function clearToken()
+    {
+        $stmt = $this->pdo->prepare("UPDATE users SET password_reset_token = NULL, password_reset_exp = NULL WHERE id_user = :id_user");
+        $stmt->execute(['id_user' => $this->user['id_user']]);
+    }
+
+    // Memeriksa apakah password baru sama dengan yang lama
+    public function isPasswordSame($new_password)
+    {
+        return password_verify($new_password, $this->user['password']);
+    }
+
+    // Reset password
+    public function resetPassword($new_password, $confirm_password)
+    {
+        if ($new_password !== $confirm_password) {
+            return "Password dan konfirmasi password tidak cocok.";
+        }
+
+        if ($this->isPasswordSame($new_password)) {
+            return "Password baru tidak boleh sama dengan password lama.";
+        }
+
+        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+
+        try {
+            $stmt = $this->pdo->prepare("UPDATE users SET password = :password, password_reset_token = NULL, password_reset_exp = NULL WHERE id_user = :id_user");
+            $stmt->execute(['password' => $hashed_password, 'id_user' => $this->user['id_user']]);
+            return "Password berhasil direset. Anda akan diarahkan ke halaman login.";
+        } catch (PDOException $e) {
+            die("Kesalahan database: " . $e->getMessage());
+        }
+    }
+}
+
 require 'db/connection.php';
 
 if (!isset($_GET['token'])) {
@@ -6,51 +81,40 @@ if (!isset($_GET['token'])) {
 }
 
 $token = $_GET['token'];
+$passwordReset = new PasswordReset($pdo, $token);
 
 try {
-    // Cari user berdasarkan token
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE password_reset_token = :token");
-    $stmt->execute(['token' => $token]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Menemukan pengguna berdasarkan token
+    $passwordReset->findUserByToken();
 
-    if (!$user) {
-        die("Token tidak valid.");
-    }
-
-    // Periksa apakah token sudah kedaluwarsa
-    $createdAt = new DateTime($user['password_reset_exp']);
-    $now = new DateTime();
-    $interval = $createdAt->diff($now);
-
-    if ($interval->i >= 1) { // Token kedaluwarsa setelah 1 menit
-        // Hapus token dari database
-        $stmt = $pdo->prepare("UPDATE users SET password_reset_token = NULL, password_reset_exp = NULL WHERE id_user = :id_user");
-        $stmt->execute(['id_user' => $user['id_user']]);
-        die("Token telah kedaluwarsa. Silakan minta reset password ulang.");
+    // Memeriksa apakah token sudah kedaluwarsa
+    $result = $passwordReset->isTokenExpired();
+    if ($result['status'] == 'error') {
+        die($result['message']);
     }
 } catch (PDOException $e) {
     die("Kesalahan database: " . $e->getMessage());
 }
 
-// Jika metode POST digunakan, proses reset password
+$message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_password = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
+    $message = $passwordReset->resetPassword($new_password, $confirm_password);
 
-    // Validasi konfirmasi password
-    if ($new_password !== $confirm_password) {
-        $error = "Password dan konfirmasi password tidak cocok.";
+    // Tampilkan SweetAlert sesuai dengan hasil
+    $alertTitle = '';
+    $alertText = '';
+    $alertIcon = '';
+
+    if ($message === "Password berhasil direset. Anda akan diarahkan ke halaman login.") {
+        $alertTitle = 'Berhasil!';
+        $alertText = $message;
+        $alertIcon = 'success';
     } else {
-        // Hash password baru
-        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
-        try {
-            // Update password di database dan hapus token
-            $stmt = $pdo->prepare("UPDATE users SET password = :password, password_reset_token = NULL, password_reset_exp = NULL WHERE id_user = :id_user");
-            $stmt->execute(['password' => $hashed_password, 'id_user' => $user['id_user']]);
-            $success = "Password berhasil direset. Anda dapat login sekarang.";
-        } catch (PDOException $e) {
-            die("Kesalahan database: " . $e->getMessage());
-        }
+        $alertTitle = 'Error!';
+        $alertText = $message;
+        $alertIcon = 'error';
     }
 }
 ?>
@@ -63,68 +127,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <!-- Bootstrap Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-<style>
-    body {
-        background-color: #f8f9fa;
-        font-family: Arial, sans-serif;
-    }
-    .container {
-        margin-top: 50px;
-        max-width: 400px;
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    h2 {
-        text-align: center;
-        margin-bottom: 20px;
-        color: #343a40;
-    }
-    .form-control:focus {
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-    .btn-primary {
-        width: 100%;
-    }
-    .eye-icon {
-        cursor: pointer;
-        position: absolute;
-        margin-top: 17px;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #6c757d;
-    }
-</style>
+<!-- Menambahkan CDN SweetAlert2 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<link rel="stylesheet" href="css/r_password.css">
 </head>
 <body>
     <div class="container">
         <h2>Reset Password</h2>
-        <?php if (isset($error)): ?>
-            <div class="alert alert-danger" role="alert">
-                <?php echo htmlspecialchars($error); ?>
-            </div>
-        <?php endif; ?>
-        <?php if (isset($success)): ?>
-            <div class="alert alert-success" role="alert">
-                <?php echo htmlspecialchars($success); ?>
-            </div>
-        <?php endif; ?>
-        <form method="post">
+        <!-- <?php if (isset($message)) { echo "<p>$message</p>"; } ?> -->
+        <form action="" method="post">
             <div class="mb-3 position-relative">
                 <label for="new_password" class="form-label">Password Baru:</label>
-                <input type="password" name="new_password" id="new_password" class="form-control" required>
+                <input type="password" name="new_password" id="new_password" class="form-control" minlength="8" required>
                 <i class="eye-icon bi bi-eye-slash" id="toggleNewPassword"></i>
             </div>
             <div class="mb-3 position-relative">
                 <label for="confirm_password" class="form-label">Konfirmasi Password:</label>
-                <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+                <input type="password" name="confirm_password" id="confirm_password" class="form-control" minlength="8" required>
                 <i class="eye-icon bi bi-eye-slash" id="toggleConfirmPassword"></i>
             </div>
-            <button type="submit" class="btn btn-primary">Reset Password</button>
+            <button type="submit" class="btn btn-primary">Ubah Password</button>
         </form>
     </div>
+    <!-- Tampilkan SweetAlert jika ada pesan -->
+    <?php if (isset($message)): ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+            title: '<?php echo $alertTitle; ?>',
+            text: '<?php echo $alertText; ?>',
+            icon: '<?php echo $alertIcon; ?>',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            <?php if ($alertIcon === 'success') { echo "window.location.href = 'login.php';"; } ?>
+        });
+    </script>
+    <?php endif; ?>
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

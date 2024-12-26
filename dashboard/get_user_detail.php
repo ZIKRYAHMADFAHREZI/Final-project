@@ -9,24 +9,21 @@ if (!$username) {
     exit;
 }
 
-$query = "SELECT username, email, first_name, last_name, phone_number, date_of_birth 
-          FROM user_profile 
-          WHERE username = ?";
-$stmt = $conn->prepare($query);
+try {
+    $query = "SELECT username, email, first_name, last_name, phone_number, date_of_birth 
+              FROM user_profile 
+              WHERE username = ?";
+    $stmt = $pdo->prepare($query); // Pastikan $pdo berasal dari connection.php
+    $stmt->bindParam(1, $username, PDO::PARAM_STR);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$stmt) {
-    echo json_encode(['error' => 'Failed to prepare statement']);
-    exit;
-}
-
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if ($result->num_rows > 0) {
-    $user = $result->fetch_assoc();
-    echo json_encode($user);
-} else {
-    echo json_encode(['error' => 'User not found']);
+    if ($user) {
+        echo json_encode($user);
+    } else {
+        echo json_encode(['error' => 'User not found']);
+    }
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
 ?>

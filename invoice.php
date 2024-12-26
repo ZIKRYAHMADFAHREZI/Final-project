@@ -1,41 +1,6 @@
-<?php
-session_start();
-require 'db/connection.php'; // Pastikan file koneksi benar
-
-$id_reservation = isset($_GET['id']) ? intval($_GET['id']) : 0;
-try {
-    // Query untuk mengambil data terbaru satu pengguna berdasarkan sesi
-    $stmt = $pdo->prepare("
-    SELECT r.id_reservation, 
-           r.start_date, 
-           r.to_date, 
-           r.total_amount, 
-           r.payment_proof, 
-           r.status,
-           p.method AS payment_method, 
-           p.account_name, 
-           p.payment_number,
-           rm.number_room, 
-           t.name_type,
-           r.check_in_date, 
-           r.check_out_date
-    FROM reservations r
-    JOIN pay_methods p ON r.id_pay_method = p.id_pay_method
-    JOIN rooms rm ON r.id_room = rm.id_room
-    JOIN types t ON rm.id_type = t.id_type
-    WHERE r.id_user = :id_user
-    ORDER BY r.start_date DESC
-    LIMIT 1
-");
-
-    $stmt->bindParam(':id_user', $_SESSION['id_user'], PDO::PARAM_INT);
-    $stmt->execute();
-    $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Terjadi kesalahan saat mengambil data: " . $e->getMessage());
-}
+<?php 
+require 'db/functions/invoice.php';
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,60 +9,12 @@ try {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Detail Invoice</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<!-- bootsrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<style>
-    body {
-        background-color: #f4f4f4;
-        font-family: 'Arial', sans-serif;
-    }
-    .card {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .card-header {
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-    }
-    .card-header.bg-primary {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-    }
-    .card-header.bg-success {
-        background: linear-gradient(135deg, #28a745, #1e7e34);
-    }
-    .btn-primary {
-        background-color: #007bff;
-        border: none;
-    }
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
-    .alert {
-        border-radius: 12px;
-    }
-    .invoice-icon {
-        font-size: 50px;
-        color: #007bff;
-    }
-    @media (max-width: 768px) {
-        .card {
-            margin-bottom: 20px;
-        }
-        .btn {
-            width: 100%;
-        }
-    }
-    .text-muted {
-        font-style: italic;
-    }
-    .shadow {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    img.img-fluid {
-        max-height: 400px;
-    }
-</style>
+
+<link rel="stylesheet" href="css/invoice.css">
 </head>
 <body>
 <div class="container mt-5">
@@ -150,6 +67,7 @@ try {
                         <p><strong>Nama Akun:</strong> <?= htmlspecialchars($reservation['account_name']); ?></p>
                         <p><strong>Nomor Tujuan:</strong> <?= htmlspecialchars($reservation['payment_number']); ?></p>
                         <p><strong>Bukti Pembayaran:</strong></p>
+                        <?php echo htmlspecialchars($reservation['payment_proof']);?>
                         <img src="paynt/uploads/<?= htmlspecialchars($reservation['payment_proof']); ?>" alt="Bukti Pembayaran" class="img-fluid rounded shadow">
                     </div>
                 </div>

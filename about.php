@@ -8,7 +8,7 @@ session_start();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-<link rel="stylesheet" href="css/trans.css">
+<link rel="stylesheet" href="css/about.css">
 <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
         rel="stylesheet"
@@ -20,41 +20,6 @@ session_start();
 <!-- goole font -->
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Neuton&display=swap" rel="stylesheet">
-<style>
-/* Menata elemen menggunakan Flexbox */
-.isi {
-    display: flex;
-    align-items: center; /* Agar gambar dan teks sejajar secara vertikal */
-    justify-content: space-between; /* Atur ruang di antara gambar dan teks */
-}
-
-/* Styling gambar */
-.logo {
-    border-radius: 50%;
-    margin-right: 70px;
-    margin-left: 40px;
-    width: 20%; /* Ukuran logo */
-}
-/* Styling teks */
-.container {
-    flex-grow: 1; /* Membiarkan teks mengambil ruang lebih banyak jika diperlukan */
-    font-family: 'Cinzel', serif;
-}
-/* Media Query untuk layar kecil (misalnya, ponsel) */
-@media (max-width: 768px) {
-    .isi {
-        flex-direction: column; /* Gambar dan teks berubah menjadi kolom (gambar pindah ke bawah) */
-        align-items: center; /* Pusatkan gambar dan teks */
-    }
-
-    .logo {
-        margin-right: 0;
-        margin-left: 0;
-        margin-bottom: 20px; /* Beri jarak antara gambar dan teks */
-        width: 50%; /* Gambar lebih besar pada layar kecil, sesuaikan dengan keinginan */
-    }
-}
-</style>
 </head>
 <body>
 <?php include 'navbar.php'; ?>
@@ -70,7 +35,7 @@ session_start();
     </div>
 </div>
 <div class="map d-flex justify-content-center">
-<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7929.533401069718!2d107.478647!3d-6.424014!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6972a0a4cfae79%3A0xc6caafd15b4cf7d3!2sHOTEL%20GRAND%20MUTIARA!5e0!3m2!1sid!2sid!4v1734060129267!5m2!1sid!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d7929.533401069718!2d107.478647!3d-6.424014!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6972a0a4cfae79%3A0xc6caafd15b4cf7d3!2sHOTEL%20GRAND%20MUTIARA!5e0!3m2!1sid!2sid!4v1734060129267!5m2!1sid!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 </div>
 
 <div class="text-center">

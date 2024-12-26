@@ -1,18 +1,16 @@
 <?php 
-session_start();
-require 'db/index.php';
+require 'db/functions/index.php';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="utf-8" />
+    <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 <title>Grand Mutiara</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
-<meta charset="utf-8" />
-<meta
-name="viewport"
-content="width=device-width, initial-scale=1, shrink-to-fit=no"
-/>
 <link rel="stylesheet" href="css/index.css">
 <link rel="stylesheet" href="css/trans.css">
 <!-- Bootstrap CSS v5.2.1 -->
@@ -148,7 +146,10 @@ content="width=device-width, initial-scale=1, shrink-to-fit=no"
                 <div class="card-body">
                     <h5 class="card-title"><b><?= $type["name_type"]; ?></b></h5> 
                     <p class="card-text"><?= $type["description"]; ?></p>
-                    <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai dari Rp<?= $type["start"]; ?></p>
+                    <?php $prices = array($type['transit'], $type['12hour'], $type['24hour']); 
+                    rsort($prices);
+                    ?>
+                    <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai dari Rp<?= $prices[0]; ?></p>
                     <a href="detail.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Lihat Details</a>
                 </div>
             </div>

@@ -2,19 +2,51 @@
 session_start();
 require 'db/connection.php';
 
-// Periksa apakah 'id_type' ada dan merupakan angka
+class TypeDetail {
+    private $pdo;
+
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+    }
+
+    public function getTypeById($id_type) {
+        $stmt = $this->pdo->prepare("SELECT * FROM types WHERE id_type = :id_type");
+        $stmt->bindParam(':id_type', $id_type, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function renderFacilities($facilities) {
+        $facilityList = preg_split('/\r?\n/', $facilities);
+        $output = '';
+        foreach ($facilityList as $facility) {
+            $facility = trim($facility);
+            if (!empty($facility)) {
+                $output .= '<li>' . htmlspecialchars($facility) . '</li>';
+            }
+        }
+        return $output;
+    }
+
+    public function renderDescription($description) {
+        $descriptionList = preg_split('/\r?\n/', $description);
+        $output = '';
+        foreach ($descriptionList as $desc) {
+            $desc = trim($desc);
+            if (!empty($desc)) {
+                $output .= '<p>' . htmlspecialchars($desc) . '</p>';
+            }
+        }
+        return $output;
+    }
+}
+
+// Validasi ID Tipe
 if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     $id_type = intval($_GET['id_type']);
-    
-    // Menyiapkan query untuk mengambil data berdasarkan id_type
-    $stmt = $pdo->prepare("SELECT * FROM types WHERE id_type = :id_type");
-    $stmt->bindParam(':id_type', $id_type, PDO::PARAM_INT);
-    $stmt->execute();
-    
-    // Ambil hasilnya
-    $type = $stmt->fetch(PDO::FETCH_ASSOC);
+    $typeHandler = new TypeDetail($pdo);
+    $type = $typeHandler->getTypeById($id_type);
 
-    // Jika data tidak ditemukan
     if (!$type) {
         die("Jenis tidak ditemukan.");
     }
@@ -29,6 +61,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Detail</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+<link rel="stylesheet" href="css/detail.css">
 <!-- font -->
 <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 <!-- Bootstrap CSS v5.2.1 -->
@@ -43,55 +76,8 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
 <!-- goole font -->
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Neuton&display=swap" rel="stylesheet">
-<style>
-    body {
-        background-color: #DCDCDC;
-    }
-    p, .list {
-        font-family: 'Cinzel', serif;
-    }
-    .carousel-item img {
-        width: 95%;
-        height: auto;
-        object-fit: cover; /* Menjaga gambar tetap proporsional */
-        aspect-ratio: 4 / 3;
-        text-decoration: none;
-    }
-    @font-face {
-        font-family: 'Lito';
-        src: local('Lito PRINT Italic'), local('Lito-PRINT-Italic'),
-            url('fonts/LITOPRINT-Italic.woff2') format('woff2'),
-            url('fonts/LITOPRINT-Italic.woff') format('woff'),
-            url('fonts/LITOPRINT-Italic.ttf') format('truetype');
-        font-weight: normal;
-        font-style: italic;
-    }
-    .title-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        font-family: 'Lito', sans-serif;
-    }
-    .title {
-        font-size: clamp(2rem, 8vw, 100px);
-        color: white;
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-        font-family: 'Lito', sans-serif;
-        text-align: left;
-        padding: 0 1rem;
-        max-width: 90%;
-    }
-    @media (max-width: 600px) {
-        .title {
-            font-size: clamp(1.5rem, 6vw, 80px);
-        }
-    }
-</style>
 </head>
-<body>
+<body style=" background-color: #DCDCDC;">
 <?php include 'navbar.php'; ?>
 <h1 class="text-center" style="padding-top: 70px; font-family: 'Neuton', serif; font-size: 60px;"><b>Detail</b></h1>
 <img src="img/<?= $type['img'] ?>_1.jpg" alt="Logo" class="d-block w-100" style="aspect-ratio: 19/8;">
