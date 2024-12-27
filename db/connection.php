@@ -33,7 +33,7 @@ class Database {
 }
 
 // Contoh penggunaan
-$database = new Database("localhost", "root", "", "db_hotel");
+$database = new Database("localhost", "root", "", "hotel_db");
 $pdo = $database->connect();
 
 // if ($pdo) {
