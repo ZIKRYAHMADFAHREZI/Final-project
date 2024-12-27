@@ -112,7 +112,7 @@ if (!isset($_SESSION['id_user'])) {
 
         <div class="form-group">
             <label for="startDate">Tanggal Mulai:</label>
-            <input type="date" class="form-control" id="startDate" name="start_date" min="<?= $formattedDate; ?>" required onchange="checkDate()">
+            <input type="date" class="form-control" id="startDateInput" name="start_date" min="<?= $formattedDate; ?>" required onchange="checkDate()">
         </div>
 
         <div class="form-group" id="endDateContainer" style="display:none;">
@@ -143,9 +143,10 @@ if (!isset($_SESSION['id_user'])) {
 </form>
 
 </div>
+<script src="js/booking.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const startDateInput = document.getElementById('startDate');
+        const startDateInput = document.getElementById('startDateInput');
         const endDateInput = document.getElementById('endDate');
         const endDateContainer = document.getElementById('endDateContainer');
         const durationSelect = document.getElementById('hour');
@@ -238,7 +239,6 @@ if (!isset($_SESSION['id_user'])) {
         });
     });
 </script>
-<script src="js/booking.js"></script>
 <!-- Bootstrap JavaScript Libraries -->
 <script
     src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
