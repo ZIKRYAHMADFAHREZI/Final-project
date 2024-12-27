@@ -5,11 +5,6 @@ require 'db/connection.php';
 // Ambil data pengguna
 $id_user = $_SESSION['id_user'] ?? null;
 
-if (!$id_user) {
-    echo "ID pengguna tidak ditemukan. Silakan login kembali.";
-    exit;
-}
-
 $query = $pdo->prepare("SELECT * FROM pay_methods WHERE active = 1");
 $query->execute();
 $methods = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -79,9 +74,13 @@ function generateBookingOptions($id_type, $pdo) {
 <link rel="stylesheet" href="css/booking.css">
 </head>
 <body>
-<?php include 'navbar.php';?>
 <?php
-if (!isset($_SESSION['id_user'])) {
+// Cek apakah user sudah login (id_user ada atau tidak)
+if (isset($id_user) && !empty($id_user)) {
+    // Jika id_user ada, tampilkan navbar
+    include 'navbar.php';
+} else {
+    // Jika id_user tidak ada, tampilkan SweetAlert
     echo "<script>
         Swal.fire({
             title: 'Login Diperlukan!',
@@ -92,16 +91,15 @@ if (!isset($_SESSION['id_user'])) {
             cancelButtonText: 'Batal',
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = 'login.php';
+                window.location.href = 'login.php'; // Redirect ke halaman login
             } else {
-                window.location.href = 'detail.php?id_type={$id_type}';
+                window.location.href = 'detail.php?id_type={$id_type}'; // Redirect ke halaman detail
             }
         });
     </script>";
-    exit;
+    exit; // Hentikan eksekusi kode lebih lanjut
 }
 ?>
-
 <div class="container">
 <h2 class="text-center mb-4 mt-5">Pilih Tanggal dan Nomor Kamar</h2>
     <form action="paynt/payment.php" method="POST" class="border p-4 rounded shadow" id="bookingForm">

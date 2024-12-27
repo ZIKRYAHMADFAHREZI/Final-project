@@ -24,7 +24,7 @@ class PasswordReset {
                 $token = $this->generateToken();
                 $this->saveResetToken($email, $token);
                 $this->sendResetEmail($email, $token);
-                return ['status' => 'success', 'message' => 'Email reset password telah dikirim. Token berlaku selama 1 menit. Periksa inbox Anda.'];
+                return ['status' => 'success', 'message' => 'Email reset password telah dikirim. Token berlaku selama 5 menit. Periksa inbox Anda.'];
             } else {
                 return ['status' => 'error', 'message' => 'Email tidak ditemukan.'];
             }
@@ -75,7 +75,7 @@ class PasswordReset {
                 <p>Halo $email,</p>
                 <p>Klik link berikut untuk reset password Anda:</p>
                 <p><a href=\"$resetLink\" target=\"_blank\">$resetLink</a></p>
-                <p>Catatan: Link reset password ini hanya berlaku selama <strong>1 menit</strong>. Jika kedaluwarsa, silakan minta ulang reset password.</p>
+                <p>Catatan: Link reset password ini hanya berlaku selama <strong>5 menit</strong>. Jika kedaluwarsa, silakan minta ulang reset password.</p>
                 <p>Jika Anda tidak meminta reset password, abaikan email ini.</p>
             </body>
             </html>
