@@ -101,7 +101,7 @@ if (isset($_GET['id_type']) && is_numeric($_GET['id_type'])) {
     <ul class="list">
         <?php
             // Memecah fasilitas berdasarkan newline (\n) atau kombinasi \r\n dan \n
-            $facilities = preg_split('/\r?\n/', $type['fasility']);
+            $facilities = preg_split('/\r?\n/', $type['facilities']);
             
             foreach ($facilities as $facility) {
                 // Menghapus spasi ekstra dan menampilkan tiap fasilitas dalam <li>

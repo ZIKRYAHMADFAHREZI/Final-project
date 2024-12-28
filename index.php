@@ -12,6 +12,7 @@ require 'db/functions/index.php';
 <title>Grand Mutiara</title>
 <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 <link rel="stylesheet" href="css/index.css">
+<link rel="stylesheet" href="css/indexcrd.css">
 <link rel="stylesheet" href="css/trans.css">
 <!-- Bootstrap CSS v5.2.1 -->
 <link
@@ -51,16 +52,16 @@ require 'db/functions/index.php';
             <img src="img/hotel.jpg" class="d-block w-100" alt="G1" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/hotel3.jpg" class="d-block w-100" alt="G3" style="aspect-ratio: 19 / 8; text-decoration: none;">
+            <img src="img/hotel1.jpg" class="d-block w-100" alt="G3" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-        <img src="img/hotel4.jpg" class="d-block w-100" alt="G4" style="aspect-ratio: 19 / 8; text-decoration: none;">
+        <img src="img/hotel2.jpg" class="d-block w-100" alt="G4" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/hotel5.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 8; text-decoration: none;">
+            <img src="img/hotel3.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
         <div class="carousel-item">
-            <img src="img/hotel6.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 8; text-decoration: none;">
+            <img src="img/hotel4.jpg" class="d-block w-100" alt="G5" style="aspect-ratio: 19 / 8; text-decoration: none;">
         </div>
 </div>
 <!-- <p class="carousel-control-prev fw-medium text-black fs-2 font-monospace">hallo</p> -->
@@ -83,60 +84,6 @@ require 'db/functions/index.php';
         </div>
     </div>
 </div>
-    <!-- Card -->
-    <style>
-    .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-img-top {
-        transition: transform 0.3s ease;
-    }
-
-    .card:hover .card-img-top {
-        transform: scale(1.05);
-    }
-    /* Gaya untuk tombol WhatsApp */
-    .whatsapp-float {
-        position: fixed;
-        bottom: 20px; /* Jarak dari bawah */
-        right: 20px;  /* Jarak dari kanan */
-        background-color: #25d366; /* Warna hijau khas WhatsApp */
-        color: white;
-        border-radius: 50px; /* Membuat bentuk lingkaran */
-        padding: 15px 30px; /* Ruang di sekitar ikon dan teks (lebih besar) */
-        font-size: 20px; /* Ukuran teks (lebih besar) */
-        display: flex; /* Agar ikon dan teks sejajar */
-        align-items: center;
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Efek bayangan */
-        text-decoration: none; /* Menghilangkan garis bawah */
-        z-index: 1000; /* Agar selalu terlihat di atas elemen lain */
-    }
-    .whatsapp-float i {
-        font-size: 28px; /* Ukuran ikon (lebih besar) */
-        margin-right: 15px; /* Jarak ikon dengan teks */
-    }
-    .whatsapp-float:hover {
-        background-color: #1ebe57; /* Warna lebih gelap saat hover */
-    }
-    /* Responsif untuk mobile: hanya ikon yang terlihat */
-    @media (max-width: 768px) {
-        .whatsapp-float {
-            padding: 15px;
-            font-size: 0; /* Menyembunyikan teks */
-        }
-        .whatsapp-float i {
-            font-size: 32px; /* Ukuran ikon lebih besar di mobile */
-            margin-right: 0;
-        }
-    }
-</style>
-
 <div class="container">
     <div class="row">
     <?php foreach ($types as $type) : ?>
