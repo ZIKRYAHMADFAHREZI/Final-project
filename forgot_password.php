@@ -62,7 +62,6 @@ class PasswordReset {
         ]);
     }
     
-
     private function sendResetEmail($email, $token) {
         $resetLink = "http://localhost/fp/final-project/reset_password.php?token=$token";
         $subject = "Permintaan Reset Password";
@@ -80,24 +79,31 @@ class PasswordReset {
             </body>
             </html>
         ";
-
+    
         $mail = new PHPMailer(true);
-        $mail->isSMTP();
-        $mail->Host = 'smtp.mailtrap.io';
-        $mail->SMTPAuth = true;
-        $mail->Username = '619786645e4263'; // Ganti dengan Mailtrap username Anda
-        $mail->Password = 'a749dfea09d4b3'; // Ganti dengan Mailtrap password Anda
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 2525;
-
-        $mail->setFrom('hotelgrandmutiara4@gmail.com', 'Hotel Grand Mutiara');
-        $mail->addAddress($email);
-        $mail->Subject = $subject;
-        $mail->isHTML(true);
-        $mail->Body = $body;
-
-        $mail->send();
-    }
+    
+        try {
+            // Konfigurasi SMTP
+            $mail->isSMTP();
+            $mail->Host = 'mail.yourdomain.com'; // Sesuaikan dengan domain Anda
+            $mail->SMTPAuth = true;
+            $mail->Username = 'zikridede137@gmail.com'; // Ganti dengan email Gmail Anda
+            $mail->Password = 'viwm yexz ezbx rqwv'; // Ganti dengan password email atau App Password Gmail
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+    
+            // Pengaturan email
+            $mail->setFrom('grandmutiara4@gmail.com', 'Grand Mutiara'); // Ganti dengan nama pengirim
+            $mail->addAddress($email); // Alamat email penerima
+            $mail->Subject = $subject;
+            $mail->isHTML(true);
+            $mail->Body = $body;
+    
+            $mail->send();
+        } catch (Exception $e) {
+            throw new Exception("Pesan tidak dapat dikirim. Error: {$mail->ErrorInfo}");
+        }
+    }    
 }
 
 // Proses request

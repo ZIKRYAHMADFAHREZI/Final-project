@@ -30,25 +30,49 @@ if (isset($_GET['id'])) {
             $pdo->beginTransaction();
 
             if ($action == 'confirm') {
-                // Ambil tanggal saat ini sebagai check-in date
-                $check_in_date = new DateTime();
+                // Ambil informasi reservasi, termasuk jenis durasi dari kolom hour dan tanggal to_date
+                $query = "SELECT hour, to_date FROM reservations WHERE id_reservation = :id_reservation";
+                $stmt = $pdo->prepare($query);
+                $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
+                $stmt->execute();
+                $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                // Tentukan durasi check-out berdasarkan logika
-                $duration_hours = 12; // Default 12 jam
-                // Contoh logika untuk menentukan durasi
-                if ($check_in_date->format('H') < 6) { // Sebelum jam 6 pagi
-                    $duration_hours = 3;
-                } elseif ($check_in_date->format('H') >= 18) { // Setelah jam 6 sore
-                    $duration_hours = 24;
+                if (!$reservation) {
+                    throw new Exception("Reservasi tidak ditemukan.");
                 }
 
-                // Hitung check-out date
-                $check_out_date = addHoursToDate($check_in_date->format('Y-m-d H:i:s'), $duration_hours);
+                // Ambil nilai durasi dari kolom hour
+                $hour_enum = $reservation['hour'];
+                $to_date = $reservation['to_date']; // Kolom to_date untuk tanggal
 
-                // Format check_out_date
-                $formatted_checkout_date = $check_out_date;
+                // Tentukan durasi berdasarkan hour enum
+                if ($hour_enum === '3 jam') {
+                    $duration_hours = 3;
+                    $check_in_date = new DateTime();
+                    $check_out_date = $check_in_date->add(new DateInterval("PT{$duration_hours}H"));
+                } elseif ($hour_enum === '12 jam') {
+                    $duration_hours = 12;
+                    $check_in_date = new DateTime();
+                    $check_out_date = $check_in_date->add(new DateInterval("PT{$duration_hours}H"));
+                } elseif ($hour_enum === '24 jam') {
+                    if (empty($to_date)) {
+                        throw new Exception("Kolom to_date tidak boleh kosong untuk durasi 24 jam.");
+                    }
+                    $check_in_date = new DateTime();
+                    $to_date_object = new DateTime($to_date);
+                    $check_out_date = $to_date_object->setTime(
+                        $check_in_date->format('H'),
+                        $check_in_date->format('i'),
+                        $check_in_date->format('s')
+                    );
+                } else {
+                    throw new Exception("Durasi tidak valid: $hour_enum.");
+                }
 
-                // Konfirmasi pembayaran dan set check_in_date serta check_out_date
+                // Simpan check_out_date dalam format string
+                $formatted_check_out_date = $check_out_date->format('Y-m-d H:i:s');
+
+                // Update reservasi dengan check-in dan check-out date
                 $updateReservation = "
                     UPDATE reservations
                     SET status = 'confirmed', payment_status = 'paid', check_in_date = NOW(), check_out_date = :check_out_date
@@ -56,7 +80,7 @@ if (isset($_GET['id'])) {
                 ";
                 $stmt = $pdo->prepare($updateReservation);
                 $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
-                $stmt->bindParam(':check_out_date', $formatted_checkout_date, PDO::PARAM_STR);
+                $stmt->bindParam(':check_out_date', $formatted_check_out_date, PDO::PARAM_STR);
                 $stmt->execute();
 
                 // Update status kamar menjadi 'unavailable'
@@ -69,21 +93,11 @@ if (isset($_GET['id'])) {
                 $stmt->bindParam(':id_reservation', $id_reservation, PDO::PARAM_INT);
                 $stmt->execute();
 
-                // Perbarui status kamar menjadi 'available' jika waktu telah melewati check_out_date
-                $updateRoomStatus = "
-                    UPDATE rooms r
-                    JOIN reservations res ON r.id_room = res.id_room
-                    SET r.status = 'available'
-                    WHERE res.check_out_date <= NOW() AND r.status = 'unavailable'
-                ";
-                $stmt = $pdo->prepare($updateRoomStatus);
-                $stmt->execute();
-
                 // Commit transaksi
                 $pdo->commit();
 
                 $status = 'success';
-                $message = "Pembayaran dikonfirmasi. Check-out date: $formatted_checkout_date.";
+                $message = "Pembayaran dikonfirmasi. Check-out date: $formatted_check_out_date.";
             } elseif ($action == 'refund') {
                 // Refund pembayaran
                 $updateReservation = "
@@ -148,6 +162,5 @@ if (isset($status)) {
     </script>";
 }
 ?>
-
 </body>
 </html>
