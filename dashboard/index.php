@@ -178,7 +178,7 @@ $pendingRooms = $roomStats['pending'] ?? 0;
             </tr>
         </thead>
         <tbody>
-            <?php if (count($reservations) > 0): ?>
+            <?php if (count($reservations) >= 0): ?>
             <?php 
             $no = 1; // Inisialisasi variabel untuk nomor urut
             foreach ($reservations as $reservation): 
@@ -218,10 +218,6 @@ $pendingRooms = $roomStats['pending'] ?? 0;
                     </td>
                 </tr>
             <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="12" class="text-center">Tidak ada data pemesanan.</td>
-                </tr>
             <?php endif; ?>
         </tbody>
         </table>
@@ -265,7 +261,7 @@ $(document).ready(function() {
         searching: true,
         info: true,
         ordering: true,
-        debug: true, // Aktifkan debug
+        debug: false, // Aktifkan debug
         language: {
             search: "Cari:",
             lengthMenu: "Tampilkan _MENU_ data per halaman",

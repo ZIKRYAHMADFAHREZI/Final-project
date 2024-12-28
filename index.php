@@ -149,7 +149,7 @@ require 'db/functions/index.php';
                     <?php $prices = array($type['transit'], $type['12hour'], $type['24hour']); 
                     rsort($prices);
                     ?>
-                    <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai dari Rp<?= $prices[0]; ?></p>
+                    <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai dari Rp<?= number_format($prices[0], 0, '', '.'); ?></p>
                     <a href="detail.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Lihat Details</a>
                 </div>
             </div>
