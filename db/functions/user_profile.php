@@ -6,6 +6,13 @@ if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
     header('Location: login.php');
     exit;
 }
+// Periksa apakah pengguna sudah login
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    // Jika sudah login, arahkan ke dashboard
+    header('Location: dashboard/index.php');
+    exit;
+}
+
 
 require 'db/connection.php';
 

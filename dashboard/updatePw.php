@@ -1,5 +1,16 @@
 <?php
 session_start();
+// Periksa apakah pengguna sudah login
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    header('Location: ../login.php');
+    exit;
+}
+
+// Periksa apakah pengguna memiliki peran 'admin'
+if ($_SESSION['role'] !== 'admin') {
+    header('Location: ../index.php');
+    exit;
+}
 $message = $_SESSION['swal_message'] ?? null;
 unset($_SESSION['swal_message']); // Hapus pesan setelah digunakan
 ?>
@@ -65,11 +76,11 @@ unset($_SESSION['swal_message']); // Hapus pesan setelah digunakan
             <span class="input-group-text" id="toggle-password-lama"><i class="fas fa-eye"></i></span>
         </div>
         <div class="mb-3 input-group">
-            <input type="password" class="form-control" id="password_baru" name="password_baru" placeholder="Password Baru" minlength="8" required>
+            <input type="password" class="form-control" id="password_baru" name="password_baru" placeholder="Password Baru" minlength="8" maxlength="254" required>
             <span class="input-group-text" id="toggle-password-baru"><i class="fas fa-eye"></i></span>
         </div>
         <div class="mb-3 input-group">
-            <input type="password" class="form-control" id="konfirmasi_password" name="konfirmasi_password" placeholder="Konfirmasi Password Baru" minlength="8" required>
+            <input type="password" class="form-control" id="konfirmasi_password" name="konfirmasi_password" placeholder="Konfirmasi Password Baru" maxlength="254" minlength="8" required>
             <span class="input-group-text" id="toggle-konfirmasi-password"><i class="fas fa-eye"></i></span>
         </div>
         <div class="d-flex justify-content-between">

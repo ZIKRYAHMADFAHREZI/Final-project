@@ -51,22 +51,22 @@
         <h2 class="title">Halaman Register</h2>
         <form id="register-form" method="post">
         <div class="input-group">
-            <input type="text" name="username" id="username" class="input-group__input" required>
+            <input type="text" name="username" id="username" class="input-group__input" maxlength="10" required>
             <label for="username" class="input-group__label">Username</label>
             <small id="username-error">Username sudah digunakan</small>
         </div>
 
             <div class="input-group">
-                <input type="email" name="email" id="email" class="input-group__input" required>
+                <input type="email" name="email" id="email" class="input-group__input" maxlength="254" required>
                 <label for="email" class="input-group__label">Email</label>
             </div>
             <div class="input-group">
-                <input type="password" name="password" id="password" class="input-group__input" minlength="8" required>
+                <input type="password" name="password" id="password" class="input-group__input" minlength="8" maxlength="254" required>
                 <label for="password" class="input-group__label">Password</label>
                 <span class="show-password-icon" id="toggle-password">&#x1F512;</span>
             </div>
             <div class="input-group">
-                <input type="password" name="confirm_password" id="confirm_password" class="input-group__input" minlength="8" required>
+                <input type="password" name="confirm_password" id="confirm_password" class="input-group__input" minlength="8" maxlength="254" required>
                 <label for="confirm_password" class="input-group__label">Konfirmasi Password</label>
                 <span class="show-password-icon" id="toggle-confirm-password">&#x1F512;</span>
             </div>

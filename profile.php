@@ -23,19 +23,19 @@ require 'db/functions/user_profile.php';
         </div>
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>
+            <input type="email" id="email" name="email" maxlength="254" value="<?= htmlspecialchars($user['email']); ?>" required>
         </div>
         <div class="form-group">
             <label for="first_name">Nama Depan:</label>
-            <input type="text" id="first_name" name="first_name" value="<?= htmlspecialchars($user_profile['first_name'] ?? ''); ?>">
+            <input type="text" id="first_name" name="first_name" maxlength="254" value="<?= htmlspecialchars($user_profile['first_name'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="last_name">Nama Belakang:</label>
-            <input type="text" id="last_name" name="last_name" value="<?= htmlspecialchars($user_profile['last_name'] ?? ''); ?>">
+            <input type="text" id="last_name" name="last_name" maxlength="254" value="<?= htmlspecialchars($user_profile['last_name'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="phone_number">Nomor Telepon:</label>
-            <input type="number" id="phone_number" name="phone_number" value="<?= htmlspecialchars($user_profile['phone_number'] ?? ''); ?>">
+            <input type="tel" id="phone_number" name="phone_number" maxlength="15" value="<?= htmlspecialchars($user_profile['phone_number'] ?? ''); ?>">
         </div>
         <div class="form-group">
             <label for="date_of_birth">Tanggal Lahir:</label>

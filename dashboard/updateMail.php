@@ -2,9 +2,16 @@
 session_start();
 require '../db/connection.php';
 
-// Pastikan pengguna sudah login dan id_user tersedia di session
-if (!isset($_SESSION['id_user'])) {
-    die("Access denied: User not logged in.");
+// Periksa apakah pengguna sudah login
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    header('Location: ../login.php');
+    exit;
+}
+
+// Periksa apakah pengguna memiliki peran 'admin'
+if ($_SESSION['role'] !== 'admin') {
+    header('Location: ../index.php');
+    exit;
 }
 
 $id_user = $_SESSION['id_user'];
@@ -87,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form id="updateForm" action="" method="post">
             <div class="mb-3">
                 <label for="email" class="form-label">Masukkan email Anda:</label>
-                <input type="email" name="email" id="email" class="form-control" required>
+                <input type="email" name="email" id="email" class="form-control" maxlength="100" required>
             </div>
             <button type="submit" id="submitButton" class="btn btn-primary w-100">Ubah</button>
         </form>

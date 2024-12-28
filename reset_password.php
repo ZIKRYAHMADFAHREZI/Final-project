@@ -139,12 +139,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form action="" method="post">
             <div class="mb-3 position-relative">
                 <label for="new_password" class="form-label">Password Baru:</label>
-                <input type="password" name="new_password" id="new_password" class="form-control" minlength="8" required>
+                <input type="password" name="new_password" id="new_password" class="form-control" minlength="8" maxlength="254" required>
                 <i class="eye-icon bi bi-eye-slash" id="toggleNewPassword"></i>
             </div>
             <div class="mb-3 position-relative">
                 <label for="confirm_password" class="form-label">Konfirmasi Password:</label>
-                <input type="password" name="confirm_password" id="confirm_password" class="form-control" minlength="8" required>
+                <input type="password" name="confirm_password" id="confirm_password" class="form-control" minlength="8" maxlength="254" required>
                 <i class="eye-icon bi bi-eye-slash" id="toggleConfirmPassword"></i>
             </div>
             <button type="submit" class="btn btn-primary">Ubah Password</button>

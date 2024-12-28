@@ -2,6 +2,14 @@
 session_start();
 require 'db/connection.php';
 
+// Periksa apakah pengguna sudah login
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    // Jika sudah login, arahkan ke dashboard
+    header('Location: dashboard/index.php');
+    exit;
+}
+
+
 class UserSession {
     private $pdo;
 

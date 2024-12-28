@@ -143,99 +143,97 @@ if (isset($id_user) && !empty($id_user)) {
 </div>
 <script src="js/booking.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const startDateInput = document.getElementById('startDateInput');
-        const endDateInput = document.getElementById('endDate');
-        const endDateContainer = document.getElementById('endDateContainer');
-        const durationSelect = document.getElementById('hour');
-        const totalAmountFake = document.getElementById('totalAmount');
-        const totalAmountInput = document.getElementById('totalAmountReal');
+document.addEventListener('DOMContentLoaded', function () {
+    const startDateInput = document.getElementById('startDateInput');
+    const endDateInput = document.getElementById('endDate');
+    const endDateContainer = document.getElementById('endDateContainer');
+    const durationSelect = document.getElementById('hour');
+    const totalAmountFake = document.getElementById('totalAmount');
+    const totalAmountInput = document.getElementById('totalAmountReal');
 
-        function updatePrice() {
-            const selectedOption = durationSelect.selectedOptions[0];
-            const pricePerUnit = parseFloat(selectedOption.getAttribute('data-price'));
-            const startDate = startDateInput.value;
-            const endDate = endDateInput.value;
+    function updatePrice() {
+        const selectedOption = durationSelect.selectedOptions[0];
+        const pricePerUnit = parseFloat(selectedOption?.getAttribute('data-price')) || 0; // Pastikan data-price terbaca
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
 
-            if (startDate && endDate) {
+        // Perhitungan hanya dilakukan jika harga dan tanggal valid
+        if (startDate && (endDate || durationSelect.value !== '24 jam')) {
+            let totalPrice = 0;
+
+            if (durationSelect.value === '3 jam' || durationSelect.value === '12 jam') {
+                totalPrice = pricePerUnit; // Harga langsung sesuai durasi
+            } else if (durationSelect.value === '24 jam' && startDate && endDate) {
                 const start = new Date(startDate);
                 const end = new Date(endDate);
 
-                // Pastikan tanggal akhir lebih dari tanggal awal
-                if (end <= start) {
+                if (end > start) {
+                    const diffTime = end - start;
+                    const diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
+                    totalPrice = pricePerUnit * diffDays;
+                } else {
                     alert("Tanggal selesai harus lebih dari tanggal mulai.");
                     endDateInput.value = ""; // Reset tanggal akhir
-                    return;
                 }
+            }
 
-                // Hitung selisih hari (min 1 hari dihitung sebagai 1 hari sewa)
-                const diffTime = end - start;
-                const diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
+            // Tampilkan total harga
+            totalAmountFake.innerText = totalPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+            totalAmountInput.value = totalPrice;
+        } else {
+            // Reset harga jika input tidak lengkap
+            totalAmountFake.innerText = "Rp0";
+            totalAmountInput.value = 0;
+        }
+    }
 
-                // Perhitungan total harga
-                const totalPrice = pricePerUnit * diffDays;
+    startDateInput.addEventListener('change', function () {
+        const startDateValue = startDateInput.value;
 
-                // Tampilkan total harga
-                totalAmountFake.innerText = totalPrice.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
-                totalAmountInput.value = totalPrice;
+        if (endDateInput.value && new Date(endDateInput.value) <= new Date(startDateValue)) {
+            alert("Tanggal selesai harus lebih dari tanggal mulai.");
+            endDateInput.value = ""; // Reset tanggal akhir
+        }
+
+        if (durationSelect.value === '24 jam') {
+            const startDate = new Date(startDateValue);
+            startDate.setDate(startDate.getDate() + 1);
+            endDateInput.value = startDate.toISOString().split('T')[0];
+        }
+
+        updatePrice();
+    });
+
+    endDateInput.addEventListener('change', function () {
+        if (new Date(endDateInput.value) <= new Date(startDateInput.value)) {
+            alert("Tanggal selesai harus lebih dari tanggal mulai.");
+            endDateInput.value = ""; // Reset tanggal akhir
+        }
+        updatePrice();
+    });
+
+    durationSelect.addEventListener('change', function () {
+        const selectedDuration = this.value;
+
+        if (selectedDuration === '3 jam' || selectedDuration === '12 jam') {
+            endDateContainer.style.display = 'none';
+            endDateInput.value = startDateInput.value;
+            endDateInput.disabled = true;
+        } else if (selectedDuration === '24 jam') {
+            endDateContainer.style.display = 'block';
+            endDateInput.disabled = false;
+
+            const startDateValue = startDateInput.value;
+            if (startDateValue) {
+                const startDate = new Date(startDateValue);
+                startDate.setDate(startDate.getDate() + 1); // Tambah 1 hari
+                endDateInput.value = startDate.toISOString().split('T')[0];
             }
         }
 
-        startDateInput.addEventListener('change', function () {
-            const startDateValue = startDateInput.value;
-
-            // Validasi jika tanggal akhir sama atau lebih kecil dari tanggal mulai
-            if (endDateInput.value && new Date(endDateInput.value) <= new Date(startDateValue)) {
-                alert("Tanggal selesai harus lebih dari tanggal mulai.");
-                endDateInput.value = ""; // Reset tanggal akhir
-            }
-
-            // Jika durasi 24 jam, hitung tanggal selesai otomatis
-            if (durationSelect.value === '24 jam') {
-                const startDate = new Date(startDateValue);
-                startDate.setDate(startDate.getDate() + 1);
-                endDateInput.value = startDate.toISOString().split('T')[0];
-            }
-
-            updatePrice();
-        });
-
-        endDateInput.addEventListener('change', function () {
-            const startDateValue = startDateInput.value;
-            const endDateValue = endDateInput.value;
-
-            // Validasi jika tanggal akhir sama atau lebih kecil dari tanggal mulai
-            if (new Date(endDateValue) <= new Date(startDateValue)) {
-                alert("Tanggal selesai harus lebih dari tanggal mulai.");
-                endDateInput.value = ""; // Reset tanggal akhir
-                return;
-            }
-
-            updatePrice();
-        });
-
-        durationSelect.addEventListener('change', function () {
-            const selectedDuration = this.value;
-
-            if (selectedDuration === '3 jam' || selectedDuration === '12 jam') {
-                endDateContainer.style.display = 'none';
-                endDateInput.value = startDateInput.value;
-                endDateInput.disabled = true;
-            } else if (selectedDuration === '24 jam') {
-                endDateContainer.style.display = 'block';
-                endDateInput.disabled = false;
-
-                const startDateValue = startDateInput.value;
-                if (startDateValue) {
-                    const startDate = new Date(startDateValue);
-                    startDate.setDate(startDate.getDate() + 1); // Tambah 1 hari
-                    const endDate = startDate.toISOString().split('T')[0];
-                    endDateInput.value = endDate;
-                    updatePrice();
-                }
-            }
-        });
+        updatePrice();
     });
+});
 </script>
 <!-- Bootstrap JavaScript Libraries -->
 <script

@@ -61,6 +61,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['method'])) {
         </script>";
     }
 }
+// Periksa apakah pengguna sudah login
+if (!isset($_SESSION['is_logged_in']) || $_SESSION['is_logged_in'] !== true) {
+    header('Location: ../login.php');
+    exit;
+}
+
+// Periksa apakah pengguna memiliki peran 'admin'
+if ($_SESSION['role'] !== 'admin') {
+    header('Location: ../index.php');
+    exit;
+}
 
 // Handle toggle activation status
 if (isset($_GET['toggle_id'])) {
@@ -127,15 +138,15 @@ $methods = $paymentManager->getAllPaymentMethods();
         <form method="post" id="add-method-form">
             <div class="mb-3">
                 <label for="method" class="form-label">Metode</label>
-                <input type="text" name="method" id="method" class="form-control" required />
+                <input type="text" name="method" id="method" class="form-control" maxlength="50"required />
             </div>
             <div class="mb-3">
                 <label for="payment_number" class="form-label">Nomor Rekening</label>
-                <input type="number" name="payment_number" id="payment_number" class="form-control" required />
+                <input type="number" name="payment_number" id="payment_number" class="form-control" maxlength="50" required />
             </div>
             <div class="mb-3">
                 <label for="account_name" class="form-label">Nama Akun</label>
-                <input type="text" name="account_name" id="account_name" class="form-control" required />
+                <input type="text" name="account_name" id="account_name" class="form-control" maxlength="50" required />
             </div>
             <button type="submit" class="btn btn-primary">Tambah</button>
         </form>
