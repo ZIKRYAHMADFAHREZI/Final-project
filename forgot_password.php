@@ -81,17 +81,16 @@ class PasswordReset {
         ";
     
         $mail = new PHPMailer(true);
-    
+
         try {
             // Konfigurasi SMTP
             $mail->isSMTP();
-            $mail->Host = 'mail.yourdomain.com'; // Sesuaikan dengan domain Anda
+            $mail->Host = 'smtp.gmail.com'; // Host SMTP Gmail yang benar
             $mail->SMTPAuth = true;
             $mail->Username = 'zikridede137@gmail.com'; // Ganti dengan email Gmail Anda
-            $mail->Password = 'viwm yexz ezbx rqwv'; // Ganti dengan password email atau App Password Gmail
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-    
+            $mail->Password = 'fcvi qpcw jwej yqyw'; // Ganti dengan App Password Gmail
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Gunakan enkripsi TLS
+            $mail->Port = 587; // Port untuk TLS
             // Pengaturan email
             $mail->setFrom('grandmutiara4@gmail.com', 'Grand Mutiara'); // Ganti dengan nama pengirim
             $mail->addAddress($email); // Alamat email penerima
@@ -99,10 +98,11 @@ class PasswordReset {
             $mail->isHTML(true);
             $mail->Body = $body;
     
-            $mail->send();
         } catch (Exception $e) {
-            throw new Exception("Pesan tidak dapat dikirim. Error: {$mail->ErrorInfo}");
+            // Tampilkan pesan kesalahan jika gagal
+            echo "Pesan tidak dapat dikirim. Error: {$mail->ErrorInfo}";
         }
+        
     }    
 }
 
