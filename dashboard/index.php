@@ -193,7 +193,7 @@ $pendingRooms = $roomStats['pending'] ?? 0;
                     <td><?= htmlspecialchars($reservation['name_type']); ?></td>
                     <td><?= htmlspecialchars($reservation['number_room']); ?></td>
                     <td><?= htmlspecialchars(date('d F Y', strtotime($reservation['start_date']))); ?></td>
-                    <td><?= $reservation['to_date'] !== null ? htmlspecialchars($reservation['to_date']) : '' ; ?></td>
+                    <td><?= $reservation['to_date'] !== null ? htmlspecialchars(date('d F Y', strtotime($reservation['to_date']))) : '' ; ?></td>
                     <td><?= htmlspecialchars($reservation['method']); ?></td>
                     <td><?= htmlspecialchars($reservation['total_amount']); ?></td>
                     <td><?= htmlspecialchars($reservation['status']); ?></td>
@@ -312,18 +312,21 @@ function showDetailUser(username) {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            // Coba parse JSON atau kembalikan text untuk debugging
-            return response.text().then(text => {
-                try {
-                    return JSON.parse(text);
-                } catch (error) {
-                    throw new Error('Respon bukan JSON valid: ' + text);
-                }
-            });
+            return response.json();
         })
         .then(data => {
-            if (data.error) {
-                throw new Error(data.error);
+            // Fungsi untuk memformat tanggal
+            function formatDate(dateString) {
+                if (!dateString) return 'Tidak tersedia'; // Jika tanggal tidak ada
+                const date = new Date(dateString);
+                const months = [
+                    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+                ];
+                const day = date.getDate().toString().padStart(2, '0'); // Hari dengan 2 digit
+                const month = months[date.getMonth()]; // Nama bulan
+                const year = date.getFullYear(); // Tahun
+                return `${day} ${month} ${year}`;
             }
 
             // Isi modal dengan data user
@@ -331,14 +334,22 @@ function showDetailUser(username) {
             document.getElementById('modalEmail').innerText = data.email || 'Tidak tersedia';
             document.getElementById('modalFullName').innerText = `${data.first_name || ''} ${data.last_name || ''}`.trim() || 'Tidak tersedia';
             document.getElementById('modalPhoneNumber').innerText = data.phone_number || 'Tidak tersedia';
-            document.getElementById('modalDateOfBirth').innerText = data.date_of_birth || 'Tidak tersedia';
+            document.getElementById('modalDateOfBirth').innerText = formatDate(data.date_of_birth);
 
             // Tampilkan modal
             document.getElementById('userDetailModal').style.display = 'flex';
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Gagal memuat detail user: ' + error.message);
+
+            // Tetap tampilkan modal dengan pesan kesalahan
+            document.getElementById('modalUsername').innerText = 'Tidak tersedia';
+            document.getElementById('modalEmail').innerText = 'Tidak tersedia';
+            document.getElementById('modalFullName').innerText = 'Tidak tersedia';
+            document.getElementById('modalPhoneNumber').innerText = 'Tidak tersedia';
+            document.getElementById('modalDateOfBirth').innerText = 'Tidak tersedia';
+
+            document.getElementById('userDetailModal').style.display = 'flex';
         });
 }
 function showPaymentProof(fileName) {

@@ -75,6 +75,11 @@ h5 {
 
 /* Responsif untuk mobile: hanya ikon yang terlihat */
 @media (max-width: 768px) {
+    .typing-effect {
+        display: flex; /* Aktifkan Flexbox */
+        flex-direction: column; /* Elemen bertumpuk ke bawah */
+        align-items: center; /* Pusatkan elemen secara horizontal */
+    }
     .whatsapp-float {
         padding: 10px;
         font-size: 0; /* Menyembunyikan teks */

@@ -1,8 +1,15 @@
+h1 {
+    padding-top: 50px;
+    font-family: 'Neuton', serif;
+}
+
 /* Menata elemen menggunakan Flexbox */
 .isi {
     display: flex;
-    align-items: center; /* Agar gambar dan teks sejajar secara vertikal */
-    justify-content: space-between; /* Atur ruang di antara gambar dan teks */
+    align-items: center;
+    /* Agar gambar dan teks sejajar secara vertikal */
+    justify-content: space-between;
+    /* Atur ruang di antara gambar dan teks */
 }
 
 /* Styling gambar */
@@ -10,24 +17,49 @@
     border-radius: 50%;
     margin-right: 70px;
     margin-left: 40px;
-    width: 20%; /* Ukuran logo */
+    width: 20%;
+    /* Ukuran logo */
 }
+
 /* Styling teks */
 .container {
-    flex-grow: 1; /* Membiarkan teks mengambil ruang lebih banyak jika diperlukan */
+    flex-grow: 1;
+    /* Membiarkan teks mengambil ruang lebih banyak jika diperlukan */
     font-family: 'Cinzel', serif;
 }
+
 /* Media Query untuk layar kecil (misalnya, ponsel) */
 @media (max-width: 768px) {
-    .isi {
-        flex-direction: column; /* Gambar dan teks berubah menjadi kolom (gambar pindah ke bawah) */
-        align-items: center; /* Pusatkan gambar dan teks */
+    h1 {
+        padding-top: 0px !important;
     }
 
+    .isi {
+        padding-top: 70px;
+        flex-direction: column;
+        /* Gambar dan teks berubah menjadi kolom (gambar pindah ke bawah) */
+        align-items: center;
+        /* Pusatkan gambar dan teks */
+    }
+
+    /* Styling gambar */
     .logo {
         margin-right: 0;
         margin-left: 0;
-        margin-bottom: 20px; /* Beri jarak antara gambar dan teks */
-        width: 50%; /* Gambar lebih besar pada layar kecil, sesuaikan dengan keinginan */
+        margin-bottom: 20px;
+        /* Beri jarak antara gambar dan teks */
+        width: 50%;
+        /* Gambar lebih besar pada layar kecil, sesuaikan dengan keinginan */
     }
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: #a1a0a5;
+    transition: background-color 0.3s ease;
 }

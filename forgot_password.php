@@ -82,27 +82,33 @@ class PasswordReset {
     
         $mail = new PHPMailer(true);
 
-        try {
-            // Konfigurasi SMTP
-            $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com'; // Host SMTP Gmail yang benar
-            $mail->SMTPAuth = true;
-            $mail->Username = 'zikridede137@gmail.com'; // Ganti dengan email Gmail Anda
-            $mail->Password = 'fcvi qpcw jwej yqyw'; // Ganti dengan App Password Gmail
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Gunakan enkripsi TLS
-            $mail->Port = 587; // Port untuk TLS
-            // Pengaturan email
-            $mail->setFrom('grandmutiara4@gmail.com', 'Grand Mutiara'); // Ganti dengan nama pengirim
-            $mail->addAddress($email); // Alamat email penerima
-            $mail->Subject = $subject;
-            $mail->isHTML(true);
-            $mail->Body = $body;
+$mail = new PHPMailer(true);
+
+try {
+    // Konfigurasi SMTP
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com'; // Host SMTP Gmail yang benar
+    $mail->SMTPAuth = true;
+    $mail->Username = 'zikridede137@gmail.com'; // Ganti dengan email Gmail Anda
+    $mail->Password = 'fcvi qpcw jwej yqyw'; // Ganti dengan App Password Gmail
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Gunakan enkripsi SSL
+    $mail->Port = 465; // Port untuk SSL
     
-        } catch (Exception $e) {
-            // Tampilkan pesan kesalahan jika gagal
-            echo "Pesan tidak dapat dikirim. Error: {$mail->ErrorInfo}";
-        }
-        
+    // Pengaturan email
+    $mail->setFrom('grandmutiara4@gmail.com', 'Grand Mutiara'); // Ganti dengan nama pengirim
+    $mail->addAddress($email); // Alamat email penerima
+    $mail->Subject = $subject;
+    $mail->isHTML(true);
+    $mail->Body = $body;
+
+    // Kirim email
+    $mail->send();
+    echo "Pesan berhasil dikirim.";
+} catch (Exception $e) {
+    // Tampilkan pesan kesalahan jika gagal
+    echo "Pesan tidak dapat dikirim. Error: {$mail->ErrorInfo}";
+}
+
     }    
 }
 
@@ -116,23 +122,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lupa Password</title>
-<link rel="icon" type="image/x-icon" href="img/favicon.ico">
-<!-- bootsrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<link rel="stylesheet" href="css/mail.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lupa Password</title>
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+    <!-- bootsrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/mail.css">
 </head>
+
 <body style="background-color: #DCDCDC;">
     <div class="container">
         <h2>Lupa Password</h2>
         <?php if ($response): ?>
-            <div class="alert alert-<?php echo htmlspecialchars($response['status'] === 'success' ? 'success' : 'danger'); ?>" role="alert">
-                <?php echo htmlspecialchars($response['message']); ?>
-            </div>
+        <div class="alert alert-<?php echo htmlspecialchars($response['status'] === 'success' ? 'success' : 'danger'); ?>"
+            role="alert">
+            <?php echo htmlspecialchars($response['message']); ?>
+        </div>
         <?php endif; ?>
         <form action="" method="post">
             <div class="mb-3">
@@ -144,4 +153,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
