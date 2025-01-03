@@ -62,10 +62,10 @@
             </li>
             <?php else: ?>
             <li class="nav-item">
-                <a href="login.php" class="nav-link" id="login" style="color: white; margin-left: 20px;">Log in</a>
+                <a href="login.php" class="nav-link" id="login" style="color: white; margin-left: 20px;">Log In</a>
             </li>
             <li class="nav-item">
-                <a href="register.php" class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign in</a>
+                <a href="register.php" class="nav-link" id="regist" style="color: white; margin-left: 20px; margin-right:20px;">Sign Up</a>
             </li>
             <?php endif; ?>
         </ul>
