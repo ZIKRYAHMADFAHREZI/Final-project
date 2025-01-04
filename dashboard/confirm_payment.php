@@ -75,7 +75,7 @@ if (isset($_GET['id'])) {
                 // Update reservasi dengan check-in dan check-out date
                 $updateReservation = "
                     UPDATE reservations
-                    SET status = 'confirmed', payment_status = 'paid', check_in_date = NOW(), check_out_date = :check_out_date
+                    SET status = 'Confirmed', payment_status = 'Paid', check_in_date = NOW(), check_out_date = :check_out_date
                     WHERE id_reservation = :id_reservation
                 ";
                 $stmt = $pdo->prepare($updateReservation);
@@ -102,7 +102,7 @@ if (isset($_GET['id'])) {
                 // Refund pembayaran
                 $updateReservation = "
                     UPDATE reservations
-                    SET status = 'cancelled', payment_status = 'refunded'
+                    SET status = 'Cancelled', payment_status = 'Refunded'
                     WHERE id_reservation = :id_reservation
                 ";
                 $stmt = $pdo->prepare($updateReservation);

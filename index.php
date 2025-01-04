@@ -1,4 +1,4 @@
-<?php 
+<?php
 require 'db/functions/index.php';
 ?>
 <!DOCTYPE html>
@@ -23,26 +23,26 @@ require 'db/functions/index.php';
     <!-- Font Awesome untuk ikon WhatsApp -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
-    body {
-        background-color: #DCDCDC;
-    }
+        body {
+            background-color: #DCDCDC;
+        }
 
-    h2 {
-        font-family: 'Playfair Display', serif;
-    }
+        h2 {
+            font-family: 'Playfair Display', serif;
+        }
 
-    p {
-        font-family: 'Lora', serif;
-    }
+        p {
+            font-family: 'Lora', serif;
+        }
 
-    h5 {
-        font-family: 'Cinzel', serif;
-    }
+        h5 {
+            font-family: 'Cinzel', serif;
+        }
     </style>
 </head>
 
 <body>
-    <?php include 'navbar.php';?>
+    <?php include 'navbar.php'; ?>
     <!-- Gambar Auto Slide -->
     <div id="carouselExample" class="carousel slide mt-4" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
@@ -91,22 +91,39 @@ require 'db/functions/index.php';
     <div class="container">
         <div class="row">
             <?php foreach ($types as $type) : ?>
-            <div class="col-md-4" data-aos="zoom-in-up" data-aos-duration="500">
-                <div class="card mb-4">
-                    <img src="img/<?= $type["img"]; ?>_1.jpg" class="card-img-top" alt="type"
-                        style="object-fit: cover; aspect-ratio: 4 / 3;">
-                    <div class="card-body">
-                        <h5 class="card-title"><b><?= $type["name_type"]; ?></b></h5>
-                        <p class="card-text"><?= $type["description"]; ?></p>
-                        <?php $prices = array($type['transit'], $type['12hour'], $type['24hour']); 
-                    rsort($prices);
-                    ?>
-                        <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai
-                            dari Rp<?= number_format($prices[0], 0, '', '.'); ?></p>
-                        <a href="detail.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Lihat Details</a>
+                <?php
+                // Query untuk memeriksa apakah ada kamar yang tersedia untuk id_type tertentu
+                $id_type = $type["id_type"];
+                $query = "SELECT COUNT(*) as count FROM rooms WHERE id_type = ? AND status = 'available'";
+                $stmt = $pdo->prepare($query);
+                $stmt->execute([$id_type]);
+                $result = $stmt->fetch();
+                $availableCount = $result['count'];
+                ?>
+
+                <div class="col-md-4" data-aos="zoom-in-up" data-aos-duration="500">
+                    <div class="card mb-4">
+                        <img src="img/<?= $type["img"]; ?>_1.jpg" class="card-img-top" alt="type"
+                            style="object-fit: cover; aspect-ratio: 4 / 3;">
+                        <div class="card-body">
+                            <h5 class="card-title"><b><?= $type["name_type"]; ?></b></h5>
+                            <p class="card-text"><?= $type["description"]; ?></p>
+                            <?php $prices = array($type['transit'], $type['12hour'], $type['24hour']);
+                            $prices = array_filter($prices, function ($price) {
+                                return $price > 0;
+                            });
+                            sort($prices);
+                            ?>
+                            <p class="card-price" style="font-weight: bold; color: green; margin-bottom: 20px;">Harga mulai
+                                dari Rp<?= number_format($prices[0], 0, '', '.'); ?></p>
+                            <?php if ($availableCount > 0) : ?>
+                                <a href="detail.php?id_type=<?= $type["id_type"]; ?>" class="btn btn-primary">Lihat Details</a>
+                            <?php else : ?>
+                                <div class="alert alert-danger" role="alert">Kamar sudah penuh</div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
             <?php endforeach; ?>
         </div>
         <a href="https://wa.me/6282211879219?text=Halo%20saya%20ingin%20bertanya." class="whatsapp-float"
@@ -130,7 +147,7 @@ require 'db/functions/index.php';
     <!-- Aos -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-    AOS.init();
+        AOS.init();
     </script>
 </body>
 

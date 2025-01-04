@@ -8,8 +8,63 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     header('Location: dashboard/index.php');
     exit;
 }
+// Set timezone
+date_default_timezone_set('Asia/Jakarta');
 
+// Waktu sekarang
+$current_time = date('Y-m-d H:i:s');
 
+try {
+    // Mulai transaksi
+    $pdo->beginTransaction();
+
+    // Ambil data reservasi yang sudah melewati check_out_date
+    $query = "
+        SELECT id_room 
+        FROM reservations 
+        WHERE check_out_date <= :current_time AND status = 'Confirmed'
+    ";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':current_time', $current_time, PDO::PARAM_STR);
+    $stmt->execute();
+    $rooms_to_update = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Jika ada kamar yang perlu diperbarui
+    if (!empty($rooms_to_update)) {
+        // Perbarui status kamar menjadi 'available'
+        $updateQuery = "
+            UPDATE rooms
+            SET status = 'available'
+            WHERE id_room = :id_room
+        ";
+        $updateStmt = $pdo->prepare($updateQuery);
+
+        // Loop melalui semua kamar yang perlu diperbarui
+        foreach ($rooms_to_update as $room) {
+            $updateStmt->bindParam(':id_room', $room['id_room'], PDO::PARAM_INT);
+            $updateStmt->execute();
+        }
+
+        // Perbarui status reservasi menjadi 'Completed'
+        $updateReservationQuery = "
+            UPDATE reservations
+            SET status = 'Completed'
+            WHERE check_out_date <= :current_time AND status = 'Confirmed'
+        ";
+        $reservationStmt = $pdo->prepare($updateReservationQuery);
+        $reservationStmt->bindParam(':current_time', $current_time, PDO::PARAM_STR);
+        $reservationStmt->execute();
+    }
+
+    // Commit transaksi
+    $pdo->commit();
+
+    // echo "Sistem berhasil memperbarui status kamar.";
+} catch (Exception $e) {
+    // Rollback jika ada kesalahan
+    $pdo->rollBack();
+    echo "Terjadi kesalahan: " . $e->getMessage();
+}
 class UserSession {
     private $pdo;
 

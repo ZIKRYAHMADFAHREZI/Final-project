@@ -48,7 +48,7 @@ crossorigin="anonymous"
                                             <td>Rp<?= number_format($reservation['total_amount'], 0, ',', '.'); ?></td>
                                             <td>
                                             <a href="#" onclick="showInvoiceFromFile('invoice.php?id_reservation=<?= urlencode($reservation['id_reservation']); ?>')">
-                                                Lihat Bukti
+                                                Lihat Invoice
                                             </a>
                                             </td>
                                         </tr>
