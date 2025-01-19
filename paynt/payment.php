@@ -170,6 +170,10 @@ if (isset($_POST['submit-payment'])) {
         </div>
         <?php endif; ?>
     </div>
+  <div class="card-body">
+    <h6 class="text-center" style="color:red;">*jangan tutup halaman ini jika sedang melakukan pembayaran.</h6>
+  </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
